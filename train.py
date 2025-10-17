@@ -17,6 +17,19 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
         torch.backends.cudnn.deterministic = False
     except Exception:
         pass
+    # 启用 TF32（在 Ampere/Ada 上可显著提速）
+    try:
+        torch.backends.cuda.matmul.allow_tf32 = True
+        torch.backends.cudnn.allow_tf32 = True
+    except Exception:
+        pass
+    # Torch Compile（JIT 编译加速），默认开启，失败则回退
+    use_compile = bool(getattr(args, "use_compile", True))
+    if use_compile:
+        try:
+            model = torch.compile(model, mode="max-autotune")
+        except Exception:
+            pass
     # AMP 开关：通过 args.use_amp 控制；若环境不支持则回退为 False
     use_amp = bool(getattr(args, "use_amp", False))
     scaler = None
