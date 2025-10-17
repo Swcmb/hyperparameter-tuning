@@ -560,9 +560,147 @@ def main():
         print(f"[HPO] 阶段B完成。输出位于: {exp_root}")
 
     elif args_cli.stage == "C":
-        # 阶段C入口预置：读取阶段B top10，围绕邻域构造小网格/贝叶斯（可后续扩展）
-        print("[HPO] 阶段C入口预置：请先运行阶段B以生成 top10，再在此基础上精调（epochs_refine，开启online与mgraph）。")
-        print("暂未自动执行精调，以避免误覆盖实验文件。")
+        # 自动精调：读取最近一次阶段B的 top10 配置并运行 epochs_refine，强制 online + mgraph
+        proj_root = Path(__file__).resolve().parent.parent
+        exp_dir_root = proj_root / "experiments"
+        # 找到最近的 hpo_* 目录
+        hpo_dirs = sorted([p for p in exp_dir_root.glob("hpo_*") if p.is_dir()], key=lambda x: x.stat().st_mtime, reverse=True)
+        if not hpo_dirs:
+            print("[HPO][C] 未发现阶段B输出目录 experiments/hpo_*，请先运行 --stage B")
+            return
+        latest_exp = hpo_dirs[0]
+        print(f"[HPO][C] 使用最近一次阶段B目录: {latest_exp}")
+
+        # 精调输出根目录
+        exp_root = proj_root / "experiments" / f"hpo_{now_tag()}"
+        ensure_dir(exp_root)
+
+        for task in args_cli.tasks:
+            src_task_dir = latest_exp / task
+            if not src_task_dir.exists():
+                print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
+                continue
+            top_csv = src_task_dir / f"configs_top10_task_{task}.csv"
+            if not top_csv.exists():
+                print(f"[HPO][C][{task}] 未找到 top10 CSV: {top_csv}，请确认阶段B已生成")
+                continue
+
+            # 目标输出目录
+            dst_task_dir = exp_root / task
+            ensure_dir(dst_task_dir)
+
+            # 读取 top10 CSV 并解析配置
+            lines = top_csv.read_text(encoding="utf-8").strip().splitlines()
+            header = lines[0].split(",")
+            # 约定 header 中包含 "config_json"
+            try:
+                cfg_idx = header.index("config_json")
+            except ValueError:
+                print(f"[HPO][C][{task}] CSV 不包含 config_json 列，跳过")
+                continue
+
+            history_rows: List[List[Any]] = []
+            trial_metrics: List[Dict[str, Any]] = []
+
+            # 数据文件映射（与阶段B一致）
+            dataset_dir = Path(__file__).resolve().parent / "dataset1"
+            in_file = str(dataset_dir / f"{task}.edgelist")
+            neg_file = str(dataset_dir / f"non_{task}.edgelist")
+
+            trial_id = 0
+            for i in range(1, min(11, len(lines))):  # 跳过表头，最多10条
+                row = lines[i].split(",", maxsplit=len(header)-1)
+                cfg_json = row[cfg_idx]
+                try:
+                    cfg = json.loads(cfg_json)
+                except Exception as _e:
+                    print(f"[HPO][C][{task}] 解析第{i}行配置失败：{_e}，跳过")
+                    continue
+
+                # 强制覆盖为精调设定：online + mgraph
+                cfg_refine = dict(cfg)
+                cfg_refine["augment_mode"] = "online"
+                cfg_refine["adv_mode"] = "mgraph"
+                cfg_refine["adv_on_moco"] = True  # 如需关闭对增强视图的对抗，可改为 False
+                # 保持其余超参（含 num_views、queue_warmup_steps 等）
+
+                trial_id += 1
+                metrics, meta = run_trial_with_retry(task, trial_id, cfg_refine, args_cli.epochs_refine, dst_task_dir, in_file, neg_file)
+
+                # 记录历史行
+                history_rows.append([
+                    meta.get("run_name"),
+                    json.dumps(cfg_refine, ensure_ascii=False),
+                    metrics["AUPRC_mean"], metrics["AUPRC_std"],
+                    metrics["AUROC_mean"], metrics["AUROC_std"],
+                    metrics["F1_mean"], metrics["F1_std"],
+                    metrics["Loss_mean"], metrics["Loss_std"],
+                    meta.get("time_s"), meta.get("log_path"), meta.get("retry"), meta.get("error")
+                ])
+                # trial_metrics 用于排序
+                tm = dict(metrics)
+                tm["run_name"] = meta.get("run_name")
+                tm["config_json"] = json.dumps(cfg_refine, ensure_ascii=False)
+                tm["time_s"] = meta.get("time_s")
+                tm["log_path"] = meta.get("log_path")
+                trial_metrics.append(tm)
+
+            # 写历史 CSV（精调）
+            write_csv(
+                dst_task_dir / f"opt_history_refine_task_{task}.csv",
+                header=[
+                    "run_name", "config_json",
+                    "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                    "time_s", "log_path", "retry", "error"
+                ],
+                rows=history_rows
+            )
+
+            # Top3（精调）
+            top3 = sort_and_top(trial_metrics, topn=3)
+            top_rows = [[
+                m["run_name"],
+                m["config_json"],
+                m["AUPRC_mean"], m["AUPRC_std"],
+                m["AUROC_mean"], m["AUROC_std"],
+                m["F1_mean"], m["F1_std"],
+                m["Loss_mean"], m["Loss_std"],
+                m["time_s"], m["log_path"]
+            ] for m in top3]
+            write_csv(
+                dst_task_dir / f"configs_top3_refine_task_{task}.csv",
+                header=[
+                    "run_name", "config_json",
+                    "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                    "time_s", "log_path"
+                ],
+                rows=top_rows
+            )
+
+            # 写精调摘要 JSON/MD
+            best_payload = {
+                "task": task,
+                "top3_refine": [{
+                    "run_name": m["run_name"],
+                    "config": json.loads(m["config_json"]),
+                    "metrics": {
+                        "AUPRC_mean": m["AUPRC_mean"], "AUROC_mean": m["AUROC_mean"], "F1_mean": m["F1_mean"]
+                    }
+                } for m in top3],
+                "note": f"阶段C自动精调（epochs={args_cli.epochs_refine}，online+mgraph），来源：{str(src_task_dir)}"
+            }
+            (dst_task_dir / "best_configs_refine.json").write_text(json.dumps(best_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+            (dst_task_dir / f"summary_task_{task}.md").write_text(
+                f"# 阶段C精调结果
+
+- 已基于最近一次阶段B的top10进行精调（online+mgraph）。
+- 输出历史CSV与top3精调结果。
+来源：{str(src_task_dir)}
+",
+                encoding="utf-8"
+            )
+
+        print(f"[HPO] 阶段C精调完成。输出位于: {exp_root}")
 
     elif args_cli.stage == "final":
         # 最终复现入口预置
