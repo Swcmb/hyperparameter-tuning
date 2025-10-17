@@ -145,6 +145,11 @@ def sample_config(task: str, rng: np.random.Generator) -> Dict[str, Any]:
     wd_choices = [0.0, 5e-5, 5e-4, 1e-3]
     dropout_choices = [0.0, 0.1, 0.2]
     batch_choices = [16, 32, 64]
+    # 预热与早停相关
+    lr_warmup_epochs_choices = [0, 2, 3, 5]
+    lr_min_factor_choices = [0.1, 0.2, 0.3]
+    early_stop_patience_choices = [0, 3, 5]
+    early_stop_min_delta_choices = [0.0, 1e-4, 5e-4]
     moco_queue_choices = [1024, 4096, 8192]
     moco_momentum_choices = [0.95, 0.99, 0.999]
     moco_t_choices = [0.07, 0.1, 0.2]
@@ -172,6 +177,12 @@ def sample_config(task: str, rng: np.random.Generator) -> Dict[str, Any]:
         "lr": float(rng.choice(lr_choices)),
         "weight_decay": float(rng.choice(wd_choices)),
         "dropout": float(rng.choice(dropout_choices)),
+        # 训练策略
+        "base_batch": 32,  # 线性学习率缩放基准批次
+        "lr_warmup_epochs": int(rng.choice(lr_warmup_epochs_choices)),
+        "lr_min_factor": float(rng.choice(lr_min_factor_choices)),
+        "early_stop_patience": int(rng.choice(early_stop_patience_choices)),
+        "early_stop_min_delta": float(rng.choice(early_stop_min_delta_choices)),
         "batch": int(rng.choice(batch_choices)),
         "moco_queue": int(rng.choice(moco_queue_choices)),
         "moco_momentum": float(rng.choice(moco_momentum_choices)),
@@ -210,12 +221,20 @@ def trial_to_args(base_args: Any, cfg: Dict[str, Any], seed: int, in_file: str, 
     base_args.neg_sample = neg_file
     base_args.validation_type = "5_cv1"
     # 训练与结构
-    base_args.lr = cfg["lr"]
-    base_args.learning_rate = cfg["lr"]
+    # 线性学习率缩放：随批次线性放大
+    base_batch = int(cfg.get("base_batch", 32) or 32)
+    scaled_lr = float(cfg["lr"]) * (float(cfg["batch"]) / float(base_batch if base_batch > 0 else 32))
+    base_args.lr = scaled_lr
+    base_args.learning_rate = scaled_lr
     base_args.weight_decay = cfg["weight_decay"]
     base_args.dropout = cfg["dropout"]
     base_args.batch = cfg["batch"]
     base_args.epochs = int(epochs)
+    # 预热与早停超参
+    base_args.lr_warmup_epochs = int(cfg.get("lr_warmup_epochs", 0) or 0)
+    base_args.lr_min_factor = float(cfg.get("lr_min_factor", 0.1) or 0.1)
+    base_args.early_stop_patience = int(cfg.get("early_stop_patience", 0) or 0)
+    base_args.early_stop_min_delta = float(cfg.get("early_stop_min_delta", 0.0) or 0.0)
     base_args.dimensions = cfg["dimensions"]
     base_args.embed_dim = cfg["dimensions"]
     base_args.hidden1 = cfg["hidden1"]

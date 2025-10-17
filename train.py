@@ -18,6 +18,31 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
     node_loss = nn.BCEWithLogitsLoss()  # 同上，用于节点级别的对抗损失
     loss_history = []  # 创建一个列表来记录每个批次的损失值
 
+    # 学习率调度：预热（线性 warmup）
+    try:
+        init_lr = float(getattr(args, "learning_rate", getattr(args, "lr", 1e-3)))
+        warmup_epochs = int(getattr(args, "lr_warmup_epochs", 0) or 0)
+        min_factor = float(getattr(args, "lr_min_factor", 0.1) or 0.1)
+        if warmup_epochs > 0 and min_factor > 0 and min_factor < 1.0:
+            def _lr_lambda(epoch_idx: int):
+                # epoch 从 0 开始，线性从 min_factor*lr 到 lr
+                if epoch_idx < warmup_epochs:
+                    return min_factor + (1.0 - min_factor) * (float(epoch_idx + 1) / float(max(1, warmup_epochs)))
+                return 1.0
+            scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=_lr_lambda)
+        else:
+            scheduler = None
+    except Exception:
+        scheduler = None
+
+    # 早停配置
+    best_metric = -float("inf")
+    best_epoch = -1
+    no_improve = 0
+    early_patience = int(getattr(args, "early_stop_patience", 0) or 0)
+    early_min_delta = float(getattr(args, "early_stop_min_delta", 0.0) or 0.0)
+    best_result_snapshot = None
+
     model.to('cuda')  # 固定使用GPU
     data_o.to('cuda')  # 固定使用GPU
     data_a.to('cuda')  # 固定使用GPU
@@ -128,6 +153,12 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                     print(f"[ONLINE-AUG] mode=online name={aug_online} noise_std={noise_std} mask_rate={mask_rate} base_seed={base_seed}")
             else:
                 data_a_aug = data_a
+            # 统一设备：确保增强视图在同一GPU（避免CPU-GPU搬运）
+            try:
+                if hasattr(data_a_aug, "x") and data_a_aug.x.device != torch.device(device):
+                    data_a_aug = Data(x=data_a_aug.x.to(device), y=data_a_aug.y, edge_index=data_a_aug.edge_index.to(device))
+            except Exception:
+                pass
 
             model.train()  # 将模型设置为训练模式
             optimizer.zero_grad()  # 清除上一批次的梯度
@@ -279,6 +310,37 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
 
         if hasattr(torch.cuda, 'empty_cache'):  # 如果PyTorch版本支持
             torch.cuda.empty_cache()  # 清空GPU缓存，释放不必要的显存
+
+        # 学习率预热调度步进（每 epoch 结束）
+        if scheduler is not None:
+            try:
+                scheduler.step()
+            except Exception:
+                pass
+
+        # 验证集评估用于早停（使用当前测试加载器作为验证）
+        try:
+            auroc_val, auprc_val, precision_val, recall_val, f1_val, loss_val, cm_val = test(model, test_loader, data_o, data_a, args)
+            metric_to_track = float(auprc_val)
+            improved = metric_to_track > (best_metric + early_min_delta)
+            if improved:
+                best_metric = metric_to_track
+                best_epoch = epoch + 1
+                no_improve = 0
+                best_result_snapshot = {
+                    'auroc': auroc_val, 'auprc': auprc_val, 'precision': precision_val,
+                    'recall': recall_val, 'f1': f1_val, 'loss': loss_val.item() if hasattr(loss_val, "item") else float(loss_val),
+                    'cm': cm_val
+                }
+                print(f"[EARLY-STOP] New best at epoch {best_epoch}: AUPRC={best_metric:.4f}")
+            else:
+                no_improve += 1
+                if early_patience > 0 and no_improve >= early_patience:
+                    print(f"[EARLY-STOP] Stop at epoch {epoch+1} (best epoch {best_epoch} AUPRC={best_metric:.4f})")
+                    break
+        except Exception as _e:
+            print(f"[EARLY-STOP] validation step failed: {_e}")
+
     print("Optimization Finished!")  # 所有轮次训练完成后，打印优化完成
 
     # 将每epoch训练指标写入 EM/result 当前运行目录下的CSV
@@ -309,8 +371,18 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
         print(f"[SAVE] Failed to write per-epoch metrics: {_e}")
 
     # Testing  # 注释：测试阶段
-    # 调用test函数，在测试集上评估最终模型
-    auroc_test, prc_test, precision_test, recall_test, f1_test, loss_test, cm_test = test(model, test_loader, data_o, data_a, args)
+    # 若存在早停最佳快照，则返回最佳，否则使用最终测试表现
+    if best_result_snapshot is not None:
+        auroc_test = best_result_snapshot['auroc']
+        prc_test = best_result_snapshot['auprc']
+        precision_test = best_result_snapshot['precision']
+        recall_test = best_result_snapshot['recall']
+        f1_test = best_result_snapshot['f1']
+        loss_test = torch.tensor(best_result_snapshot['loss'], device='cuda')
+        cm_test = best_result_snapshot['cm']
+    else:
+        # 调用test函数，在测试集上评估最终模型
+        auroc_test, prc_test, precision_test, recall_test, f1_test, loss_test, cm_test = test(model, test_loader, data_o, data_a, args)
     tn_t, fp_t, fn_t, tp_t = cm_test
     # 打印测试集上的各项性能指标
     print('loss_test: {:.4f}'.format(loss_test.item()), 'auroc_test: {:.4f}'.format(auroc_test),
