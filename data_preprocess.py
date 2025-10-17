@@ -6,13 +6,20 @@ import torch                  # 深度学习张量与设备管理
 import scipy.sparse as sp     # 稀疏矩阵运算
 from torch.utils.data import Dataset, DataLoader  # 数据集与加载器
 from torch_geometric.data import Data             # 图数据封装（PyTorch Geometric）
-from autodl import decide_dataloader_workers      # 统一 DataLoader 并行策略
+import os  # 并行策略所需
 from utils import *                         # 通用工具（含 BASE_DIR、图构建、归一化等）
 from utils import em_path as _p             # 统一路径解析（简写）
 from layer import load_positive, load_negative_all, sample_negative, attach_labels, apply_augmentation# 样本构建与特征增强
 from calculating_similarity import calculate_GaussianKernel_sim, getRNA_functional_sim, RNA_fusion_sim, dis_fusion_sim# 相似度计算
 from log_output_manager import get_logger, save_cv_datasets, save_fold_stats_json# 日志与数据保存
 
+# 本地并行策略：避免 num_workers=-1 退化为 0，按 CPU 核心数自适应
+def decide_dataloader_workers(args):
+    try:
+        cpu = os.cpu_count() or 4
+    except Exception:
+        cpu = 4
+    return min(max(1, cpu // 2), 8)
 
 # ===== 说明：本模块默认使用五折交叉验证 =====
 
@@ -379,7 +386,7 @@ def load_data(args, k_fold=5):
         base_params.update({
             'num_workers': num_workers,
             'persistent_workers': True,
-            'pin_memory': False
+            'pin_memory': True
         })
         if prefetch_factor and prefetch_factor > 0:
             base_params['prefetch_factor'] = prefetch_factor
