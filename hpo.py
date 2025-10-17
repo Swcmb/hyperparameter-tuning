@@ -24,6 +24,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+# 可选引入 Optuna（作为搜索后端），若未安装则退回随机搜索
+try:
+    import optuna
+    _OPTUNA_AVAILABLE = True
+except Exception:
+    _OPTUNA_AVAILABLE = False
 
 # 引入项目内部模块（与 main.py 同步）
 # 安全包装：延迟导入并在导入前暂时清空 sys.argv，避免 settings() 解析 HPO 自定义 CLI
@@ -142,9 +148,9 @@ def sample_config(task: str, rng: np.random.Generator) -> Dict[str, Any]:
     # 搜索空间
     embed_dim_choices = [32, 64, 128, 256]
     lr_choices = [1e-4, 5e-4, 1e-3]
-    wd_choices = [0.0, 5e-5, 5e-4, 1e-3]
+    wd_choices = [0.0, 5e-5, 5e-4]
     dropout_choices = [0.0, 0.1, 0.2]
-    batch_choices = [16, 32, 64]
+    batch_choices = [16, 32, 64, 128]
     # 预热与早停相关
     lr_warmup_epochs_choices = [0, 2, 3, 5]
     lr_min_factor_choices = [0.1, 0.2, 0.3]
@@ -296,7 +302,7 @@ def parse_epoch_csv_loss(last_csv_path: Path) -> Tuple[float, float]:
         return (math.nan, math.nan)
 
 
-def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, exp_task_dir: Path, in_file: str, neg_file: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, exp_task_dir: Path, in_file: str, neg_file: str, fixed_seed: int = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     执行单个 trial：返回 (metrics, meta)
     metrics：包含 AUROC/AUPRC/F1/Loss 的 mean/std
@@ -310,7 +316,7 @@ def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, ex
     # 构造 args
     args_obj = _ps_settings()
     # 派生种子（确保每 trial 稳定）
-    seed = derive_seed(int(getattr(args_obj, "seed", 0)), trial_id)
+    seed = int(fixed_seed) if fixed_seed is not None else derive_seed(int(getattr(args_obj, "seed", 0)), trial_id)
     args_obj = trial_to_args(args_obj, cfg, seed, in_file, neg_file, epochs)
     args_obj.run_name = run_name
 
@@ -322,6 +328,19 @@ def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, ex
     logger = _init_logging(run_name=args_obj.run_name)
     _redirect_print(True)
     _make_result_run_dir("data")
+    # 写 params.json（含seed与augment_seed等全部参数）到当前运行的 metrics 目录
+    try:
+        paths_p = _get_run_paths()
+        run_dir = Path(paths_p.get("run_result_dir") or "")
+        metrics_dir = run_dir / "metrics"
+        ensure_dir(metrics_dir)
+        params_path = metrics_dir / "params.json"
+        payload = {k: (v if isinstance(v, (int, float, str, bool, list, dict, type(None))) else str(v)) for k, v in vars(args_obj).items()}
+        payload["seed"] = int(getattr(args_obj, "seed", 0))
+        payload["augment_seed"] = int(getattr(args_obj, "augment_seed", payload["seed"]))
+        params_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        pass
 
     # 加载数据与 5 折评估
     data_o_folds, data_a_folds, train_loaders, test_loaders = _load_data(args_obj)
@@ -386,10 +405,10 @@ def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, ex
     return metrics, meta
 
 
-def run_trial_with_retry(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, exp_task_dir: Path, in_file: str, neg_file: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def run_trial_with_retry(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, exp_task_dir: Path, in_file: str, neg_file: str, fixed_seed: int = None) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """包裹一次重试逻辑：NaN/Inf 或发散时将 lr*=0.5 重试一次；OOM/其他异常记录错误并返回"""
     try:
-        metrics, meta = run_one_trial(task, trial_id, cfg, epochs, exp_task_dir, in_file, neg_file)
+        metrics, meta = run_one_trial(task, trial_id, cfg, epochs, exp_task_dir, in_file, neg_file, fixed_seed=fixed_seed)
         # 简单 NaN/Inf 检查与发散检查
         def _bad(x: float) -> bool:
             return (x is None) or (not math.isfinite(x)) or (x < 0)
@@ -398,7 +417,7 @@ def run_trial_with_retry(task: str, trial_id: int, cfg: Dict[str, Any], epochs: 
             cfg_retry = dict(cfg)
             cfg_retry["lr"] = float(cfg["lr"]) * 0.5
             meta["retry"] = True
-            metrics, meta2 = run_one_trial(task, trial_id, cfg_retry, epochs, exp_task_dir, in_file, neg_file)
+            metrics, meta2 = run_one_trial(task, trial_id, cfg_retry, epochs, exp_task_dir, in_file, neg_file, fixed_seed=fixed_seed)
             # 合并关键信息
             meta.update({"retry_run_name": meta2.get("run_name"), "retry_log_path": meta2.get("log_path")})
         return metrics, meta
@@ -451,12 +470,13 @@ def write_csv(path: Path, header: List[str], rows: List[List[Any]]) -> None:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tasks", nargs="+", default=["LDA", "MDA", "LMI"], choices=["LDA", "MDA", "LMI"], help="选择需要优化的任务集合")
-    parser.add_argument("--stage", type=str, default="B", choices=["B", "C", "final"], help="选择阶段：B 粗随机搜索；C 精调；final 最终复现")
+    parser.add_argument("--search_backend", type=str, default="optuna", choices=["optuna", "random"], help="选择搜索后端：optuna 或 random（默认optuna，若未安装optuna则自动回退）")
+    parser.add_argument("--stage", type=str, default="auto", choices=["auto", "B", "C", "final"], help="选择阶段：auto 先执行B后自动进入C；B 粗随机搜索；C 精调；final 最终复现")
     parser.add_argument("--trials", type=int, default=60, help="阶段B每任务试验数")
     parser.add_argument("--epochs", type=int, default=3, help="阶段B训练轮数（建议 3）")
     parser.add_argument("--seed_base", type=int, default=0, help="基础种子")
     # 阶段C/最终复现参数（入口预置）
-    parser.add_argument("--epochs_refine", type=int, default=20, help="阶段C精调的训练轮数")
+    parser.add_argument("--epochs_refine", type=int, default=10, help="阶段C精调的训练轮数（默认10，启用早停）")
     parser.add_argument("--final_seeds", nargs="+", type=int, default=[0, 1, 2], help="最终复现的 seeds 列表")
     args_cli = parser.parse_args()
 
@@ -476,10 +496,305 @@ def main():
     # 阶段B：粗随机搜索
     if args_cli.stage == "B":
         for task in args_cli.tasks:
+            # 若选择 Optuna 且可用：使用 Optuna 进行阶段C局部精调；完成后进入下一个任务
+            if (str(getattr(args_cli, "search_backend", "optuna")).lower() == "optuna") and _OPTUNA_AVAILABLE:
+                print(f"[HPO][C][{task}] 使用Optuna进行局部精调")
+                src_task_dir = latest_exp / task
+                if not src_task_dir.exists():
+                    print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
+                    continue
+                top_csv = src_task_dir / f"configs_top10_task_{task}.csv"
+                if not top_csv.exists():
+                    print(f"[HPO][C][{task}] 未找到 top10 CSV: {top_csv}，请确认阶段B已生成")
+                    continue
+
+                dst_task_dir = exp_root / task
+                ensure_dir(dst_task_dir)
+
+                # 读取 top10 配置作为局部精调的基准
+                lines = top_csv.read_text(encoding="utf-8").strip().splitlines()
+                header = lines[0].split(",")
+                try:
+                    cfg_idx = header.index("config_json")
+                except ValueError:
+                    print(f"[HPO][C][{task}] CSV 不包含 config_json 列，跳过")
+                    continue
+                base_cfgs = []
+                for i in range(1, min(11, len(lines))):
+                    row = lines[i].split(",", maxsplit=len(header)-1)
+                    try:
+                        base_cfgs.append(json.loads(row[cfg_idx]))
+                    except Exception:
+                        pass
+                if not base_cfgs:
+                    print(f"[HPO][C][{task}] 无可用top10配置，跳过")
+                    continue
+
+                # 数据文件映射
+                dataset_dir = Path(__file__).resolve().parent / "dataset1"
+                in_file = str(dataset_dir / f"{task}.edgelist")
+                neg_file = str(dataset_dir / f"non_{task}.edgelist")
+
+                def _clip(v, lo, hi):
+                    return max(lo, min(hi, v))
+
+                history_rows_opt: List[List[Any]] = []
+                trial_metrics_opt: List[Dict[str, Any]] = []
+
+                def _objective(trial: "optuna.trial.Trial") -> float:
+                    # 选择一个基准配置索引
+                    base_idx = int(trial.suggest_int("base_idx", 0, len(base_cfgs) - 1))
+                    base = dict(base_cfgs[base_idx])
+
+                    # 邻域采样（离散微调）
+                    lr_scale = float(trial.suggest_categorical("lr_scale", [0.75, 1.0, 1.25]))
+                    dropout_delta = float(trial.suggest_categorical("dropout_delta", [-0.05, 0.0, 0.05]))
+                    alpha_scale = float(trial.suggest_categorical("alpha_scale", [0.75, 1.0, 1.25]))
+                    beta_scale = float(trial.suggest_categorical("beta_scale", [0.75, 1.0, 1.25]))
+                    gamma_choice = float(trial.suggest_categorical("gamma_choice", [base.get("gamma", 0.0), 0.1]))
+                    proj_choice = trial.suggest_categorical("proj_choice", ["keep", "hidden2"])
+
+                    cfg = dict(base)
+                    cfg["lr"] = float(_clip(base["lr"] * lr_scale, 1e-5, 5e-2))
+                    cfg["dropout"] = float(_clip(base.get("dropout", 0.0) + dropout_delta, 0.0, 0.5))
+                    cfg["alpha"] = float(_clip(base.get("alpha", 1.0) * alpha_scale, 0.1, 3.0))
+                    cfg["beta"] = float(_clip(base.get("beta", 0.5) * beta_scale, 0.05, 2.0))
+                    cfg["gamma"] = float(gamma_choice)
+                    if proj_choice == "hidden2":
+                        cfg["proj_dim"] = int(base.get("hidden2", cfg.get("proj_dim", 64)))
+                    else:
+                        cfg["proj_dim"] = int(cfg.get("proj_dim", base.get("proj_dim", base.get("hidden2", 64))))
+
+                    # 强制精调设定：online + mgraph
+                    cfg["augment_mode"] = "online"
+                    cfg["adv_mode"] = "mgraph"
+                    cfg["adv_on_moco"] = True
+
+                    trial_id = int(trial.number + 1)
+                    metrics, meta = run_trial_with_retry(task, trial_id, cfg, args_cli.epochs_refine, dst_task_dir, in_file, neg_file)
+
+                    # 历史记录（含 trial_number 与 seed）
+                    history_rows_opt.append([
+                        meta.get("run_name"),
+                        json.dumps(cfg, ensure_ascii=False),
+                        metrics["AUPRC_mean"], metrics["AUPRC_std"],
+                        metrics["AUROC_mean"], metrics["AUROC_std"],
+                        metrics["F1_mean"], metrics["F1_std"],
+                        metrics["Loss_mean"], metrics["Loss_std"],
+                        meta.get("time_s"), meta.get("log_path"), meta.get("retry"), meta.get("error"),
+                        f"trial_number={trial.number}",
+                        f"seed={trial_id}"
+                    ])
+                    tm = dict(metrics)
+                    tm["run_name"] = meta.get("run_name")
+                    tm["config_json"] = json.dumps(cfg, ensure_ascii=False)
+                    tm["time_s"] = meta.get("time_s")
+                    tm["log_path"] = meta.get("log_path")
+                    trial_metrics_opt.append(tm)
+                    return float(metrics["AUPRC_mean"])
+
+                study = optuna.create_study(
+                    direction="maximize",
+                    sampler=optuna.samplers.TPESampler(seed=int(args_cli.seed_base)),
+                    pruner=optuna.pruners.MedianPruner()
+                )
+                study.optimize(_objective, n_trials=int(args_cli.trials))
+
+                # 写精调历史CSV（含trial_number与seed）
+                write_csv(
+                    dst_task_dir / f"opt_history_refine_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path", "retry", "error", "trial_number", "seed"
+                    ],
+                    rows=history_rows_opt
+                )
+
+                # Top3与多seed复验
+                top3 = sort_and_top(trial_metrics_opt, topn=3)
+                write_csv(
+                    dst_task_dir / f"configs_top3_refine_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path"
+                    ],
+                    rows=[[m["run_name"], m["config_json"], m["AUPRC_mean"], m["AUPRC_std"], m["AUROC_mean"], m["AUROC_std"], m["F1_mean"], m["F1_std"], m["Loss_mean"], m["Loss_std"], m["time_s"], m["log_path"]] for m in top3]
+                )
+
+                seeds = list(args_cli.final_seeds)
+                final_payload = {"task": task, "top3_final": []}
+                for m in top3:
+                    cfg_final = json.loads(m["config_json"])
+                    run_stats = []
+                    for sd in seeds:
+                        trial_id = len(history_rows_opt) + 1
+                        metrics_sd, meta_sd = run_trial_with_retry(task, trial_id, cfg_final, args_cli.epochs_refine, dst_task_dir, in_file, neg_file, fixed_seed=int(sd))
+                        run_stats.append({
+                            "seed": int(sd),
+                            "metrics": metrics_sd,
+                            "run_name": meta_sd.get("run_name"),
+                            "log_path": meta_sd.get("log_path")
+                        })
+                    def agg(key):
+                        vals = [float(rs["metrics"][key]) for rs in run_stats]
+                        return float(np.mean(vals)), float(np.std(vals))
+                    final_payload["top3_final"].append({
+                        "config": cfg_final,
+                        "seeds": seeds,
+                        "aggregate": {
+                            "AUPRC_mean": agg("AUPRC_mean")[0], "AUPRC_std": agg("AUPRC_mean")[1],
+                            "AUROC_mean": agg("AUROC_mean")[0], "AUROC_std": agg("AUROC_mean")[1],
+                            "F1_mean": agg("F1_mean")[0], "F1_std": agg("F1_mean")[1]
+                        },
+                        "runs": run_stats
+                    })
+                (dst_task_dir / "best_configs_final.json").write_text(json.dumps(final_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+                (dst_task_dir / f"summary_task_{task}.md").write_text(
+                    f"# 阶段C精调与复验结果（Optuna）\n- 基于最近一次阶段B的top10进行Optuna局部精调（epochs={args_cli.epochs_refine}，online+mgraph）。\n- 对精调Top3进行多个seed的完整5-fold复验，并聚合mean/std。\n来源：{str(src_task_dir)}",
+                    encoding="utf-8"
+                )
+                # 完成该任务的Optuna精调，进入下一个任务
+                continue
             exp_task_dir = exp_root / task
             ensure_dir(exp_task_dir)
 
             rng = np.random.default_rng(args_cli.seed_base + hash(task) % 10000)
+
+            # 若选择 Optuna 且可用：使用 TPE + MedianPruner 执行阶段B优化；完成后继续下个任务
+            if (str(args_cli.search_backend).lower() == "optuna") and _OPTUNA_AVAILABLE:
+                def _build_cfg_from_trial(trial) -> Dict[str, Any]:
+                    # 离散空间与条件与 sample_config 对齐
+                    embed_dim = trial.suggest_categorical("dimensions", [32, 64, 128, 256])
+                    hidden1_choices = [max(32, embed_dim // 2), embed_dim, min(2 * embed_dim, 512)]
+                    hidden2_choices = [max(16, embed_dim // 4), max(32, embed_dim // 2), embed_dim]
+                    cfg = {
+                        "task_type": task,
+                        "dimensions": int(embed_dim),
+                        "hidden1": int(trial.suggest_categorical("hidden1", hidden1_choices)),
+                        "hidden2": int(trial.suggest_categorical("hidden2", hidden2_choices)),
+                        "decoder1": int(trial.suggest_categorical("decoder1", [256, 512])),
+                        "lr": float(trial.suggest_categorical("lr", [1e-4, 5e-4, 1e-3])),
+                        "weight_decay": float(trial.suggest_categorical("weight_decay", [0.0, 5e-5, 5e-4])),
+                        "dropout": float(trial.suggest_categorical("dropout", [0.0, 0.1, 0.2])),
+                        "base_batch": 32,
+                        "lr_warmup_epochs": int(trial.suggest_categorical("lr_warmup_epochs", [0, 2, 3, 5])),
+                        "lr_min_factor": float(trial.suggest_categorical("lr_min_factor", [0.1, 0.2, 0.3])),
+                        "early_stop_patience": int(trial.suggest_categorical("early_stop_patience", [0, 3, 5])),
+                        "early_stop_min_delta": float(trial.suggest_categorical("early_stop_min_delta", [0.0, 1e-4, 5e-4])),
+                        "batch": int(trial.suggest_categorical("batch", [16, 32, 64, 128])),
+                        "moco_queue": int(trial.suggest_categorical("moco_queue", [1024, 4096, 8192])),
+                        "moco_momentum": float(trial.suggest_categorical("moco_momentum", [0.95, 0.99, 0.999])),
+                        "moco_t": float(trial.suggest_categorical("moco_t", [0.07, 0.1, 0.2])),
+                        "proj_dim": trial.suggest_categorical("proj_dim", [32, 64, 128, None]),
+                        "augment": str(trial.suggest_categorical("augment", ["none", "random_permute_features", "add_noise", "attribute_mask", "noise_then_mask"])),
+                        "augment_mode": "static",
+                        "noise_std": float(trial.suggest_categorical("noise_std", [0.005, 0.01, 0.02])),
+                        "mask_rate": float(trial.suggest_categorical("mask_rate", [0.05, 0.1, 0.2])),
+                        "alpha": float(trial.suggest_categorical("alpha", [0.5, 1.0, 2.0])),
+                        "beta": float(trial.suggest_categorical("beta", [0.1, 0.5, 1.0])),
+                        "gamma": float(trial.suggest_categorical("gamma", [0.0, 0.1, 0.5])),
+                        "num_views": int(trial.suggest_categorical("num_views", [2, 3])),
+                        "adv_mode": "none",
+                        "adv_on_moco": False,
+                        "queue_warmup_steps": int(trial.suggest_categorical("queue_warmup_steps", [0, 200])),
+                        "gat_heads": int(trial.suggest_categorical("gat_heads", [2, 4])),
+                        "fusion_heads": int(trial.suggest_categorical("fusion_heads", [2, 4])),
+                    }
+                    if cfg["augment"] in ("none", "null", ""):
+                        cfg["noise_std"] = 0.0
+                        cfg["mask_rate"] = 0.0
+                    if (cfg["proj_dim"] is None) or (cfg["proj_dim"] is not None and int(cfg["proj_dim"]) <= 0):
+                        cfg["proj_dim"] = int(cfg["hidden2"])
+                    return cfg
+
+                history_rows_opt: List[List[Any]] = []
+                trial_metrics_opt: List[Dict[str, Any]] = []
+
+                def _objective(trial: "optuna.trial.Trial") -> float:
+                    # 使用 trial.number 作为 trial_id；记录 trial_number 与 seed
+                    cfg = _build_cfg_from_trial(trial)
+                    trial_id = int(trial.number + 1)
+                    metrics, meta = run_trial_with_retry(task, trial_id, cfg, args_cli.epochs, exp_task_dir, file_map[task]["in_file"], file_map[task]["neg_file"])
+                    # 记录历史
+                    history_rows_opt.append([
+                        meta.get("run_name"),
+                        json.dumps(cfg, ensure_ascii=False),
+                        metrics["AUPRC_mean"], metrics["AUPRC_std"],
+                        metrics["AUROC_mean"], metrics["AUROC_std"],
+                        metrics["F1_mean"], metrics["F1_std"],
+                        metrics["Loss_mean"], metrics["Loss_std"],
+                        meta.get("time_s"), meta.get("log_path"), meta.get("retry"), meta.get("error"),
+                        f"trial_number={trial.number}",  # 额外记录 trial_number
+                        f"seed={trial_id}"  # 与 derive_seed 相关联（外层以 trial_id 派生）
+                    ])
+                    tm = dict(metrics)
+                    tm["run_name"] = meta.get("run_name")
+                    tm["config_json"] = json.dumps(cfg, ensure_ascii=False)
+                    tm["time_s"] = meta.get("time_s")
+                    tm["log_path"] = meta.get("log_path")
+                    trial_metrics_opt.append(tm)
+                    # 以 AUPRC_mean 为优化目标
+                    return float(metrics["AUPRC_mean"])
+
+                study = optuna.create_study(direction="maximize",
+                                            sampler=optuna.samplers.TPESampler(seed=int(args_cli.seed_base)),
+                                            pruner=optuna.pruners.MedianPruner())
+                study.optimize(_objective, n_trials=int(args_cli.trials))
+
+                # 写历史 CSV（含额外两列）
+                write_csv(
+                    exp_task_dir / f"opt_history_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path", "retry", "error", "trial_number", "seed"
+                    ],
+                    rows=history_rows_opt
+                )
+
+                # Top10
+                top10_opt = sort_and_top(trial_metrics_opt, topn=10)
+                top_rows = [[
+                    m["run_name"],
+                    m["config_json"],
+                    m["AUPRC_mean"], m["AUPRC_std"],
+                    m["AUROC_mean"], m["AUROC_std"],
+                    m["F1_mean"], m["F1_std"],
+                    m["Loss_mean"], m["Loss_std"],
+                    m["time_s"], m["log_path"]
+                ] for m in top10_opt]
+                write_csv(
+                    exp_task_dir / f"configs_top10_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path"
+                    ],
+                    rows=top_rows
+                )
+
+                # best_configs_final.json（取 top3）
+                best3 = top10_opt[:3]
+                best_payload = {
+                    "task": task,
+                    "top3": [{
+                        "run_name": m["run_name"],
+                        "config": json.loads(m["config_json"]),
+                        "metrics": {
+                            "AUPRC_mean": m["AUPRC_mean"], "AUROC_mean": m["AUROC_mean"], "F1_mean": m["F1_mean"]
+                        }
+                    } for m in best3],
+                    "note": "阶段B（Optuna）搜索结果，阶段C将围绕这些配置做精调（epochs=10，online+mgraph）"
+                }
+                (exp_task_dir / "best_configs_final.json").write_text(json.dumps(best_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+                # 初版报告
+                (exp_task_dir / f"summary_task_{task}.md").write_text("# 阶段B（Optuna）结果\n\n- 已生成 top10 与历史CSV；待阶段C与最终复现补充。\n", encoding="utf-8")
+
+                # 当前任务完成，继续下一个
+                continue
 
             history_rows: List[List[Any]] = []
             trial_metrics: List[Dict[str, Any]] = []
@@ -558,6 +873,160 @@ def main():
             (exp_task_dir / f"summary_task_{task}.md").write_text("# 阶段B结果\n\n- 已生成 top10 与历史CSV；待阶段C与最终复现补充。\n", encoding="utf-8")
 
         print(f"[HPO] 阶段B完成。输出位于: {exp_root}")
+        # 若选择自动模式，直接进入阶段C（当前exp_root）执行邻域小网格精调与top3多seed复验
+        if args_cli.stage == "auto":
+            print("[HPO][AUTO] 阶段B完成，自动进入阶段C（局部精调 + 多seed复验）")
+            latest_exp = exp_root
+            exp_root_c = proj_root / "experiments" / f"hpo_{now_tag()}"
+            ensure_dir(exp_root_c)
+            # 邻域生成器
+            def _clip(v, lo, hi):
+                return max(lo, min(hi, v))
+            def generate_refine_neighbors(base_cfg: Dict[str, Any]) -> List[Dict[str, Any]]:
+                neighbors: List[Dict[str, Any]] = []
+                for f in [0.75, 1.0, 1.25]:
+                    for dd in [-0.05, 0.0, 0.05]:
+                        cfg2 = dict(base_cfg)
+                        cfg2["lr"] = float(_clip(base_cfg["lr"] * f, 1e-5, 5e-2))
+                        cfg2["dropout"] = float(_clip(base_cfg["dropout"] + dd, 0.0, 0.5))
+                        cfg2["proj_dim"] = int(cfg2.get("proj_dim") or cfg2["hidden2"])
+                        if cfg2["proj_dim"] != int(cfg2["hidden2"]):
+                            neighbors.append(dict({**cfg2, "proj_dim": int(cfg2["hidden2"])}))
+                        for a_scale in [0.75, 1.0, 1.25]:
+                            for b_scale in [0.75, 1.0, 1.25]:
+                                cfg3 = dict(cfg2)
+                                cfg3["alpha"] = float(_clip(base_cfg["alpha"] * a_scale, 0.1, 3.0))
+                                cfg3["beta"] = float(_clip(base_cfg["beta"] * b_scale, 0.05, 2.0))
+                                cfg3["gamma"] = float(base_cfg["gamma"] if base_cfg["gamma"] > 0 else 0.1)
+                                neighbors.append(cfg3)
+                seen = set()
+                uniq = []
+                keys = ["lr", "dropout", "proj_dim", "alpha", "beta", "gamma"]
+                for c in neighbors:
+                    t = tuple(c[k] for k in keys)
+                    if t in seen:
+                        continue
+                    seen.add(t)
+                    c["augment_mode"] = "online"
+                    c["adv_mode"] = "mgraph"
+                    c["adv_on_moco"] = True
+                    uniq.append(c)
+                return uniq[:50]
+            # 遍历任务执行C
+            for task in args_cli.tasks:
+                src_task_dir = latest_exp / task
+                if not src_task_dir.exists():
+                    print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
+                    continue
+                top_csv = src_task_dir / f"configs_top10_task_{task}.csv"
+                if not top_csv.exists():
+                    print(f"[HPO][C][{task}] 未找到 top10 CSV: {top_csv}，请确认阶段B已生成")
+                    continue
+                dst_task_dir = exp_root_c / task
+                ensure_dir(dst_task_dir)
+                lines = top_csv.read_text(encoding="utf-8").strip().splitlines()
+                header = lines[0].split(",")
+                try:
+                    cfg_idx = header.index("config_json")
+                except ValueError:
+                    print(f"[HPO][C][{task}] CSV 不包含 config_json 列，跳过")
+                    continue
+                history_rows: List[List[Any]] = []
+                trial_metrics: List[Dict[str, Any]] = []
+                dataset_dir = Path(__file__).resolve().parent / "dataset1"
+                in_file = str(dataset_dir / f"{task}.edgelist")
+                neg_file = str(dataset_dir / f"non_{task}.edgelist")
+                trial_id = 0
+                for i in range(1, min(11, len(lines))):
+                    row = lines[i].split(",", maxsplit=len(header)-1)
+                    cfg_json = row[cfg_idx]
+                    try:
+                        cfg = json.loads(cfg_json)
+                    except Exception as _e:
+                        print(f"[HPO][C][{task}] 解析第{i}行配置失败：{_e}，跳过")
+                        continue
+                    neighbors = generate_refine_neighbors(cfg)
+                    for cfg_refine in neighbors:
+                        trial_id += 1
+                        metrics, meta = run_trial_with_retry(task, trial_id, cfg_refine, args_cli.epochs_refine, dst_task_dir, in_file, neg_file)
+                        history_rows.append([
+                            meta.get("run_name"),
+                            json.dumps(cfg_refine, ensure_ascii=False),
+                            metrics["AUPRC_mean"], metrics["AUPRC_std"],
+                            metrics["AUROC_mean"], metrics["AUROC_std"],
+                            metrics["F1_mean"], metrics["F1_std"],
+                            metrics["Loss_mean"], metrics["Loss_std"],
+                            meta.get("time_s"), meta.get("log_path"), meta.get("retry"), meta.get("error")
+                        ])
+                        tm = dict(metrics)
+                        tm["run_name"] = meta.get("run_name")
+                        tm["config_json"] = json.dumps(cfg_refine, ensure_ascii=False)
+                        tm["time_s"] = meta.get("time_s")
+                        tm["log_path"] = meta.get("log_path")
+                        trial_metrics.append(tm)
+                # 写历史CSV与合并B+C
+                write_csv(
+                    dst_task_dir / f"opt_history_refine_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path", "retry", "error"
+                    ],
+                    rows=history_rows
+                )
+                try:
+                    hist_b = src_task_dir / f"opt_history_task_{task}.csv"
+                    if hist_b.exists():
+                        with hist_b.open("a", encoding="utf-8") as fa:
+                            for r in history_rows:
+                                fa.write(",".join(str(x) for x in r) + "\n")
+                except Exception:
+                    pass
+                # Top3与多seed复验
+                top3 = sort_and_top(trial_metrics, topn=3)
+                write_csv(
+                    dst_task_dir / f"configs_top3_refine_task_{task}.csv",
+                    header=[
+                        "run_name", "config_json",
+                        "AUPRC_mean", "AUPRC_std", "AUROC_mean", "AUROC_std", "F1_mean", "F1_std", "Loss_mean", "Loss_std",
+                        "time_s", "log_path"
+                    ],
+                    rows=[[m["run_name"], m["config_json"], m["AUPRC_mean"], m["AUPRC_std"], m["AUROC_mean"], m["AUROC_std"], m["F1_mean"], m["F1_std"], m["Loss_mean"], m["Loss_std"], m["time_s"], m["log_path"]] for m in top3]
+                )
+                seeds = [0, 1, 2]
+                final_payload = {"task": task, "top3_final": []}
+                for m in top3:
+                    cfg_final = json.loads(m["config_json"])
+                    run_stats = []
+                    for sd in seeds:
+                        trial_id += 1
+                        metrics_sd, meta_sd = run_trial_with_retry(task, trial_id, cfg_final, args_cli.epochs_refine, dst_task_dir, in_file, neg_file, fixed_seed=int(sd))
+                        run_stats.append({
+                            "seed": int(sd),
+                            "metrics": metrics_sd,
+                            "run_name": meta_sd.get("run_name"),
+                            "log_path": meta_sd.get("log_path")
+                        })
+                    def agg(key):
+                        vals = [float(rs["metrics"][key]) for rs in run_stats]
+                        return float(np.mean(vals)), float(np.std(vals))
+                    final_payload["top3_final"].append({
+                        "config": cfg_final,
+                        "seeds": seeds,
+                        "aggregate": {
+                            "AUPRC_mean": agg("AUPRC_mean")[0], "AUPRC_std": agg("AUPRC_mean")[1],
+                            "AUROC_mean": agg("AUROC_mean")[0], "AUROC_std": agg("AUROC_mean")[1],
+                            "F1_mean": agg("F1_mean")[0], "F1_std": agg("F1_mean")[1]
+                        },
+                        "runs": run_stats
+                    })
+                (dst_task_dir / "best_configs_final.json").write_text(json.dumps(final_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+                (dst_task_dir / f"summary_task_{task}.md").write_text(
+                    f"# 阶段C精调与复验结果（auto）\n- 基于当前阶段B的top10进行邻域小网格精调（online+mgraph，epochs={args_cli.epochs_refine}，含早停）。\n- 对精调Top3进行3个不同seed的完整5-fold复验，并聚合mean/std。\n来源：{str(src_task_dir)}",
+                    encoding="utf-8"
+                )
+            print(f"[HPO][AUTO] 阶段C完成。输出位于: {exp_root_c}")
+            return
 
     elif args_cli.stage == "C":
         # 自动精调：读取最近一次阶段B的 top10 配置并运行 epochs_refine，强制 online + mgraph
