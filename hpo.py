@@ -25,11 +25,8 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 # 可选引入 Optuna（作为搜索后端），若未安装则退回随机搜索
-try:
-    import optuna
-    _OPTUNA_AVAILABLE = True
-except Exception:
-    _OPTUNA_AVAILABLE = False
+# Optuna 已移除
+_OPTUNA_AVAILABLE = False  # 保留标志固定为 False，避免外部引用错误
 
 # 引入项目内部模块（与 main.py 同步）
 # 安全包装：延迟导入并在导入前暂时清空 sys.argv，避免 settings() 解析 HPO 自定义 CLI
@@ -474,7 +471,7 @@ def write_csv(path: Path, header: List[str], rows: List[List[Any]]) -> None:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tasks", nargs="+", default=["LDA", "MDA", "LMI"], choices=["LDA", "MDA", "LMI"], help="选择需要优化的任务集合")
-    parser.add_argument("--search_backend", type=str, default="optuna", choices=["optuna", "random"], help="选择搜索后端：optuna 或 random（默认optuna，若未安装optuna则自动回退）")
+    parser.add_argument("--search_backend", type=str, default="random", choices=["random"], help="选择搜索后端：仅支持 random（已移除 Optuna）")
     parser.add_argument("--stage", type=str, default="auto", choices=["auto", "B", "C", "final"], help="选择阶段：auto 先执行B后自动进入C；B 粗随机搜索；C 精调；final 最终复现")
     parser.add_argument("--trials", type=int, default=60, help="阶段B每任务试验数")
     parser.add_argument("--epochs", type=int, default=3, help="阶段B训练轮数（建议 3）")
@@ -490,7 +487,7 @@ def main():
     else:
         os.environ.pop("HPO_NO_REDIRECT", None)
     # 关键运行信息打印
-    print(f"[HPO] stage={args_cli.stage} backend={args_cli.search_backend} tasks={args_cli.tasks} trials={args_cli.trials} epochs={args_cli.epochs} epochs_refine={args_cli.epochs_refine} optuna_available={_OPTUNA_AVAILABLE}")
+    print(f"[HPO] stage={args_cli.stage} backend={args_cli.search_backend} tasks={args_cli.tasks} trials={args_cli.trials} epochs={args_cli.epochs} epochs_refine={args_cli.epochs_refine}")
     sys.stdout.flush()
 
     # 根目录与 experiments 目录
@@ -506,11 +503,12 @@ def main():
         "LMI": {"in_file": str(dataset_dir / "LMI.edgelist"), "neg_file": str(dataset_dir / "non_LMI.edgelist")},
     }
 
-    # 阶段B：粗随机搜索
-    if args_cli.stage == "B":
+    # 阶段B：粗随机搜索（支持 auto 先执行B）
+    if args_cli.stage in ("B", "auto"):
+        print(f"[HPO][B] 开始阶段B（随机搜索），任务集合: {args_cli.tasks}")
         for task in args_cli.tasks:
-            # 若选择 Optuna 且可用：使用 Optuna 进行阶段C局部精调；完成后进入下一个任务
-            if (str(getattr(args_cli, "search_backend", "optuna")).lower() == "optuna") and _OPTUNA_AVAILABLE:
+            # 若选择 Optuna 且可用：该分支原为阶段C精调逻辑，现已禁用以避免混淆（使用下方 Optuna 阶段B分支）
+            if (str(getattr(args_cli, "search_backend", "optuna")).lower() == "optuna") and _OPTUNA_AVAILABLE and False:
                 print(f"[HPO][B][{task}] 使用Optuna进行粗随机搜索（Optuna）")
                 # 兜底获取最近的阶段B输出目录，避免 latest_exp 未定义导致异常
                 try:
@@ -614,6 +612,8 @@ def main():
                     tm["time_s"] = meta.get("time_s")
                     tm["log_path"] = meta.get("log_path")
                     trial_metrics_opt.append(tm)
+                    # 控制台 trial 摘要打印（阶段B-Optuna）
+                    print(f"[HPO][B][{task}][trial {trial_id}] AUPRC={metrics['AUPRC_mean']:.4f} AUROC={metrics['AUROC_mean']:.4f} F1={metrics['F1_mean']:.4f} time_s={meta.get('time_s')} retry={meta.get('retry')} error={meta.get('error')}")
                     return float(metrics["AUPRC_mean"])
 
                 study = optuna.create_study(
@@ -685,8 +685,8 @@ def main():
 
             rng = np.random.default_rng(args_cli.seed_base + hash(task) % 10000)
 
-            # 若选择 Optuna 且可用：使用 TPE + MedianPruner 执行阶段B优化；完成后继续下个任务
-            if (str(args_cli.search_backend).lower() == "optuna") and _OPTUNA_AVAILABLE:
+            # Optuna 已移除：禁用该分支，阶段B固定为随机搜索
+            if False and (str(args_cli.search_backend).lower() == "optuna"):
                 def _build_cfg_from_trial(trial) -> Dict[str, Any]:
                     # 离散空间与条件与 sample_config 对齐
                     embed_dim = trial.suggest_categorical("dimensions", [32, 64, 128, 256])
@@ -797,6 +797,10 @@ def main():
                     ],
                     rows=top_rows
                 )
+                # 控制台打印 top10 汇总（阶段B-Optuna）
+                print(f"[HPO][B][{task}] Top10 生成（Optuna）:")
+                for m in top10_opt:
+                    print(f"  - {m['run_name']}: AUPRC={m['AUPRC_mean']:.4f} AUROC={m['AUROC_mean']:.4f} F1={m['F1_mean']:.4f}")
 
                 # best_configs_final.json（取 top3）
                 best3 = top10_opt[:3]
@@ -843,6 +847,8 @@ def main():
                 tm["time_s"] = meta.get("time_s")
                 tm["log_path"] = meta.get("log_path")
                 trial_metrics.append(tm)
+                # 控制台 trial 摘要打印（阶段B-随机）
+                print(f"[HPO][B][{task}][trial {trial_id}] AUPRC={metrics['AUPRC_mean']:.4f} AUROC={metrics['AUROC_mean']:.4f} F1={metrics['F1_mean']:.4f} time_s={meta.get('time_s')} retry={meta.get('retry')} error={meta.get('error')}")
 
             # 写历史 CSV
             write_csv(
@@ -875,6 +881,10 @@ def main():
                 ],
                 rows=top_rows
             )
+            # 控制台打印 top10 汇总（阶段B-随机）
+            print(f"[HPO][B][{task}] Top10 生成（随机/回退）:")
+            for m in top10:
+                print(f"  - {m['run_name']}: AUPRC={m['AUPRC_mean']:.4f} AUROC={m['AUROC_mean']:.4f} F1={m['F1_mean']:.4f}")
 
             # 初版 best_configs_final.json（取 top3）
             best3 = top10[:3]
@@ -997,6 +1007,8 @@ def main():
                         tm["time_s"] = meta.get("time_s")
                         tm["log_path"] = meta.get("log_path")
                         trial_metrics.append(tm)
+                        # 控制台 trial 摘要打印（阶段C-auto）
+                        print(f"[HPO][AUTO][C][{task}][trial {trial_id}] AUPRC={metrics['AUPRC_mean']:.4f} AUROC={metrics['AUROC_mean']:.4f} F1={metrics['F1_mean']:.4f} time_s={meta.get('time_s')} retry={meta.get('retry')} error={meta.get('error')}")
                 # 写历史CSV与合并B+C
                 write_csv(
                     dst_task_dir / f"opt_history_refine_task_{task}.csv",
@@ -1026,6 +1038,10 @@ def main():
                     ],
                     rows=[[m["run_name"], m["config_json"], m["AUPRC_mean"], m["AUPRC_std"], m["AUROC_mean"], m["AUROC_std"], m["F1_mean"], m["F1_std"], m["Loss_mean"], m["Loss_std"], m["time_s"], m["log_path"]] for m in top3]
                 )
+                # 控制台打印 Top3 汇总（阶段C-auto）
+                print(f"[HPO][AUTO][C][{task}] Top3 精调结果:")
+                for m in top3:
+                    print(f"  - {m['run_name']}: AUPRC={m['AUPRC_mean']:.4f} AUROC={m['AUROC_mean']:.4f} F1={m['F1_mean']:.4f}")
                 seeds = [0, 1, 2]
                 final_payload = {"task": task, "top3_final": []}
                 for m in top3:
@@ -1091,6 +1107,7 @@ def main():
         exp_root = proj_root / "experiments" / f"hpo_{now_tag()}"
         ensure_dir(exp_root)
 
+        print(f"[HPO][C] 开始阶段C精调（online+mgraph），任务集合: {args_cli.tasks}")
         for task in args_cli.tasks:
             # 为当前任务选择最近一个包含该任务top10 CSV的阶段B目录
             src_task_dir = None
@@ -1163,6 +1180,8 @@ def main():
                 tm["time_s"] = meta.get("time_s")
                 tm["log_path"] = meta.get("log_path")
                 trial_metrics.append(tm)
+                # 控制台 trial 摘要打印（阶段C-显式）
+                print(f"[HPO][C][{task}][trial {trial_id}] AUPRC={metrics['AUPRC_mean']:.4f} AUROC={metrics['AUROC_mean']:.4f} F1={metrics['F1_mean']:.4f} time_s={meta.get('time_s')} retry={meta.get('retry')} error={meta.get('error')}")
 
             # 写历史 CSV（精调）
             write_csv(
@@ -1195,6 +1214,10 @@ def main():
                 ],
                 rows=top_rows
             )
+            # 控制台打印 Top3 汇总（阶段C-显式）
+            print(f"[HPO][C][{task}] Top3 精调结果:")
+            for m in top3:
+                print(f"  - {m['run_name']}: AUPRC={m['AUPRC_mean']:.4f} AUROC={m['AUROC_mean']:.4f} F1={m['F1_mean']:.4f}")
 
             # 写精调摘要 JSON/MD
             best_payload = {
@@ -1210,12 +1233,11 @@ def main():
             }
             (dst_task_dir / "best_configs_refine.json").write_text(json.dumps(best_payload, ensure_ascii=False, indent=2), encoding="utf-8")
             (dst_task_dir / f"summary_task_{task}.md").write_text(
-                f"# 阶段C精调结果
+                f"""# 阶段C精调结果
 
 - 已基于最近一次阶段B的top10进行精调（online+mgraph）。
 - 输出历史CSV与top3精调结果。
-来源：{str(src_task_dir)}
-",
+来源：{str(src_task_dir)}""",
                 encoding="utf-8"
             )
 
