@@ -1193,4 +1193,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print("HPO script started")
     main()
