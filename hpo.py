@@ -326,7 +326,11 @@ def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, ex
     # 初始化环境与日志
     _init_autodl_env(args_obj)
     logger = _init_logging(run_name=args_obj.run_name)
-    _redirect_print(True)
+    # 根据环境变量控制是否重定向日志到文件
+    if os.environ.get("HPO_NO_REDIRECT") == "1":
+        _redirect_print(False)
+    else:
+        _redirect_print(True)
     _make_result_run_dir("data")
     # 写 params.json（含seed与augment_seed等全部参数）到当前运行的 metrics 目录
     try:
@@ -478,7 +482,16 @@ def main():
     # 阶段C/最终复现参数（入口预置）
     parser.add_argument("--epochs_refine", type=int, default=10, help="阶段C精调的训练轮数（默认10，启用早停）")
     parser.add_argument("--final_seeds", nargs="+", type=int, default=[0, 1, 2], help="最终复现的 seeds 列表")
+    parser.add_argument("--no_redirect", action="store_true", help="禁用训练过程的日志重定向（打印到控制台）")
     args_cli = parser.parse_args()
+    # 控制日志重定向：--no_redirect 时不重定向到文件
+    if getattr(args_cli, "no_redirect", False):
+        os.environ["HPO_NO_REDIRECT"] = "1"
+    else:
+        os.environ.pop("HPO_NO_REDIRECT", None)
+    # 关键运行信息打印
+    print(f"[HPO] stage={args_cli.stage} backend={args_cli.search_backend} tasks={args_cli.tasks} trials={args_cli.trials} epochs={args_cli.epochs} epochs_refine={args_cli.epochs_refine} optuna_available={_OPTUNA_AVAILABLE}")
+    sys.stdout.flush()
 
     # 根目录与 experiments 目录
     proj_root = Path(__file__).resolve().parent.parent
