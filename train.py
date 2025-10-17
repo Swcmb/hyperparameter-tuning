@@ -213,7 +213,7 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                 data_a_use = Data(x=xa_adv, y=data_a_aug.y, edge_index=data_a_aug.edge_index)
                 if use_amp and (scaler is not None):
                     from torch.cuda.amp import autocast
-                    with autocast(device_type='cuda', dtype=torch.float16):
+                    with torch.cuda.amp.autocast():
                         output, cla_os, cla_os_a, _, logits, log1 = model(data_o_use, data_a_use, inp)
 
                         log = torch.squeeze(m(output))
