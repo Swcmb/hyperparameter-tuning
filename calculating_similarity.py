@@ -13,29 +13,23 @@ def Preproces_Data(A, test_id):
 
 def calculate_kernel_bandwidth(A):
     """计算高斯核带宽参数（基于每行谱的 L2 范数平方的平均值的倒数）"""
-    # 向量化：避免逐行循环
-    A = np.asarray(A, dtype=np.float32, order="C")
-    # 每行 L2 范数平方的总和
-    row_norm_sq = np.sum(A * A, axis=1, dtype=np.float64)
-    IP_0 = np.sum(row_norm_sq, dtype=np.float64)
-    # 防御性：空矩阵时给出合理带宽
-    denom = (IP_0 / float(A.shape[0])) if A.shape[0] > 0 else 1.0
-    lambd = 1.0 / denom
-    return float(lambd)
+    IP_0 = 0
+    for i in range(A.shape[0]):
+        IP = np.square(np.linalg.norm(A[i]))  # 当前行向量的 L2 范数平方
+        IP_0 += IP
+    lambd = 1 / ((1 / A.shape[0]) * IP_0)
+    return lambd
 
 
 def calculate_GaussianKernel_sim(A):
-    """基于关联谱 A 计算高斯核相似度矩阵（向量化实现）"""
-    A = np.asarray(A, dtype=np.float32, order="C")
-    lam = calculate_kernel_bandwidth(A)
-    # 计算所有点对的欧氏距离平方：||xi-xj||^2 = ||xi||^2 + ||xj||^2 - 2 xi·xj
-    A64 = A.astype(np.float64, copy=False)
-    row_norm_sq = np.sum(A64 * A64, axis=1, keepdims=True)  # (n,1)
-    dist2 = row_norm_sq + row_norm_sq.T - 2.0 * (A64 @ A64.T)
-    # 数值稳定：裁剪为非负
-    dist2 = np.maximum(dist2, 0.0)
-    K = np.exp(-lam * dist2)
-    return K.astype(np.float32)
+    """基于关联谱 A 计算高斯核相似度矩阵"""
+    kernel_bandwidth = calculate_kernel_bandwidth(A)
+    gauss_kernel_sim = np.zeros((A.shape[0], A.shape[0]))
+    for i in range(A.shape[0]):
+        for j in range(A.shape[0]):
+            gaussianKernel = np.exp(-kernel_bandwidth * np.square(np.linalg.norm(A[i] - A[j])))
+            gauss_kernel_sim[i][j] = gaussianKernel
+    return gauss_kernel_sim
 
 
 # ========= 功能相似度（PBPA） =========
@@ -66,23 +60,31 @@ def getRNA_functional_sim(RNAlen, diSiNet, rna_di):
 
 # ========= 标签二值化与相似度融合 =========
 def label_preprocess(sim_matrix):
-    """将相似度矩阵按阈值二值化：>=0.8 置为 1，否则为 0（向量化）"""
-    sm = np.asarray(sim_matrix)
-    return (sm >= 0.8).astype(np.float32)
+    """将相似度矩阵按阈值二值化：>=0.8 置为 1，否则为 0"""
+    new_sim_matrix = np.zeros(shape=sim_matrix.shape)
+    for i in range(sim_matrix.shape[0]):
+        for j in range(sim_matrix.shape[1]):
+            if sim_matrix[i][j] >= 0.8:
+                new_sim_matrix[i][j] = 1
+    return new_sim_matrix
 
 
 def RNA_fusion_sim(G1, G2, F, threshold=0.1):
     """
-    融合两种高斯相似度与功能相似度（向量化）：
+    ✅ 修复6：优化融合逻辑，避免稀疏 F 导致全 0 偏置
+    融合两种高斯相似度与功能相似度：
     - 当 F[i][j] > threshold 时，优先采用 F[i][j]
     - 否则取 (G1+G2)/2
     - 最后二值化处理
     """
-    G1 = np.asarray(G1)
-    G2 = np.asarray(G2)
-    F = np.asarray(F)
-    G = (G1 + G2) / 2.0
-    fusion_sim = np.where(F > threshold, F, G)
+    fusion_sim = np.zeros((len(G1), len(G2)))
+    G = (G1 + G2) / 2
+    for i in range(len(G1)):
+        for j in range(len(G1)):
+            if F[i][j] > threshold:  # 使用阈值而非简单的 >0
+                fusion_sim[i][j] = F[i][j]
+            else:
+                fusion_sim[i][j] = G[i][j]
     fusion_sim = label_preprocess(fusion_sim)
     return fusion_sim
 

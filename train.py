@@ -11,35 +11,6 @@ from sklearn.metrics import roc_auc_score,roc_curve,average_precision_score,f1_s
 
 
 def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, args, fold_idx=None):  # 定义主训练函数，增加fold索引
-    # cudnn 性能优化（仅在 CUDA 可用时有效）
-    try:
-        torch.backends.cudnn.benchmark = True
-        torch.backends.cudnn.deterministic = False
-    except Exception:
-        pass
-    # 启用 TF32（在 Ampere/Ada 上可显著提速）
-    try:
-        torch.backends.cuda.matmul.allow_tf32 = True
-        torch.backends.cudnn.allow_tf32 = True
-    except Exception:
-        pass
-    # Torch Compile（JIT 编译加速），默认开启，失败则回退
-    use_compile = bool(getattr(args, "use_compile", True))
-    if use_compile:
-        try:
-            model = torch.compile(model, mode="max-autotune")
-        except Exception:
-            pass
-    # AMP 开关：通过 args.use_amp 控制；若环境不支持则回退为 False
-    use_amp = bool(getattr(args, "use_amp", False))
-    scaler = None
-    if use_amp:
-        try:
-            from torch.cuda.amp import GradScaler, autocast
-            scaler = GradScaler()
-        except Exception:
-            scaler = None
-            use_amp = False
     m = torch.nn.Sigmoid()  # 实例化Sigmoid函数，用于将模型输出转换为概率
     loss_fct = torch.nn.BCELoss()  # 实例化二元交叉熵损失函数（用于主任务）
     b_xent = nn.BCEWithLogitsLoss()  # 实例化带Logits的二元交叉熵损失，更稳定（用于对比和对抗损失）
@@ -211,38 +182,20 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                 # 最终一次前向与损失（使用对抗后的特征）
                 data_o_use = Data(x=xo_adv, y=data_o.y, edge_index=data_o.edge_index)
                 data_a_use = Data(x=xa_adv, y=data_a_aug.y, edge_index=data_a_aug.edge_index)
-                if use_amp and (scaler is not None):
-                    from torch.cuda.amp import autocast
-                    with torch.cuda.amp.autocast():
-                        output, cla_os, cla_os_a, _, logits, log1 = model(data_o_use, data_a_use, inp)
+                output, cla_os, cla_os_a, _, logits, log1 = model(data_o_use, data_a_use, inp)
 
-                        log = torch.squeeze(m(output))
-                        loss1 = loss_fct(log, label.float())
-                        if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                            if isinstance(cla_os, (list, tuple)):
-                                losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                                loss2 = torch.stack(losses).mean()
-                            else:
-                                loss2 = ce_loss(cla_os, cla_os_a)
-                        else:
-                            loss2 = torch.tensor(0.0, device=device)
-                        loss3 = node_loss(logits, lbl2.float())
-                        loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
-                else:
-                    output, cla_os, cla_os_a, _, logits, log1 = model(data_o_use, data_a_use, inp)
-
-                    log = torch.squeeze(m(output))
-                    loss1 = loss_fct(log, label.float())
-                    if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                        if isinstance(cla_os, (list, tuple)):
-                            losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                            loss2 = torch.stack(losses).mean()
-                        else:
-                            loss2 = ce_loss(cla_os, cla_os_a)
+                log = torch.squeeze(m(output))
+                loss1 = loss_fct(log, label.float())
+                if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
+                    if isinstance(cla_os, (list, tuple)):
+                        losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
+                        loss2 = torch.stack(losses).mean()
                     else:
-                        loss2 = torch.tensor(0.0, device=device)
-                    loss3 = node_loss(logits, lbl2.float())
-                    loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
+                        loss2 = ce_loss(cla_os, cla_os_a)
+                else:
+                    loss2 = torch.tensor(0.0, device=device)
+                loss3 = node_loss(logits, lbl2.float())
+                loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
 
                 if i == 0 and epoch == 0:
                     print(f"[ADV] mode=mgraph budget={getattr(args,'adv_budget','independent')} "
@@ -252,56 +205,28 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                           f"{getattr(args,'adv_clip_max',float('inf'))}]")
             else:
                 # 保持原有“干净输入”路径
-                if use_amp and (scaler is not None):
-                    with torch.cuda.amp.autocast():
-                        output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a_aug, inp)  # 将数据输入模型，获取多个输出
+                output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a_aug, inp)  # 将数据输入模型，获取多个输出
 
-                        log = torch.squeeze(m(output))  # 对主任务输出应用Sigmoid并压缩维度
-                        loss1 = loss_fct(log, label.float())  # 计算主任务的二元交叉熵损失
-                        # MoCo：支持单/多视图；当 alpha=0 时跳过计算以隔离监督路径
-                        if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                            if isinstance(cla_os, (list, tuple)):
-                                losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                                loss2 = torch.stack(losses).mean()
-                            else:
-                                loss2 = ce_loss(cla_os, cla_os_a)
-                        else:
-                            loss2 = torch.tensor(0.0, device=device)
-                        # 节点级对抗损失改为 loss_ratio3 对应
-                        loss3 = node_loss(logits, lbl2.float())
-                        # 总损失仅使用 1:监督、2:对比、3:节点对抗
-                        loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
-                else:
-                    output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a_aug, inp)  # 将数据输入模型，获取多个输出
-
-                    log = torch.squeeze(m(output))  # 对主任务输出应用Sigmoid并压缩维度
-                    loss1 = loss_fct(log, label.float())  # 计算主任务的二元交叉熵损失
-                    # MoCo：支持单/多视图；当 alpha=0 时跳过计算以隔离监督路径
-                    if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                        if isinstance(cla_os, (list, tuple)):
-                            losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                            loss2 = torch.stack(losses).mean()
-                        else:
-                            loss2 = ce_loss(cla_os, cla_os_a)
+                log = torch.squeeze(m(output))  # 对主任务输出应用Sigmoid并压缩维度
+                loss1 = loss_fct(log, label.float())  # 计算主任务的二元交叉熵损失
+                # MoCo：支持单/多视图；当 alpha=0 时跳过计算以隔离监督路径
+                if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
+                    if isinstance(cla_os, (list, tuple)):
+                        losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
+                        loss2 = torch.stack(losses).mean()
                     else:
-                        loss2 = torch.tensor(0.0, device=device)
-                    # 节点级对抗损失改为 loss_ratio3 对应
-                    loss3 = node_loss(logits, lbl2.float())
-                    # 总损失仅使用 1:监督、2:对比、3:节点对抗
-                    loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
+                        loss2 = ce_loss(cla_os, cla_os_a)
+                else:
+                    loss2 = torch.tensor(0.0, device=device)
+                # 节点级对抗损失改为 loss_ratio3 对应
+                loss3 = node_loss(logits, lbl2.float())
+                # 总损失仅使用 1:监督、2:对比、3:节点对抗
+                loss_train = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
             # print("loss_train: ",loss_train)  # 被注释掉的调试语句
 
             loss_history.append(loss_train.item())  # 记录当前批次的总损失
-            # AMP 兼容的反向传播与参数更新（不改变前向/损失计算结构）
-            if use_amp and (scaler is not None):
-                scaler.scale(loss_train).backward()
-                scaler.unscale_(optimizer)  # 若需梯度裁剪，可在此之后进行
-                # 例如：torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-                scaler.step(optimizer)
-                scaler.update()
-            else:
-                loss_train.backward()  # 反向传播，计算梯度
-                optimizer.step()  # 更新模型参数
+            loss_train.backward()  # 反向传播，计算梯度
+            optimizer.step()  # 更新模型参数
 
             label_ids = label.to('cpu').numpy()  # 将标签移回CPU并转为numpy数组
             y_label_train = y_label_train + label_ids.flatten().tolist()  # 收集真实标签
@@ -412,8 +337,6 @@ def test(model, loader, data_o, data_a, args):  # 定义测试函数
     b_xent = nn.BCEWithLogitsLoss()
     ce_loss = nn.CrossEntropyLoss()
     node_loss = nn.BCEWithLogitsLoss()
-    # AMP 开关（推理阶段仅做前向与损失 autocast，不使用 scaler）
-    use_amp = bool(getattr(args, "use_amp", False))
 
 
     model.eval()  # 将模型设置为评估模式（会关闭dropout等）
@@ -438,41 +361,22 @@ def test(model, loader, data_o, data_a, args):  # 定义测试函数
                 continue
 
             # 测试阶段不进行在线增强，保持 data_a 静态
-            if use_amp:
-                with torch.cuda.amp.autocast():
-                    output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a, inp)  # 前向传播
-                    log = torch.squeeze(m(output))  # 获取主任务预测概率
+            output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a, inp)  # 前向传播
+            log = torch.squeeze(m(output))  # 获取主任务预测概率
 
-                    # 计算测试集上的损失（尽管在测试阶段通常更关心指标而非损失值）
-                    loss1 = loss_fct(log, label.float())
-                    if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                        if isinstance(cla_os, (list, tuple)):
-                            losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                            loss2 = torch.stack(losses).mean()
-                        else:
-                            loss2 = ce_loss(cla_os, cla_os_a)
-                    else:
-                        loss2 = torch.tensor(0.0, device=device)
-                    # 节点级对抗损失改为 loss_ratio3 对应
-                    loss3 = node_loss(logits, lbl2.float())
-                    loss = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
-            else:
-                output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a, inp)  # 前向传播
-                log = torch.squeeze(m(output))  # 获取主任务预测概率
-
-                # 计算测试集上的损失（尽管在测试阶段通常更关心指标而非损失值）
-                loss1 = loss_fct(log, label.float())
-                if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
-                    if isinstance(cla_os, (list, tuple)):
-                        losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
-                        loss2 = torch.stack(losses).mean()
-                    else:
-                        loss2 = ce_loss(cla_os, cla_os_a)
+            # 计算测试集上的损失（尽管在测试阶段通常更关心指标而非损失值）
+            loss1 = loss_fct(log, label.float())
+            if float(getattr(args, "loss_ratio2", 0.0) or 0.0) > 0.0:
+                if isinstance(cla_os, (list, tuple)):
+                    losses = [ce_loss(lg, tg) for lg, tg in zip(cla_os, cla_os_a)]
+                    loss2 = torch.stack(losses).mean()
                 else:
-                    loss2 = torch.tensor(0.0, device=device)
-                # 节点级对抗损失改为 loss_ratio3 对应
-                loss3 = node_loss(logits, lbl2.float())
-                loss = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
+                    loss2 = ce_loss(cla_os, cla_os_a)
+            else:
+                loss2 = torch.tensor(0.0, device=device)
+            # 节点级对抗损失改为 loss_ratio3 对应
+            loss3 = node_loss(logits, lbl2.float())
+            loss = args.loss_ratio1 * loss1 + args.loss_ratio2 * loss2 + args.loss_ratio3 * loss3
 
             label_ids = label.to('cpu').numpy()  # 将标签移回CPU
             y_label = y_label + label_ids.flatten().tolist()  # 收集真实标签

@@ -25,11 +25,6 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
-# AMP 与 cudnn 加速设置（全局启用以提升训练性能）
-import torch
-torch.backends.cudnn.benchmark = True
-torch.backends.cudnn.deterministic = False
-
 # 引入项目内部模块（与 main.py 同步）
 # 安全包装：延迟导入并在导入前暂时清空 sys.argv，避免 settings() 解析 HPO 自定义 CLI
 import importlib
@@ -55,8 +50,7 @@ def _ps_settings():
         _sys.argv = argv_backup
 
 def _init_autodl_env(args):
-    # 已禁用 autodl 环境初始化
-    return None
+    return _safe_import("autodl").init_autodl_env(args)
 
 def _init_logging(run_name=None):
     return _safe_import("log_output_manager").init_logging(run_name=run_name)
@@ -259,15 +253,9 @@ def trial_to_args(base_args: Any, cfg: Dict[str, Any], seed: int, in_file: str, 
     base_args.cuda = True
     base_args.run_name = None  # 由外层设置
     # 并行与数据保存
-    # 多进程数据加载：num_workers 取 CPU 一半，最多 8；同时启用 pin_memory 和 persistent_workers
-    base_args.num_workers = min(os.cpu_count() // 2 if os.cpu_count() else 4, 8)
-    base_args.pin_memory = True
-    base_args.persistent_workers = True
-    # 线程数根据 CPU 兜底到 [4,32]
-    base_args.threads = max(4, min(os.cpu_count() or 4, 32))
+    base_args.num_workers = -1
+    base_args.threads = 32
     base_args.save_datasets = False
-    # 启用混合精度训练（若 train.py 支持 args.use_amp，将自动应用）
-    base_args.use_amp = True
     return base_args
 
 
@@ -310,14 +298,10 @@ def run_one_trial(task: str, trial_id: int, cfg: Dict[str, Any], epochs: int, ex
     # 覆盖到 layer.args
     update_layer_args(args_obj)
 
-    # 初始化环境与日志（autodl 初始化已禁用）
-    _init_logging(run_name=args_obj.run_name)
-    logger = _safe_import("log_output_manager").get_logger()
-    # 降低 I/O：仅在首个或每 10 次的 trial 打开详细日志
-    if (trial_id % 10 == 0) or (trial_id == 1):
-        _redirect_print(True)
-    else:
-        _redirect_print(False)
+    # 初始化环境与日志
+    _init_autodl_env(args_obj)
+    logger = _init_logging(run_name=args_obj.run_name)
+    _redirect_print(True)
     _make_result_run_dir("data")
 
     # 加载数据与 5 折评估
@@ -402,22 +386,6 @@ def run_trial_with_retry(task: str, trial_id: int, cfg: Dict[str, Any], epochs: 
     except RuntimeError as e:
         # 可能是 OOM
         msg = str(e)
-        # OOM 自适应重试：清空缓存并降低 batch/lr 后重试一次
-        if "out of memory" in msg.lower():
-            try:
-                torch.cuda.empty_cache()
-                if torch.cuda.is_available():
-                    torch.cuda.synchronize()
-                time.sleep(1)
-            except Exception:
-                pass
-            cfg_retry = dict(cfg)
-            cfg_retry["batch"] = max(8, int(cfg["batch"]) // 2)
-            cfg_retry["lr"] = float(cfg["lr"]) * 0.7
-            print(f"[HPO] OOM detected → retry with smaller batch={cfg_retry['batch']}")
-            metrics, meta = run_one_trial(task, trial_id, cfg_retry, epochs, exp_task_dir, in_file, neg_file)
-            meta["retry"] = True
-            return metrics, meta
         meta = {"run_name": f"{task}_trial_{trial_id}", "trial_id": trial_id, "retry": False, "error": "OOM" if "out of memory" in msg.lower() else "RuntimeError", "time_s": None}
         # 写 error report
         ensure_dir(exp_task_dir)
@@ -498,15 +466,8 @@ def main():
             trial_metrics: List[Dict[str, Any]] = []
 
             for trial_id in range(1, args_cli.trials + 1):
-                # 重复运行保护：若标记文件存在则跳过
-                trial_marker = exp_task_dir / f"{task}_trial_{trial_id}_done.txt"
-                if trial_marker.exists():
-                    print(f"[HPO] Skip existing trial {trial_id}")
-                    continue
                 cfg = sample_config(task, rng)
                 metrics, meta = run_trial_with_retry(task, trial_id, cfg, args_cli.epochs, exp_task_dir, file_map[task]["in_file"], file_map[task]["neg_file"])
-                # 标记完成
-                trial_marker.write_text("done", encoding="utf-8")
 
                 # 记录历史行
                 history_rows.append([
