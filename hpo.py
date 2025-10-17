@@ -498,7 +498,7 @@ def main():
         for task in args_cli.tasks:
             # 若选择 Optuna 且可用：使用 Optuna 进行阶段C局部精调；完成后进入下一个任务
             if (str(getattr(args_cli, "search_backend", "optuna")).lower() == "optuna") and _OPTUNA_AVAILABLE:
-                print(f"[HPO][C][{task}] 使用Optuna进行局部精调")
+                print(f"[HPO][B][{task}] 使用Optuna进行粗随机搜索（Optuna）")
                 # 兜底获取最近的阶段B输出目录，避免 latest_exp 未定义导致异常
                 try:
                     _exp_dir_root = Path(__file__).resolve().parent.parent / "experiments"
@@ -1058,6 +1058,20 @@ def main():
             print("[HPO][C] 未发现阶段B输出目录 experiments/hpo_*，请先运行 --stage B")
             return
         latest_exp = hpo_dirs[0]
+        # 选择最近一个包含 top10 CSV 的阶段B目录，避免误选到当前新建的空目录
+        latest_exp = None
+        for cand in hpo_dirs:
+            ok = True
+            for t in args_cli.tasks:
+                if not (cand / t / f"configs_top10_task_{t}.csv").exists():
+                    ok = False
+                    break
+            if ok:
+                latest_exp = cand
+                break
+        if latest_exp is None:
+            print("[HPO][C] 未找到包含 top10 CSV 的阶段B输出目录，请先运行 --stage B")
+            return
         print(f"[HPO][C] 使用最近一次阶段B目录: {latest_exp}")
 
         # 精调输出根目录
@@ -1065,13 +1079,16 @@ def main():
         ensure_dir(exp_root)
 
         for task in args_cli.tasks:
-            src_task_dir = latest_exp / task
-            if not src_task_dir.exists():
-                print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
-                continue
-            top_csv = src_task_dir / f"configs_top10_task_{task}.csv"
-            if not top_csv.exists():
-                print(f"[HPO][C][{task}] 未找到 top10 CSV: {top_csv}，请确认阶段B已生成")
+            # 为当前任务选择最近一个包含该任务top10 CSV的阶段B目录
+            src_task_dir = None
+            for cand in hpo_dirs:
+                tcsv = cand / task / f"configs_top10_task_{task}.csv"
+                if tcsv.exists():
+                    src_task_dir = cand / task
+                    top_csv = tcsv
+                    break
+            if src_task_dir is None:
+                print(f"[HPO][C][{task}] 未找到包含该任务top10 CSV的阶段B目录，跳过该任务")
                 continue
 
             # 目标输出目录
