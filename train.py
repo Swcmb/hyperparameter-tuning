@@ -253,8 +253,7 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
             else:
                 # 保持原有“干净输入”路径
                 if use_amp and (scaler is not None):
-                    from torch.cuda.amp import autocast
-                    with autocast(device_type='cuda', dtype=torch.float16):
+                    with torch.cuda.amp.autocast():
                         output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a_aug, inp)  # 将数据输入模型，获取多个输出
 
                         log = torch.squeeze(m(output))  # 对主任务输出应用Sigmoid并压缩维度
@@ -440,8 +439,7 @@ def test(model, loader, data_o, data_a, args):  # 定义测试函数
 
             # 测试阶段不进行在线增强，保持 data_a 静态
             if use_amp:
-                from torch.cuda.amp import autocast
-                with autocast(device_type='cuda', dtype=torch.float16):
+                with torch.cuda.amp.autocast():
                     output, cla_os, cla_os_a, _, logits, log1 = model(data_o, data_a, inp)  # 前向传播
                     log = torch.squeeze(m(output))  # 获取主任务预测概率
 
