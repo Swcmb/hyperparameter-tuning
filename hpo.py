@@ -499,7 +499,17 @@ def main():
             # 若选择 Optuna 且可用：使用 Optuna 进行阶段C局部精调；完成后进入下一个任务
             if (str(getattr(args_cli, "search_backend", "optuna")).lower() == "optuna") and _OPTUNA_AVAILABLE:
                 print(f"[HPO][C][{task}] 使用Optuna进行局部精调")
-                src_task_dir = latest_exp / task
+                # 兜底获取最近的阶段B输出目录，避免 latest_exp 未定义导致异常
+                try:
+                    _exp_dir_root = Path(__file__).resolve().parent.parent / "experiments"
+                    _hpo_dirs = sorted([p for p in _exp_dir_root.glob("hpo_*") if p.is_dir()], key=lambda x: x.stat().st_mtime, reverse=True)
+                    _latest_exp = _hpo_dirs[0] if _hpo_dirs else None
+                except Exception:
+                    _latest_exp = None
+                if _latest_exp is None:
+                    print(f"[HPO][C][{task}] 未找到阶段B输出目录 experiments/hpo_*，跳过该任务")
+                    continue
+                src_task_dir = _latest_exp / task
                 if not src_task_dir.exists():
                     print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
                     continue
@@ -914,9 +924,19 @@ def main():
                 return uniq[:50]
             # 遍历任务执行C
             for task in args_cli.tasks:
-                src_task_dir = latest_exp / task
+                # AUTO分支同样兜底获取最近的阶段B输出目录，避免 latest_exp 异常
+                try:
+                    _exp_dir_root = Path(__file__).resolve().parent.parent / "experiments"
+                    _hpo_dirs = sorted([p for p in _exp_dir_root.glob("hpo_*") if p.is_dir()], key=lambda x: x.stat().st_mtime, reverse=True)
+                    _latest_exp_auto = latest_exp if 'latest_exp' in locals() else (_hpo_dirs[0] if _hpo_dirs else None)
+                except Exception:
+                    _latest_exp_auto = latest_exp if 'latest_exp' in locals() else None
+                if _latest_exp_auto is None:
+                    print(f"[HPO][AUTO][C][{task}] 未找到阶段B输出目录 experiments/hpo_*，跳过该任务")
+                    continue
+                src_task_dir = _latest_exp_auto / task
                 if not src_task_dir.exists():
-                    print(f"[HPO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
+                    print(f"[HPO][AUTO][C][{task}] 未找到来源目录: {src_task_dir}，跳过该任务")
                     continue
                 top_csv = src_task_dir / f"configs_top10_task_{task}.csv"
                 if not top_csv.exists():
