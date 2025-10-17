@@ -691,12 +691,7 @@ def main():
             }
             (dst_task_dir / "best_configs_refine.json").write_text(json.dumps(best_payload, ensure_ascii=False, indent=2), encoding="utf-8")
             (dst_task_dir / f"summary_task_{task}.md").write_text(
-                f"# 阶段C精调结果
-
-- 已基于最近一次阶段B的top10进行精调（online+mgraph）。
-- 输出历史CSV与top3精调结果。
-来源：{str(src_task_dir)}
-",
+                f"# 阶段C精调结果\n- 已基于最近一次阶段B的top10进行精调（online+mgraph）。\n- 输出历史CSV与top3精调结果。\n来源：{str(src_task_dir)}",
                 encoding="utf-8"
             )
 
