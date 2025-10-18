@@ -23,10 +23,8 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
     data_a.to('cuda')  # 固定使用GPU
     device = 'cuda'
     aug_mode = getattr(args, 'augment_mode', 'static')
-    aug_name = getattr(args, 'augment', 'random_permute_features')
-    # 若传入多种增强，在线增强仅取第一个，保持稳定
-    aug_online = aug_name[0] if isinstance(aug_name, (list, tuple)) and len(aug_name) > 0 else aug_name
-    aug_online = str(aug_online)  # 统一为字符串，消除类型检查告警
+    # 在线增强阶段固定为 random_permute_features（不再取列表首个）
+    aug_online = "random_permute_features"
     noise_std = float(getattr(args, 'noise_std', 0.01) or 0.01)
     mask_rate = float(getattr(args, 'mask_rate', 0.1) or 0.1)
     base_seed = getattr(args, 'augment_seed', None)
@@ -111,6 +109,12 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                 # 为每个 batch 派生稳定种子：seed + epoch*1000 + iter
                 seed_batch = int(base_seed) + epoch * 1000 + i
                 # apply_augmentation 支持 torch.Tensor；返回 CPU 张量，需移回原 device
+                # 视图生成起止打印（在线增强）
+                if i == 0:
+                    try:
+                        print(f"[AUG][online][epoch={epoch+1}][iter={i}] start name={aug_online} noise_std={noise_std} mask_rate={mask_rate} seed={seed_batch}")
+                    except Exception:
+                        pass
                 aug_x = apply_augmentation(
                     aug_online,
                     data_a.x,  # 可直接传 torch.Tensor
@@ -118,6 +122,12 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
                     mask_rate=mask_rate,
                     seed=seed_batch
                 )
+                if i == 0:
+                    try:
+                        _shape = tuple(aug_x.shape) if hasattr(aug_x, "shape") else "-"
+                        print(f"[AUG][online][epoch={epoch+1}][iter={i}] done name={aug_online} shape={_shape}")
+                    except Exception:
+                        pass
                 if isinstance(aug_x, torch.Tensor):
                     aug_x = aug_x.to(device)
                 else:

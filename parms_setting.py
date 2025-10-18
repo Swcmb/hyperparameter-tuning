@@ -35,6 +35,9 @@ def settings():
     parser.add_argument('--augment_mode', type=str, default='static',
                         choices=['static', 'online'],
                         help='增强模式：static（按折离线）/ online（训练时在线），默认 static。')
+    # 支持逗号分隔的增强列表
+    parser.add_argument('--augment', type=str, default='random_permute_features,attribute_mask,noise_then_mask',
+                        help='增强方式，多个增强用逗号分隔，默认三种：random_permute_features,attribute_mask,noise_then_mask')
 
     # ==================== 训练设置 ====================
     parser.add_argument('--lr', type=float, default=5e-4,
@@ -174,6 +177,12 @@ def settings():
 
     # 解析
     args = parser.parse_args()
+    # 将逗号分隔的增强转换为列表
+    try:
+        if isinstance(args.augment, str):
+            args.augment = [aug.strip() for aug in args.augment.split(',') if aug.strip()]
+    except Exception:
+        pass
 
     # ==================== 解析后规范化与兜底 ====================
     # 统一 validation_type 格式：5-cvX -> 5_cvX
