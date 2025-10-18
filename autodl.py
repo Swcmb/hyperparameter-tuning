@@ -482,9 +482,21 @@ def _record_experiment(task: str, run_name: str, cfg: Dict[str, Any], cmd: str, 
 def run_baseline(task: str) -> Dict[str, Any]:
     print(f"========== Stage A | Baseline | Task={task} ==========")
     run_name = f"{task}_baseline"
+    # 基线参数对齐为与用户给定命令等效（按任务选择文件）
     args = [
         f"--task_type={task}",
+        "--validation_type=5-cv1",
+        "--feature_type=one_hot",
+        "--similarity_threshold=0.5",
+        "--dimensions=64",
+        "--lr=0.0005",
+        "--weight_decay=0.0005",
         "--epochs=3",
+        "--alpha=0.5",
+        "--beta=0.5",
+        "--gamma=0.5",
+        f"--file=dataset1/{task}.edgelist",
+        f"--neg_sample=dataset1/non_{task}.edgelist",
         f"--run_name={run_name}"
     ]
     rc, elapsed, cmd = _run_main(args)
