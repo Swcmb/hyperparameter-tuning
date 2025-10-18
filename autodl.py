@@ -444,6 +444,8 @@ def _cfg_to_args(task: str, cfg: Dict[str, Any], epochs: int, seed: int, run_nam
         f"--loss_ratio1={float(cfg['loss_ratio1'])}",
         f"--loss_ratio2={float(cfg['loss_ratio2'])}",
         f"--loss_ratio3={float(cfg['loss_ratio3'])}",
+        # 统一与基线一致，强制使用 one_hot 特征以保持可比性
+        f"--feature_type=one_hot",
         # 将增强列表转换为逗号分隔字符串传入
         f"--augment={','.join(cfg['augment'])}",
         f"--augment_mode={cfg.get('augment_mode', 'static')}"
