@@ -284,24 +284,84 @@ COARSE_SPACE = {
     "loss_ratio3": [0.0, 0.1, 0.5],
 }
 
+# 三任务（LDA/MDA/LMI）专用搜索空间：仅覆盖约定的 CLI 超参
+TASK_SEARCH_SPACE = {
+    "LDA": {
+        "embed_dim": [64, 96, 128],
+        "learning_rate": [1e-3, 5e-4, 3e-4, 1e-4],
+        "weight_decay": [1e-5, 5e-5, 1e-4, 5e-4],
+        "similarity_threshold": [0.4, 0.5, 0.6],
+        # alpha/beta/gamma -> loss_ratio1/2/3 候选组
+        "abg": [
+            (0.5, 0.5, 0.5),
+            (0.7, 0.5, 0.3),
+            (0.3, 0.5, 0.7),
+            (0.6, 0.2, 0.2),
+            (0.2, 0.6, 0.2),
+            (0.2, 0.2, 0.6),
+            (0.4, 0.4, 0.2),
+        ],
+    },
+    "MDA": {
+        "embed_dim": [64, 128],
+        "learning_rate": [1e-3, 5e-4, 3e-4, 1e-4],
+        "weight_decay": [1e-5, 5e-5, 1e-4, 3e-4, 5e-4],
+        "similarity_threshold": [0.4, 0.5, 0.6],
+        "abg": [
+            (0.5, 0.5, 0.5),
+            (0.6, 0.5, 0.4),
+            (0.4, 0.5, 0.6),
+            (0.55, 0.45, 0.5),
+            (0.45, 0.55, 0.5),
+        ],
+    },
+    "LMI": {
+        "embed_dim": [64, 96],
+        "learning_rate": [1e-3, 5e-4, 3e-4, 1e-4],
+        "weight_decay": [1e-5, 5e-5, 1e-4, 5e-4],
+        "similarity_threshold": [0.4, 0.5],
+        "abg": [
+            (0.5, 0.5, 0.5),
+            (0.6, 0.5, 0.4),
+            (0.4, 0.5, 0.6),
+        ],
+    },
+}
+
+# epochs 候选作为搜索空间的一部分（用于阶段B随机搜索）
+EPOCHS_CAND_DEFAULT = [3, 50, 100]
+
 
 def _rand_choice(seq: List[Any]) -> Any:
     import random
     return seq[random.randrange(0, len(seq))]
 
 
-def sample_coarse_configs(n: int, base_seed: int = 0) -> List[Dict[str, Any]]:
+def sample_coarse_configs(n: int, task: str, base_seed: int = 0) -> List[Dict[str, Any]]:
+    """
+    按任务采样“仅定义的搜索空间”超参，其余保持原有随机项不变。
+    - embed_dim/lr/weight_decay/similarity_threshold/alpha-beta-gamma 走任务专用空间
+    - 其余（如 dropout/batch/augment 等）保持 COARSE_SPACE 原有采样逻辑（不改策略）
+    """
     import random
     random.seed(base_seed)
+    tspace = TASK_SEARCH_SPACE.get(task, TASK_SEARCH_SPACE["LDA"])
     cfgs: List[Dict[str, Any]] = []
-    for i in range(n):
+    for _ in range(n):
         cfg: Dict[str, Any] = {}
-        ed = _rand_choice(COARSE_SPACE["embed_dim"])
-        cfg["dimensions"] = ed
+        # 任务专用采样
+        ed = _rand_choice(tspace["embed_dim"])
+        cfg["dimensions"] = int(ed)
+        cfg["lr"] = float(_rand_choice(tspace["learning_rate"]))
+        cfg["weight_decay"] = float(_rand_choice(tspace["weight_decay"]))
+        cfg["similarity_threshold"] = float(_rand_choice(tspace["similarity_threshold"]))
+        a, b, g = _rand_choice(tspace["abg"])
+        cfg["loss_ratio1"] = float(a)
+        cfg["loss_ratio2"] = float(b)
+        cfg["loss_ratio3"] = float(g)
+        # 结构相关与其余随机项（沿用原逻辑）
         cfg["hidden1"] = _rand_choice([ed // 2, ed, ed * 2])
         cfg["hidden2"] = _rand_choice([max(1, ed // 4), max(1, ed // 2), ed])
-        cfg["lr"] = _rand_choice(COARSE_SPACE["learning_rate"])
-        cfg["weight_decay"] = _rand_choice(COARSE_SPACE["weight_decay"])
         cfg["dropout"] = _rand_choice(COARSE_SPACE["dropout"])
         cfg["batch"] = _rand_choice(COARSE_SPACE["batch"])
         cfg["moco_queue"] = _rand_choice(COARSE_SPACE["moco_queue"])
@@ -309,15 +369,12 @@ def sample_coarse_configs(n: int, base_seed: int = 0) -> List[Dict[str, Any]]:
         cfg["moco_t"] = _rand_choice(COARSE_SPACE["moco_t"])
         pd = _rand_choice(COARSE_SPACE["proj_dim"])
         cfg["proj_dim"] = None if pd is None else int(pd)
-        # 固定三种增强 + 采样增强模式
+        # 固定三增强 + 模式
         cfg["augment"] = ["random_permute_features", "attribute_mask", "noise_then_mask"]
         cfg["augment_mode"] = _rand_choice(COARSE_SPACE["augment_mode"])
-        # 条件参数改为始终采样（用于相应增强生效时）
+        # 增强强度
         cfg["noise_std"] = _rand_choice(COARSE_SPACE["noise_std"])
         cfg["mask_rate"] = _rand_choice(COARSE_SPACE["mask_rate"])
-        cfg["loss_ratio1"] = _rand_choice(COARSE_SPACE["loss_ratio1"])
-        cfg["loss_ratio2"] = _rand_choice(COARSE_SPACE["loss_ratio2"])
-        cfg["loss_ratio3"] = _rand_choice(COARSE_SPACE["loss_ratio3"])
         cfgs.append(cfg)
     return cfgs
 
@@ -396,6 +453,9 @@ def _cfg_to_args(task: str, cfg: Dict[str, Any], epochs: int, seed: int, run_nam
         args.append(f"--proj_dim={int(cfg['proj_dim'])}")
     else:
         args.append(f"--proj_dim={int(cfg['hidden2'])}")
+    # 可选：相似度阈值（若提供）
+    if "similarity_threshold" in cfg:
+        args.append(f"--similarity_threshold={float(cfg['similarity_threshold'])}")
     # 为固定三增强统一传入增强强度参数
     args.append(f"--noise_std={float(cfg.get('noise_std', 0.01))}")
     args.append(f"--mask_rate={float(cfg.get('mask_rate', 0.1))}")
@@ -436,10 +496,10 @@ def run_baseline(task: str) -> Dict[str, Any]:
     return row
 
 
-def run_random_search(task: str, N: int, epochs: int, base_seed: int = 0) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+def run_random_search(task: str, N: int, epochs: int, base_seed: int = 0, epochs_cand: Optional[List[int]] = None) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     print(f"========== Stage B | Random Search | Task={task} | N={N}, epochs={epochs} ==========")
     history_rows: List[Dict[str, Any]] = []
-    cfgs = sample_coarse_configs(N, base_seed=base_seed)
+    cfgs = sample_coarse_configs(N, task, base_seed=base_seed)
     hist_csv = OUTPUT_DIR / "result" / f"opt_history_{task}.csv"
     hist_jsonl = OUTPUT_DIR / "result" / f"opt_history_{task}.jsonl"
     _ensure_dir(hist_csv.parent)
@@ -449,9 +509,14 @@ def run_random_search(task: str, N: int, epochs: int, base_seed: int = 0) -> Tup
         hist_jsonl.unlink(missing_ok=True)
     _append_line(hist_csv, "task,run_name,auprc_mean,auprc_std,auroc_mean,auroc_std,f1_mean,f1_std,elapsed_sec,result_dir,command")
 
+    # 决定本阶段 epochs 候选
+    _epochs_cand = list(epochs_cand) if epochs_cand else list(EPOCHS_CAND_DEFAULT)
     for idx, cfg in enumerate(cfgs, start=1):
         run_name = f"{task}_B_{idx:03d}"
-        args = _cfg_to_args(task, cfg, epochs=epochs, seed=base_seed, run_name=run_name)
+        # 为每个 trial 采样 epochs（若提供候选），否则使用传入 epochs
+        _ep = _rand_choice(_epochs_cand) if (_epochs_cand and len(_epochs_cand) > 0) else epochs
+        cfg["epochs"] = int(_ep)
+        args = _cfg_to_args(task, cfg, epochs=int(_ep), seed=base_seed, run_name=run_name)
         rc, elapsed, cmd = _run_main(args)
         if rc != 0:
             # 检测失败，尝试 lr * 0.5 重试一次
@@ -617,6 +682,8 @@ def main_driver():
     p.add_argument("--full_epochs", type=int, default=50, help="最终复现的训练轮数")
     p.add_argument("--seeds", type=str, default="11,22,33", help="最终复现的种子，逗号分隔")
     p.add_argument("--base_seed", type=int, default=0, help="采样基准随机种子")
+    # 新增：阶段B的 epochs 候选（逗号分隔），默认启用 3,50,100
+    p.add_argument("--epochs_cand", type=str, default="3,50,100", help="阶段B随机搜索的 epochs 候选，逗号分隔")
     args = p.parse_args()
 
     tasks = [x.strip() for x in args.tasks.split(",") if x.strip()]
@@ -626,6 +693,12 @@ def main_driver():
     print(f"Tasks: {tasks}")
     print(f"Stage: {args.stage}")
     print(f"B: N={args.num_random}, epochs={args.epochs_b} | C: epochs={args.epochs_c} | Final epochs={args.full_epochs} seeds={seeds}")
+
+    # 解析 epochs 候选列表
+    try:
+        epochs_cand = [int(x.strip()) for x in (args.epochs_cand or "").split(",") if x.strip()]
+    except Exception:
+        epochs_cand = EPOCHS_CAND_DEFAULT
 
     for task in tasks:
         baseline_row = None
@@ -638,7 +711,7 @@ def main_driver():
             baseline_row = run_baseline(task)
 
         if args.stage in ("B", "auto"):
-            history, top10 = run_random_search(task, args.num_random, args.epochs_b, base_seed=args.base_seed)
+            history, top10 = run_random_search(task, args.num_random, args.epochs_b, base_seed=args.base_seed, epochs_cand=epochs_cand)
 
         if args.stage in ("C", "auto"):
             # 若未运行B但 stage=C ，则从历史文件读取 top10
