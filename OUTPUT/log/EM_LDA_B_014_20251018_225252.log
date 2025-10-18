@@ -1,0 +1,1108 @@
+2025-10-18 22:52:52 | INFO | EM | ================================================================================
+2025-10-18 22:52:52 | INFO | EM | RUN START | run_id=20251018_225252 | run_name=LDA_B_014
+2025-10-18 22:52:52 | INFO | EM | COMMAND: /root/miniconda3/bin/python /root/hyperparameter-tuning/main.py --task_type=LDA --epochs=50 --seed=0 --run_name=LDA_B_014 --dimensions=128 --hidden1=128 --hidden2=128 --lr=0.0005 --weight_decay=1e-05 --dropout=0.2 --batch=32 --moco_queue=8192 --moco_momentum=0.99 --moco_t=0.1 --loss_ratio1=0.2 --loss_ratio2=0.2 --loss_ratio3=0.6 --feature_type=one_hot --augment=random_permute_features,attribute_mask,noise_then_mask --augment_mode=static --proj_dim=128 --similarity_threshold=0.5 --noise_std=0.02 --mask_rate=0.2
+2025-10-18 22:52:52 | INFO | EM | ================================================================================
+2025-10-18 22:52:52 | INFO | EM.result | Result directory: /root/OUTPUT/result/LDA_B_014_data_20251018_225252
+2025-10-18 22:52:52 | INFO | EM | Initialized logging and result directory.
+2025-10-18 22:52:52 | INFO | EM | Using CUDA: True
+2025-10-18 22:52:52 | INFO | EM | CUDA device count: 1
+2025-10-18 22:52:52 | INFO | EM | Current CUDA device: 0
+2025-10-18 22:52:52 | INFO | EM | CUDA device name: NVIDIA GeForce RTX 4090
+2025-10-18 22:52:52 | INFO | EM | === Augmentation Config ===
+2025-10-18 22:52:52 | INFO | EM | [AUG CONFIG] Multiple augmentations detected: random_permute_features, attribute_mask, noise_then_mask
+2025-10-18 22:52:52 | INFO | EM | augment=random_permute_features,attribute_mask,noise_then_mask | mode=static | noise_std=0.02 | mask_rate=0.2 | augment_seed=None (None means seed+fold for static)
+2025-10-18 22:52:52 | INFO | EM | ===========================
+2025-10-18 22:52:52 | INFO | EM | Loading dataset1/LDA.edgelist seed0 dataset...
+2025-10-18 22:52:52 | INFO | EM | Selected cross_validation type: 5_cv1
+2025-10-18 22:52:52 | INFO | EM | Selected task_type: LDA
+2025-10-18 22:52:52 | INFO | EM | Selected feature_type: one_hot
+2025-10-18 22:52:52 | INFO | EM | Selected embed_dim: N/A
+2025-10-18 22:52:52 | INFO | EM | Selected learning_rate: N/A
+2025-10-18 22:52:52 | INFO | EM | Selected epochs: 50
+2025-10-18 22:52:52 | INFO | EM | Selected task type...
+2025-10-18 22:53:01 | INFO | EM.print | [AUG][static][fold=1] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=0
+2025-10-18 22:53:01 | INFO | EM.print | [AUG][static][fold=1] done name=random_permute_features shape=(1140, 1140)
+2025-10-18 22:53:01 | INFO | EM.augment | [AUGMENT][fold=1] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=0 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-18 22:53:09 | INFO | EM.print | [AUG][static][fold=2] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=1
+2025-10-18 22:53:09 | INFO | EM.print | [AUG][static][fold=2] done name=random_permute_features shape=(1140, 1140)
+2025-10-18 22:53:09 | INFO | EM.augment | [AUGMENT][fold=2] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=1 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-18 22:53:18 | INFO | EM.print | [AUG][static][fold=3] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=2
+2025-10-18 22:53:18 | INFO | EM.print | [AUG][static][fold=3] done name=random_permute_features shape=(1140, 1140)
+2025-10-18 22:53:18 | INFO | EM.augment | [AUGMENT][fold=3] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=2 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-18 22:53:26 | INFO | EM.print | [AUG][static][fold=4] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=3
+2025-10-18 22:53:26 | INFO | EM.print | [AUG][static][fold=4] done name=random_permute_features shape=(1140, 1140)
+2025-10-18 22:53:26 | INFO | EM.augment | [AUGMENT][fold=4] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=3 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-18 22:53:35 | INFO | EM.print | [AUG][static][fold=5] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=4
+2025-10-18 22:53:35 | INFO | EM.print | [AUG][static][fold=5] done name=random_permute_features shape=(1140, 1140)
+2025-10-18 22:53:35 | INFO | EM.augment | [AUGMENT][fold=5] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=4 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-18 22:53:35 | INFO | EM | [DATALOADER] os=linux workers=8 prefetch_factor=4
+2025-10-18 22:53:35 | INFO | EM.fold_stats | Saved fold stats to /root/OUTPUT/result/metrics/fold_stats.json
+2025-10-18 22:53:35 | INFO | EM | Loading finished!
+2025-10-18 22:53:35 | INFO | EM | Starting 5-fold cross validation...
+2025-10-18 22:53:35 | INFO | EM | === Fold 1/5 ===
+2025-10-18 22:53:35 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/adv_config_fold_1_20251018_225252.json.txt
+2025-10-18 22:53:35 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_1_20251018_225252.json
+2025-10-18 22:53:35 | INFO | EM.print | Start Training...
+2025-10-18 22:53:35 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-18 22:53:36 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.86801773 | task_loss:0.6998 cont_loss:1.1112 adv_loss:0.8430
+2025-10-18 22:53:39 | INFO | EM.print | epoch: 1/ iteration: 101/ loss_train: 1.807953 | task_loss:0.3486 cont_loss:8.6880 adv_loss:0.0010
+2025-10-18 22:53:40 | INFO | EM.print | epoch: 0001 loss_train: 1.8244 task_loss: 0.5507 cont_loss: 8.5678 adv_loss: 0.0012 auroc_train: 0.8763 auprc_train: 0.8688 precision_train: 0.7775 recall_train: 0.8102 f1_train: 0.7935 cm_train: (tn=1647, fp=497, fn=407, tp=1737)
+2025-10-18 22:53:40 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-18 22:53:40 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 1.7998829 | task_loss:0.4298 cont_loss:8.5645 adv_loss:0.0017
+2025-10-18 22:53:42 | INFO | EM.print | epoch: 2/ iteration: 101/ loss_train: 1.8591143 | task_loss:0.2756 cont_loss:9.0150 adv_loss:0.0016
+2025-10-18 22:53:43 | INFO | EM.print | epoch: 0002 loss_train: 1.8370 task_loss: 0.4233 cont_loss: 8.7592 adv_loss: 0.0008 auroc_train: 0.9240 auprc_train: 0.9202 precision_train: 0.8342 recall_train: 0.8575 f1_train: 0.8457 cm_train: (tn=1774, fp=366, fn=306, tp=1842)
+2025-10-18 22:53:43 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-18 22:53:43 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 1.831308 | task_loss:0.3979 cont_loss:8.7543 adv_loss:0.0015
+2025-10-18 22:53:46 | INFO | EM.print | epoch: 3/ iteration: 101/ loss_train: 1.7289059 | task_loss:0.2895 cont_loss:8.3540 adv_loss:0.0003
+2025-10-18 22:53:47 | INFO | EM.print | epoch: 0003 loss_train: 1.7276 task_loss: 0.3407 cont_loss: 8.2969 adv_loss: 0.0001 auroc_train: 0.9391 auprc_train: 0.9342 precision_train: 0.8468 recall_train: 0.8839 f1_train: 0.8650 cm_train: (tn=1800, fp=343, fn=249, tp=1896)
+2025-10-18 22:53:47 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-18 22:53:47 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 1.7107526 | task_loss:0.2438 cont_loss:8.3095 adv_loss:0.0002
+2025-10-18 22:53:50 | INFO | EM.print | epoch: 4/ iteration: 101/ loss_train: 1.7492892 | task_loss:0.3942 cont_loss:8.3519 adv_loss:0.0001
+2025-10-18 22:53:51 | INFO | EM.print | epoch: 0004 loss_train: 1.7444 task_loss: 0.3107 cont_loss: 8.4112 adv_loss: 0.0001 auroc_train: 0.9536 auprc_train: 0.9503 precision_train: 0.8695 recall_train: 0.8970 f1_train: 0.8830 cm_train: (tn=1853, fp=289, fn=221, tp=1925)
+2025-10-18 22:53:51 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-18 22:53:51 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 1.724335 | task_loss:0.2098 cont_loss:8.4115 adv_loss:0.0001
+2025-10-18 22:53:54 | INFO | EM.print | epoch: 5/ iteration: 101/ loss_train: 1.7458503 | task_loss:0.1813 cont_loss:8.5475 adv_loss:0.0001
+2025-10-18 22:53:54 | INFO | EM.print | epoch: 0005 loss_train: 1.7586 task_loss: 0.3101 cont_loss: 8.4824 adv_loss: 0.0001 auroc_train: 0.9567 auprc_train: 0.9538 precision_train: 0.8622 recall_train: 0.8975 f1_train: 0.8795 cm_train: (tn=1833, fp=308, fn=220, tp=1927)
+2025-10-18 22:53:54 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-18 22:53:55 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 1.7529391 | task_loss:0.2905 cont_loss:8.4738 adv_loss:0.0001
+2025-10-18 22:53:57 | INFO | EM.print | epoch: 6/ iteration: 101/ loss_train: 1.7671442 | task_loss:0.3219 cont_loss:8.5132 adv_loss:0.0002
+2025-10-18 22:53:58 | INFO | EM.print | epoch: 0006 loss_train: 1.8056 task_loss: 0.4639 cont_loss: 8.5633 adv_loss: 0.0003 auroc_train: 0.9598 auprc_train: 0.9566 precision_train: 0.8677 recall_train: 0.9118 f1_train: 0.8892 cm_train: (tn=1847, fp=298, fn=189, tp=1954)
+2025-10-18 22:53:58 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-18 22:53:58 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 1.7397113 | task_loss:0.1427 cont_loss:8.5550 adv_loss:0.0003
+2025-10-18 22:54:01 | INFO | EM.print | epoch: 7/ iteration: 101/ loss_train: 1.7653635 | task_loss:0.2612 cont_loss:8.5651 adv_loss:0.0002
+2025-10-18 22:54:02 | INFO | EM.print | epoch: 0007 loss_train: 1.7665 task_loss: 0.3052 cont_loss: 8.5263 adv_loss: 0.0003 auroc_train: 0.9624 auprc_train: 0.9595 precision_train: 0.8751 recall_train: 0.9073 f1_train: 0.8909 cm_train: (tn=1863, fp=278, fn=199, tp=1948)
+2025-10-18 22:54:02 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-18 22:54:02 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 1.726583 | task_loss:0.1026 cont_loss:8.5295 adv_loss:0.0003
+2025-10-18 22:54:05 | INFO | EM.print | epoch: 8/ iteration: 101/ loss_train: 1.6480758 | task_loss:0.3113 cont_loss:7.9284 adv_loss:0.0002
+2025-10-18 22:54:06 | INFO | EM.print | epoch: 0008 loss_train: 1.7242 task_loss: 0.1205 cont_loss: 8.4973 adv_loss: 0.0011 auroc_train: 0.9650 auprc_train: 0.9621 precision_train: 0.8721 recall_train: 0.9202 f1_train: 0.8955 cm_train: (tn=1857, fp=289, fn=171, tp=1971)
+2025-10-18 22:54:06 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-18 22:54:06 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 1.799223 | task_loss:0.4977 cont_loss:8.4951 adv_loss:0.0011
+2025-10-18 22:54:09 | INFO | EM.print | epoch: 9/ iteration: 101/ loss_train: 1.8014059 | task_loss:0.2474 cont_loss:8.7593 adv_loss:0.0001
+2025-10-18 22:54:10 | INFO | EM.print | epoch: 0009 loss_train: 1.7827 task_loss: 0.3332 cont_loss: 8.5681 adv_loss: 0.0040 auroc_train: 0.9603 auprc_train: 0.9545 precision_train: 0.8773 recall_train: 0.9174 f1_train: 0.8969 cm_train: (tn=1869, fp=275, fn=177, tp=1967)
+2025-10-18 22:54:10 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-18 22:54:10 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 1.776257 | task_loss:0.2598 cont_loss:8.6052 adv_loss:0.0054
+2025-10-18 22:54:12 | INFO | EM.print | epoch: 10/ iteration: 101/ loss_train: 1.7892867 | task_loss:0.1161 cont_loss:8.8303 adv_loss:0.0000
+2025-10-18 22:54:13 | INFO | EM.print | epoch: 0010 loss_train: 1.8131 task_loss: 0.2516 cont_loss: 8.8137 adv_loss: 0.0001 auroc_train: 0.9634 auprc_train: 0.9577 precision_train: 0.8795 recall_train: 0.9267 f1_train: 0.9025 cm_train: (tn=1874, fp=272, fn=157, tp=1985)
+2025-10-18 22:54:13 | INFO | EM.print | -------- Epoch 11 --------
+2025-10-18 22:54:13 | INFO | EM.print | epoch: 11/ iteration: 1/ loss_train: 1.8026711 | task_loss:0.1965 cont_loss:8.8165 adv_loss:0.0001
+2025-10-18 22:54:16 | INFO | EM.print | epoch: 11/ iteration: 101/ loss_train: 1.8460162 | task_loss:0.0961 cont_loss:9.1340 adv_loss:0.0000
+2025-10-18 22:54:17 | INFO | EM.print | epoch: 0011 loss_train: 1.7823 task_loss: 0.1436 cont_loss: 8.7650 adv_loss: 0.0009 auroc_train: 0.9729 auprc_train: 0.9690 precision_train: 0.8987 recall_train: 0.9402 f1_train: 0.9190 cm_train: (tn=1919, fp=227, fn=128, tp=2014)
+2025-10-18 22:54:17 | INFO | EM.print | -------- Epoch 12 --------
+2025-10-18 22:54:17 | INFO | EM.print | epoch: 12/ iteration: 1/ loss_train: 1.7936003 | task_loss:0.1980 cont_loss:8.7694 adv_loss:0.0002
+2025-10-18 22:54:20 | INFO | EM.print | epoch: 12/ iteration: 101/ loss_train: 1.7673596 | task_loss:0.1567 cont_loss:8.6791 adv_loss:0.0003
+2025-10-18 22:54:21 | INFO | EM.print | epoch: 0012 loss_train: 1.8128 task_loss: 0.2716 cont_loss: 8.7920 adv_loss: 0.0001 auroc_train: 0.9709 auprc_train: 0.9662 precision_train: 0.8940 recall_train: 0.9352 f1_train: 0.9141 cm_train: (tn=1904, fp=238, fn=139, tp=2007)
+2025-10-18 22:54:21 | INFO | EM.print | -------- Epoch 13 --------
+2025-10-18 22:54:21 | INFO | EM.print | epoch: 13/ iteration: 1/ loss_train: 1.7805816 | task_loss:0.1075 cont_loss:8.7946 adv_loss:0.0003
+2025-10-18 22:54:24 | INFO | EM.print | epoch: 13/ iteration: 101/ loss_train: 1.7954847 | task_loss:0.1561 cont_loss:8.8213 adv_loss:0.0000
+2025-10-18 22:54:25 | INFO | EM.print | epoch: 0013 loss_train: 1.7000 task_loss: 0.2099 cont_loss: 8.2669 adv_loss: 0.0077 auroc_train: 0.9752 auprc_train: 0.9709 precision_train: 0.9075 recall_train: 0.9455 f1_train: 0.9261 cm_train: (tn=1934, fp=207, fn=117, tp=2030)
+2025-10-18 22:54:25 | INFO | EM.print | -------- Epoch 14 --------
+2025-10-18 22:54:25 | INFO | EM.print | epoch: 14/ iteration: 1/ loss_train: 1.6908109 | task_loss:0.1387 cont_loss:8.3137 adv_loss:0.0006
+2025-10-18 22:54:28 | INFO | EM.print | epoch: 14/ iteration: 101/ loss_train: 1.8817412 | task_loss:0.1895 cont_loss:9.2133 adv_loss:0.0020
+2025-10-18 22:54:29 | INFO | EM.print | epoch: 0014 loss_train: 1.7593 task_loss: 0.1331 cont_loss: 8.6607 adv_loss: 0.0010 auroc_train: 0.9745 auprc_train: 0.9697 precision_train: 0.9069 recall_train: 0.9421 f1_train: 0.9242 cm_train: (tn=1940, fp=207, fn=124, tp=2017)
+2025-10-18 22:54:29 | INFO | EM.print | -------- Epoch 15 --------
+2025-10-18 22:54:29 | INFO | EM.print | epoch: 15/ iteration: 1/ loss_train: 1.7572035 | task_loss:0.1349 cont_loss:8.6490 adv_loss:0.0007
+2025-10-18 22:54:31 | INFO | EM.print | epoch: 15/ iteration: 101/ loss_train: 1.8579729 | task_loss:0.3535 cont_loss:8.9321 adv_loss:0.0014
+2025-10-18 22:54:32 | INFO | EM.print | epoch: 0015 loss_train: 1.8455 task_loss: 0.2822 cont_loss: 8.9450 adv_loss: 0.0001 auroc_train: 0.9714 auprc_train: 0.9654 precision_train: 0.9015 recall_train: 0.9356 f1_train: 0.9182 cm_train: (tn=1927, fp=219, fn=138, tp=2004)
+2025-10-18 22:54:32 | INFO | EM.print | -------- Epoch 16 --------
+2025-10-18 22:54:32 | INFO | EM.print | epoch: 16/ iteration: 1/ loss_train: 1.8152969 | task_loss:0.1311 cont_loss:8.9453 adv_loss:0.0000
+2025-10-18 22:54:35 | INFO | EM.print | epoch: 16/ iteration: 101/ loss_train: 1.8134731 | task_loss:0.1626 cont_loss:8.9047 adv_loss:0.0000
+2025-10-18 22:54:36 | INFO | EM.print | epoch: 0016 loss_train: 1.8302 task_loss: 0.2862 cont_loss: 8.8648 adv_loss: 0.0000 auroc_train: 0.9784 auprc_train: 0.9752 precision_train: 0.9072 recall_train: 0.9487 f1_train: 0.9275 cm_train: (tn=1937, fp=208, fn=110, tp=2033)
+2025-10-18 22:54:36 | INFO | EM.print | -------- Epoch 17 --------
+2025-10-18 22:54:36 | INFO | EM.print | epoch: 17/ iteration: 1/ loss_train: 1.8033822 | task_loss:0.1548 cont_loss:8.8620 adv_loss:0.0000
+2025-10-18 22:54:39 | INFO | EM.print | epoch: 17/ iteration: 101/ loss_train: 1.7899657 | task_loss:0.2319 cont_loss:8.7179 adv_loss:0.0000
+2025-10-18 22:54:40 | INFO | EM.print | epoch: 0017 loss_train: 1.7804 task_loss: 0.1422 cont_loss: 8.7595 adv_loss: 0.0000 auroc_train: 0.9813 auprc_train: 0.9780 precision_train: 0.9191 recall_train: 0.9594 f1_train: 0.9388 cm_train: (tn=1965, fp=181, fn=87, tp=2055)
+2025-10-18 22:54:40 | INFO | EM.print | -------- Epoch 18 --------
+2025-10-18 22:54:40 | INFO | EM.print | epoch: 18/ iteration: 1/ loss_train: 1.8054523 | task_loss:0.2611 cont_loss:8.7661 adv_loss:0.0000
+2025-10-18 22:54:43 | INFO | EM.print | epoch: 18/ iteration: 101/ loss_train: 1.7951819 | task_loss:0.0591 cont_loss:8.9167 adv_loss:0.0000
+2025-10-18 22:54:44 | INFO | EM.print | epoch: 0018 loss_train: 1.7979 task_loss: 0.2622 cont_loss: 8.7239 adv_loss: 0.0012 auroc_train: 0.9824 auprc_train: 0.9793 precision_train: 0.9251 recall_train: 0.9548 f1_train: 0.9397 cm_train: (tn=1976, fp=166, fn=97, tp=2049)
+2025-10-18 22:54:44 | INFO | EM.print | -------- Epoch 19 --------
+2025-10-18 22:54:44 | INFO | EM.print | epoch: 19/ iteration: 1/ loss_train: 1.7635652 | task_loss:0.1009 cont_loss:8.7168 adv_loss:0.0000
+2025-10-18 22:54:47 | INFO | EM.print | epoch: 19/ iteration: 101/ loss_train: 1.8065577 | task_loss:0.1165 cont_loss:8.9162 adv_loss:0.0000
+2025-10-18 22:54:48 | INFO | EM.print | epoch: 0019 loss_train: 1.8232 task_loss: 0.2074 cont_loss: 8.9086 adv_loss: 0.0001 auroc_train: 0.9840 auprc_train: 0.9812 precision_train: 0.9255 recall_train: 0.9608 f1_train: 0.9428 cm_train: (tn=1977, fp=166, fn=84, tp=2061)
+2025-10-18 22:54:48 | INFO | EM.print | -------- Epoch 20 --------
+2025-10-18 22:54:48 | INFO | EM.print | epoch: 20/ iteration: 1/ loss_train: 1.7930425 | task_loss:0.0521 cont_loss:8.9129 adv_loss:0.0001
+2025-10-18 22:54:50 | INFO | EM.print | epoch: 20/ iteration: 101/ loss_train: 1.7560958 | task_loss:0.0337 cont_loss:8.7466 adv_loss:0.0001
+2025-10-18 22:54:51 | INFO | EM.print | epoch: 0020 loss_train: 1.7593 task_loss: 0.1480 cont_loss: 8.6481 adv_loss: 0.0000 auroc_train: 0.9854 auprc_train: 0.9829 precision_train: 0.9298 recall_train: 0.9580 f1_train: 0.9437 cm_train: (tn=1989, fp=155, fn=90, tp=2054)
+2025-10-18 22:54:51 | INFO | EM.print | -------- Epoch 21 --------
+2025-10-18 22:54:51 | INFO | EM.print | epoch: 21/ iteration: 1/ loss_train: 1.7487794 | task_loss:0.0884 cont_loss:8.6554 adv_loss:0.0000
+2025-10-18 22:54:54 | INFO | EM.print | epoch: 21/ iteration: 101/ loss_train: 1.8197354 | task_loss:0.0900 cont_loss:9.0086 adv_loss:0.0000
+2025-10-18 22:54:55 | INFO | EM.print | epoch: 0021 loss_train: 1.7676 task_loss: 0.1576 cont_loss: 8.6729 adv_loss: 0.0025 auroc_train: 0.9848 auprc_train: 0.9819 precision_train: 0.9247 recall_train: 0.9575 f1_train: 0.9408 cm_train: (tn=1980, fp=167, fn=91, tp=2050)
+2025-10-18 22:54:55 | INFO | EM.print | -------- Epoch 22 --------
+2025-10-18 22:54:55 | INFO | EM.print | epoch: 22/ iteration: 1/ loss_train: 1.7572136 | task_loss:0.1160 cont_loss:8.6689 adv_loss:0.0004
+2025-10-18 22:54:58 | INFO | EM.print | epoch: 22/ iteration: 101/ loss_train: 1.761037 | task_loss:0.0903 cont_loss:8.7148 adv_loss:0.0000
+2025-10-18 22:54:59 | INFO | EM.print | epoch: 0022 loss_train: 1.7604 task_loss: 0.1089 cont_loss: 8.6925 adv_loss: 0.0002 auroc_train: 0.9847 auprc_train: 0.9819 precision_train: 0.9276 recall_train: 0.9618 f1_train: 0.9444 cm_train: (tn=1981, fp=161, fn=82, tp=2064)
+2025-10-18 22:54:59 | INFO | EM.print | -------- Epoch 23 --------
+2025-10-18 22:54:59 | INFO | EM.print | epoch: 23/ iteration: 1/ loss_train: 1.7658484 | task_loss:0.1494 cont_loss:8.6798 adv_loss:0.0000
+2025-10-18 22:55:02 | INFO | EM.print | epoch: 23/ iteration: 101/ loss_train: 1.745971 | task_loss:0.1495 cont_loss:8.5802 adv_loss:0.0000
+2025-10-18 22:55:02 | INFO | EM.print | epoch: 0023 loss_train: 1.7346 task_loss: 0.0858 cont_loss: 8.5874 adv_loss: 0.0000 auroc_train: 0.9864 auprc_train: 0.9843 precision_train: 0.9311 recall_train: 0.9641 f1_train: 0.9473 cm_train: (tn=1991, fp=153, fn=77, tp=2067)
+2025-10-18 22:55:02 | INFO | EM.print | -------- Epoch 24 --------
+2025-10-18 22:55:03 | INFO | EM.print | epoch: 24/ iteration: 1/ loss_train: 1.7435101 | task_loss:0.1252 cont_loss:8.5923 adv_loss:0.0000
+2025-10-18 22:55:05 | INFO | EM.print | epoch: 24/ iteration: 101/ loss_train: 1.8401144 | task_loss:0.1522 cont_loss:9.0471 adv_loss:0.0004
+2025-10-18 22:55:06 | INFO | EM.print | epoch: 0024 loss_train: 1.7411 task_loss: 0.0457 cont_loss: 8.6595 adv_loss: 0.0002 auroc_train: 0.9865 auprc_train: 0.9835 precision_train: 0.9359 recall_train: 0.9664 f1_train: 0.9509 cm_train: (tn=2002, fp=142, fn=72, tp=2072)
+2025-10-18 22:55:06 | INFO | EM.print | -------- Epoch 25 --------
+2025-10-18 22:55:06 | INFO | EM.print | epoch: 25/ iteration: 1/ loss_train: 1.7409221 | task_loss:0.0660 cont_loss:8.6379 adv_loss:0.0002
+2025-10-18 22:55:09 | INFO | EM.print | epoch: 25/ iteration: 101/ loss_train: 1.7339228 | task_loss:0.1003 cont_loss:8.5693 adv_loss:0.0000
+2025-10-18 22:55:10 | INFO | EM.print | epoch: 0025 loss_train: 1.7363 task_loss: 0.1370 cont_loss: 8.5441 adv_loss: 0.0002 auroc_train: 0.9873 auprc_train: 0.9854 precision_train: 0.9342 recall_train: 0.9673 f1_train: 0.9505 cm_train: (tn=1999, fp=146, fn=70, tp=2073)
+2025-10-18 22:55:10 | INFO | EM.print | -------- Epoch 26 --------
+2025-10-18 22:55:10 | INFO | EM.print | epoch: 26/ iteration: 1/ loss_train: 1.7164321 | task_loss:0.0200 cont_loss:8.5619 adv_loss:0.0001
+2025-10-18 22:55:13 | INFO | EM.print | epoch: 26/ iteration: 101/ loss_train: 1.7942114 | task_loss:0.1813 cont_loss:8.7893 adv_loss:0.0002
+2025-10-18 22:55:14 | INFO | EM.print | epoch: 0026 loss_train: 1.7548 task_loss: 0.0482 cont_loss: 8.7254 adv_loss: 0.0001 auroc_train: 0.9873 auprc_train: 0.9853 precision_train: 0.9335 recall_train: 0.9683 f1_train: 0.9506 cm_train: (tn=1995, fp=148, fn=68, tp=2077)
+2025-10-18 22:55:14 | INFO | EM.print | -------- Epoch 27 --------
+2025-10-18 22:55:14 | INFO | EM.print | epoch: 27/ iteration: 1/ loss_train: 1.7669977 | task_loss:0.1201 cont_loss:8.7148 adv_loss:0.0000
+2025-10-18 22:55:17 | INFO | EM.print | epoch: 27/ iteration: 101/ loss_train: 1.7707956 | task_loss:0.1589 cont_loss:8.6949 adv_loss:0.0001
+2025-10-18 22:55:17 | INFO | EM.print | epoch: 0027 loss_train: 1.7710 task_loss: 0.1620 cont_loss: 8.6928 adv_loss: 0.0000 auroc_train: 0.9888 auprc_train: 0.9873 precision_train: 0.9391 recall_train: 0.9646 f1_train: 0.9517 cm_train: (tn=2010, fp=134, fn=76, tp=2068)
+2025-10-18 22:55:17 | INFO | EM.print | -------- Epoch 28 --------
+2025-10-18 22:55:18 | INFO | EM.print | epoch: 28/ iteration: 1/ loss_train: 1.7617805 | task_loss:0.1178 cont_loss:8.6909 adv_loss:0.0001
+2025-10-18 22:55:20 | INFO | EM.print | epoch: 28/ iteration: 101/ loss_train: 1.739747 | task_loss:0.0448 cont_loss:8.6539 adv_loss:0.0000
+2025-10-18 22:55:21 | INFO | EM.print | epoch: 0028 loss_train: 1.7665 task_loss: 0.1784 cont_loss: 8.6501 adv_loss: 0.0013 auroc_train: 0.9893 auprc_train: 0.9876 precision_train: 0.9410 recall_train: 0.9674 f1_train: 0.9540 cm_train: (tn=2013, fp=130, fn=70, tp=2075)
+2025-10-18 22:55:21 | INFO | EM.print | -------- Epoch 29 --------
+2025-10-18 22:55:21 | INFO | EM.print | epoch: 29/ iteration: 1/ loss_train: 1.7399764 | task_loss:0.0641 cont_loss:8.6352 adv_loss:0.0002
+2025-10-18 22:55:24 | INFO | EM.print | epoch: 29/ iteration: 101/ loss_train: 1.8761963 | task_loss:0.2372 cont_loss:8.9237 adv_loss:0.0733
+2025-10-18 22:55:25 | INFO | EM.print | epoch: 0029 loss_train: 1.8290 task_loss: 0.1898 cont_loss: 8.9486 adv_loss: 0.0022 auroc_train: 0.9839 auprc_train: 0.9808 precision_train: 0.9211 recall_train: 0.9576 f1_train: 0.9390 cm_train: (tn=1967, fp=176, fn=91, tp=2054)
+2025-10-18 22:55:25 | INFO | EM.print | -------- Epoch 30 --------
+2025-10-18 22:55:25 | INFO | EM.print | epoch: 30/ iteration: 1/ loss_train: 1.8386657 | task_loss:0.2433 cont_loss:8.9500 adv_loss:0.0000
+2025-10-18 22:55:28 | INFO | EM.print | epoch: 30/ iteration: 101/ loss_train: 1.7513471 | task_loss:0.0741 cont_loss:8.6826 adv_loss:0.0000
+2025-10-18 22:55:29 | INFO | EM.print | epoch: 0030 loss_train: 1.7416 task_loss: 0.0357 cont_loss: 8.6721 adv_loss: 0.0000 auroc_train: 0.9892 auprc_train: 0.9878 precision_train: 0.9332 recall_train: 0.9655 f1_train: 0.9491 cm_train: (tn=1998, fp=148, fn=74, tp=2068)
+2025-10-18 22:55:29 | INFO | EM.print | -------- Epoch 31 --------
+2025-10-18 22:55:29 | INFO | EM.print | epoch: 31/ iteration: 1/ loss_train: 1.7672384 | task_loss:0.1162 cont_loss:8.7042 adv_loss:0.0053
+2025-10-18 22:55:32 | INFO | EM.print | epoch: 31/ iteration: 101/ loss_train: 1.7517109 | task_loss:0.1504 cont_loss:8.6082 adv_loss:0.0000
+2025-10-18 22:55:33 | INFO | EM.print | epoch: 0031 loss_train: 1.7398 task_loss: 0.1284 cont_loss: 8.5708 adv_loss: 0.0000 auroc_train: 0.9899 auprc_train: 0.9884 precision_train: 0.9422 recall_train: 0.9725 f1_train: 0.9571 cm_train: (tn=2016, fp=128, fn=59, tp=2085)
+2025-10-18 22:55:33 | INFO | EM.print | -------- Epoch 32 --------
+2025-10-18 22:55:33 | INFO | EM.print | epoch: 32/ iteration: 1/ loss_train: 1.7250286 | task_loss:0.0502 cont_loss:8.5745 adv_loss:0.0002
+2025-10-18 22:55:35 | INFO | EM.print | epoch: 32/ iteration: 101/ loss_train: 1.7545977 | task_loss:0.1310 cont_loss:8.6377 adv_loss:0.0014
+2025-10-18 22:55:36 | INFO | EM.print | epoch: 0032 loss_train: 1.7635 task_loss: 0.0720 cont_loss: 8.7440 adv_loss: 0.0005 auroc_train: 0.9909 auprc_train: 0.9894 precision_train: 0.9500 recall_train: 0.9757 f1_train: 0.9627 cm_train: (tn=2034, fp=110, fn=52, tp=2092)
+2025-10-18 22:55:36 | INFO | EM.print | -------- Epoch 33 --------
+2025-10-18 22:55:36 | INFO | EM.print | epoch: 33/ iteration: 1/ loss_train: 1.7649913 | task_loss:0.0961 cont_loss:8.7289 adv_loss:0.0000
+2025-10-18 22:55:39 | INFO | EM.print | epoch: 33/ iteration: 101/ loss_train: 1.7258787 | task_loss:0.0532 cont_loss:8.5762 adv_loss:0.0000
+2025-10-18 22:55:40 | INFO | EM.print | epoch: 0033 loss_train: 1.7298 task_loss: 0.1213 cont_loss: 8.5274 adv_loss: 0.0000 auroc_train: 0.9913 auprc_train: 0.9896 precision_train: 0.9459 recall_train: 0.9706 f1_train: 0.9581 cm_train: (tn=2024, fp=119, fn=63, tp=2082)
+2025-10-18 22:55:40 | INFO | EM.print | -------- Epoch 34 --------
+2025-10-18 22:55:40 | INFO | EM.print | epoch: 34/ iteration: 1/ loss_train: 1.7392151 | task_loss:0.1713 cont_loss:8.5248 adv_loss:0.0000
+2025-10-18 22:55:43 | INFO | EM.print | epoch: 34/ iteration: 101/ loss_train: 1.7348574 | task_loss:0.0281 cont_loss:8.6462 adv_loss:0.0000
+2025-10-18 22:55:44 | INFO | EM.print | epoch: 0034 loss_train: 1.7785 task_loss: 0.2281 cont_loss: 8.6642 adv_loss: 0.0000 auroc_train: 0.9919 auprc_train: 0.9906 precision_train: 0.9436 recall_train: 0.9757 f1_train: 0.9594 cm_train: (tn=2021, fp=125, fn=52, tp=2090)
+2025-10-18 22:55:44 | INFO | EM.print | -------- Epoch 35 --------
+2025-10-18 22:55:44 | INFO | EM.print | epoch: 35/ iteration: 1/ loss_train: 1.762246 | task_loss:0.1400 cont_loss:8.6708 adv_loss:0.0001
+2025-10-18 22:55:47 | INFO | EM.print | epoch: 35/ iteration: 101/ loss_train: 1.7585583 | task_loss:0.1048 cont_loss:8.6880 adv_loss:0.0000
+2025-10-18 22:55:48 | INFO | EM.print | epoch: 0035 loss_train: 1.7371 task_loss: 0.0384 cont_loss: 8.6469 adv_loss: 0.0000 auroc_train: 0.9925 auprc_train: 0.9919 precision_train: 0.9459 recall_train: 0.9692 f1_train: 0.9574 cm_train: (tn=2024, fp=119, fn=66, tp=2079)
+2025-10-18 22:55:48 | INFO | EM.print | -------- Epoch 36 --------
+2025-10-18 22:55:48 | INFO | EM.print | epoch: 36/ iteration: 1/ loss_train: 1.7340008 | task_loss:0.0285 cont_loss:8.6415 adv_loss:0.0000
+2025-10-18 22:55:51 | INFO | EM.print | epoch: 36/ iteration: 101/ loss_train: 1.7583016 | task_loss:0.1776 cont_loss:8.6139 adv_loss:0.0000
+2025-10-18 22:55:52 | INFO | EM.print | epoch: 0036 loss_train: 1.7272 task_loss: 0.0891 cont_loss: 8.5471 adv_loss: 0.0000 auroc_train: 0.9926 auprc_train: 0.9914 precision_train: 0.9499 recall_train: 0.9730 f1_train: 0.9613 cm_train: (tn=2033, fp=110, fn=58, tp=2087)
+2025-10-18 22:55:52 | INFO | EM.print | -------- Epoch 37 --------
+2025-10-18 22:55:52 | INFO | EM.print | epoch: 37/ iteration: 1/ loss_train: 1.7235274 | task_loss:0.1007 cont_loss:8.5169 adv_loss:0.0000
+2025-10-18 22:55:54 | INFO | EM.print | epoch: 37/ iteration: 101/ loss_train: 1.7545527 | task_loss:0.1641 cont_loss:8.6086 adv_loss:0.0000
+2025-10-18 22:55:55 | INFO | EM.print | epoch: 0037 loss_train: 1.7460 task_loss: 0.1769 cont_loss: 8.5529 adv_loss: 0.0000 auroc_train: 0.9921 auprc_train: 0.9910 precision_train: 0.9513 recall_train: 0.9664 f1_train: 0.9588 cm_train: (tn=2038, fp=106, fn=72, tp=2072)
+2025-10-18 22:55:55 | INFO | EM.print | -------- Epoch 38 --------
+2025-10-18 22:55:55 | INFO | EM.print | epoch: 38/ iteration: 1/ loss_train: 1.719613 | task_loss:0.0274 cont_loss:8.5706 adv_loss:0.0000
+2025-10-18 22:55:58 | INFO | EM.print | epoch: 38/ iteration: 101/ loss_train: 1.6776295 | task_loss:0.0672 cont_loss:8.3184 adv_loss:0.0008
+2025-10-18 22:55:59 | INFO | EM.print | epoch: 0038 loss_train: 1.7365 task_loss: 0.0425 cont_loss: 8.6398 adv_loss: 0.0000 auroc_train: 0.9936 auprc_train: 0.9928 precision_train: 0.9541 recall_train: 0.9804 f1_train: 0.9671 cm_train: (tn=2044, fp=101, fn=42, tp=2101)
+2025-10-18 22:55:59 | INFO | EM.print | -------- Epoch 39 --------
+2025-10-18 22:55:59 | INFO | EM.print | epoch: 39/ iteration: 1/ loss_train: 1.7761803 | task_loss:0.2071 cont_loss:8.6738 adv_loss:0.0000
+2025-10-18 22:56:02 | INFO | EM.print | epoch: 39/ iteration: 101/ loss_train: 1.7329987 | task_loss:0.1708 cont_loss:8.4942 adv_loss:0.0000
+2025-10-18 22:56:03 | INFO | EM.print | epoch: 0039 loss_train: 1.7225 task_loss: 0.0373 cont_loss: 8.5752 adv_loss: 0.0000 auroc_train: 0.9936 auprc_train: 0.9931 precision_train: 0.9574 recall_train: 0.9744 f1_train: 0.9658 cm_train: (tn=2049, fp=93, fn=55, tp=2091)
+2025-10-18 22:56:03 | INFO | EM.print | -------- Epoch 40 --------
+2025-10-18 22:56:03 | INFO | EM.print | epoch: 40/ iteration: 1/ loss_train: 1.7468714 | task_loss:0.1623 cont_loss:8.5720 adv_loss:0.0000
+2025-10-18 22:56:06 | INFO | EM.print | epoch: 40/ iteration: 101/ loss_train: 1.6952325 | task_loss:0.0232 cont_loss:8.4530 adv_loss:0.0000
+2025-10-18 22:56:07 | INFO | EM.print | epoch: 0040 loss_train: 1.7149 task_loss: 0.0825 cont_loss: 8.4917 adv_loss: 0.0000 auroc_train: 0.9943 auprc_train: 0.9938 precision_train: 0.9570 recall_train: 0.9762 f1_train: 0.9665 cm_train: (tn=2050, fp=94, fn=51, tp=2093)
+2025-10-18 22:56:07 | INFO | EM.print | -------- Epoch 41 --------
+2025-10-18 22:56:07 | INFO | EM.print | epoch: 41/ iteration: 1/ loss_train: 1.7309166 | task_loss:0.1321 cont_loss:8.5225 adv_loss:0.0000
+2025-10-18 22:56:09 | INFO | EM.print | epoch: 41/ iteration: 101/ loss_train: 1.7751042 | task_loss:0.3167 cont_loss:8.5588 adv_loss:0.0000
+2025-10-18 22:56:10 | INFO | EM.print | epoch: 0041 loss_train: 1.7157 task_loss: 0.0588 cont_loss: 8.5198 adv_loss: 0.0000 auroc_train: 0.9937 auprc_train: 0.9931 precision_train: 0.9592 recall_train: 0.9748 f1_train: 0.9669 cm_train: (tn=2054, fp=89, fn=54, tp=2091)
+2025-10-18 22:56:10 | INFO | EM.print | -------- Epoch 42 --------
+2025-10-18 22:56:10 | INFO | EM.print | epoch: 42/ iteration: 1/ loss_train: 1.7266796 | task_loss:0.0907 cont_loss:8.5426 adv_loss:0.0000
+2025-10-18 22:56:13 | INFO | EM.print | epoch: 42/ iteration: 101/ loss_train: 1.6991141 | task_loss:0.0289 cont_loss:8.4667 adv_loss:0.0000
+2025-10-18 22:56:14 | INFO | EM.print | epoch: 0042 loss_train: 1.6926 task_loss: 0.0801 cont_loss: 8.3828 adv_loss: 0.0000 auroc_train: 0.9950 auprc_train: 0.9942 precision_train: 0.9593 recall_train: 0.9790 f1_train: 0.9691 cm_train: (tn=2055, fp=89, fn=45, tp=2099)
+2025-10-18 22:56:14 | INFO | EM.print | -------- Epoch 43 --------
+2025-10-18 22:56:14 | INFO | EM.print | epoch: 43/ iteration: 1/ loss_train: 1.6758711 | task_loss:0.0013 cont_loss:8.3781 adv_loss:0.0000
+2025-10-18 22:56:17 | INFO | EM.print | epoch: 43/ iteration: 101/ loss_train: 1.7285879 | task_loss:0.1438 cont_loss:8.4992 adv_loss:0.0000
+2025-10-18 22:56:18 | INFO | EM.print | epoch: 0043 loss_train: 1.7003 task_loss: 0.0266 cont_loss: 8.4748 adv_loss: 0.0000 auroc_train: 0.9954 auprc_train: 0.9948 precision_train: 0.9610 recall_train: 0.9794 f1_train: 0.9702 cm_train: (tn=2062, fp=85, fn=44, tp=2097)
+2025-10-18 22:56:18 | INFO | EM.print | -------- Epoch 44 --------
+2025-10-18 22:56:18 | INFO | EM.print | epoch: 44/ iteration: 1/ loss_train: 1.713909 | task_loss:0.0775 cont_loss:8.4921 adv_loss:0.0000
+2025-10-18 22:56:21 | INFO | EM.print | epoch: 44/ iteration: 101/ loss_train: 1.6970137 | task_loss:0.0347 cont_loss:8.4503 adv_loss:0.0000
+2025-10-18 22:56:22 | INFO | EM.print | epoch: 0044 loss_train: 1.6897 task_loss: 0.0428 cont_loss: 8.4058 adv_loss: 0.0000 auroc_train: 0.9950 auprc_train: 0.9944 precision_train: 0.9588 recall_train: 0.9776 f1_train: 0.9681 cm_train: (tn=2054, fp=90, fn=48, tp=2096)
+2025-10-18 22:56:22 | INFO | EM.print | -------- Epoch 45 --------
+2025-10-18 22:56:22 | INFO | EM.print | epoch: 45/ iteration: 1/ loss_train: 1.6848311 | task_loss:0.0318 cont_loss:8.3923 adv_loss:0.0000
+2025-10-18 22:56:25 | INFO | EM.print | epoch: 45/ iteration: 101/ loss_train: 1.7057515 | task_loss:0.1025 cont_loss:8.4262 adv_loss:0.0000
+2025-10-18 22:56:26 | INFO | EM.print | epoch: 0045 loss_train: 1.6957 task_loss: 0.0111 cont_loss: 8.4676 adv_loss: 0.0000 auroc_train: 0.9955 auprc_train: 0.9949 precision_train: 0.9629 recall_train: 0.9804 f1_train: 0.9716 cm_train: (tn=2064, fp=81, fn=42, tp=2101)
+2025-10-18 22:56:26 | INFO | EM.print | -------- Epoch 46 --------
+2025-10-18 22:56:26 | INFO | EM.print | epoch: 46/ iteration: 1/ loss_train: 1.7079256 | task_loss:0.0543 cont_loss:8.4853 adv_loss:0.0000
+2025-10-18 22:56:28 | INFO | EM.print | epoch: 46/ iteration: 101/ loss_train: 1.7181244 | task_loss:0.0727 cont_loss:8.5171 adv_loss:0.0003
+2025-10-18 22:56:29 | INFO | EM.print | epoch: 0046 loss_train: 1.7027 task_loss: 0.0712 cont_loss: 8.4423 adv_loss: 0.0001 auroc_train: 0.9951 auprc_train: 0.9947 precision_train: 0.9623 recall_train: 0.9758 f1_train: 0.9690 cm_train: (tn=2060, fp=82, fn=52, tp=2094)
+2025-10-18 22:56:29 | INFO | EM.print | -------- Epoch 47 --------
+2025-10-18 22:56:29 | INFO | EM.print | epoch: 47/ iteration: 1/ loss_train: 1.6936575 | task_loss:0.0144 cont_loss:8.4539 adv_loss:0.0000
+2025-10-18 22:56:32 | INFO | EM.print | epoch: 47/ iteration: 101/ loss_train: 1.7120667 | task_loss:0.1336 cont_loss:8.4262 adv_loss:0.0002
+2025-10-18 22:56:33 | INFO | EM.print | epoch: 0047 loss_train: 1.7060 task_loss: 0.0921 cont_loss: 8.4378 adv_loss: 0.0000 auroc_train: 0.9964 auprc_train: 0.9961 precision_train: 0.9647 recall_train: 0.9813 f1_train: 0.9729 cm_train: (tn=2067, fp=77, fn=40, tp=2104)
+2025-10-18 22:56:33 | INFO | EM.print | -------- Epoch 48 --------
+2025-10-18 22:56:33 | INFO | EM.print | epoch: 48/ iteration: 1/ loss_train: 1.7097805 | task_loss:0.0970 cont_loss:8.4519 adv_loss:0.0000
+2025-10-18 22:56:36 | INFO | EM.print | epoch: 48/ iteration: 101/ loss_train: 1.7577208 | task_loss:0.3637 cont_loss:8.4249 adv_loss:0.0000
+2025-10-18 22:56:37 | INFO | EM.print | epoch: 0048 loss_train: 1.7040 task_loss: 0.0702 cont_loss: 8.4499 adv_loss: 0.0000 auroc_train: 0.9962 auprc_train: 0.9958 precision_train: 0.9665 recall_train: 0.9827 f1_train: 0.9745 cm_train: (tn=2073, fp=73, fn=37, tp=2105)
+2025-10-18 22:56:37 | INFO | EM.print | -------- Epoch 49 --------
+2025-10-18 22:56:37 | INFO | EM.print | epoch: 49/ iteration: 1/ loss_train: 1.6902815 | task_loss:0.0056 cont_loss:8.4454 adv_loss:0.0001
+2025-10-18 22:56:40 | INFO | EM.print | epoch: 49/ iteration: 101/ loss_train: 1.6976856 | task_loss:0.0455 cont_loss:8.4427 adv_loss:0.0001
+2025-10-18 22:56:41 | INFO | EM.print | epoch: 0049 loss_train: 1.6996 task_loss: 0.0198 cont_loss: 8.4780 adv_loss: 0.0000 auroc_train: 0.9963 auprc_train: 0.9958 precision_train: 0.9682 recall_train: 0.9813 f1_train: 0.9748 cm_train: (tn=2075, fp=69, fn=40, tp=2104)
+2025-10-18 22:56:41 | INFO | EM.print | -------- Epoch 50 --------
+2025-10-18 22:56:41 | INFO | EM.print | epoch: 50/ iteration: 1/ loss_train: 1.6972531 | task_loss:0.0075 cont_loss:8.4787 adv_loss:0.0000
+2025-10-18 22:56:44 | INFO | EM.print | epoch: 50/ iteration: 101/ loss_train: 1.7355657 | task_loss:0.1996 cont_loss:8.4782 adv_loss:0.0000
+2025-10-18 22:56:45 | INFO | EM.print | epoch: 0050 loss_train: 1.6903 task_loss: 0.0213 cont_loss: 8.4300 adv_loss: 0.0000 auroc_train: 0.9965 auprc_train: 0.9961 precision_train: 0.9683 recall_train: 0.9832 f1_train: 0.9757 cm_train: (tn=2072, fp=69, fn=36, tp=2111)
+2025-10-18 22:56:45 | INFO | EM.print | Optimization Finished!
+2025-10-18 22:56:45 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/train_epoch_metrics_fold_1_20251018_225252.csv.txt
+2025-10-18 22:56:45 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_1_20251018_225252.csv
+2025-10-18 22:56:46 | INFO | EM.print | loss_test: 1.7169 auroc_test: 0.9556 auprc_test: 0.9475 precision_test: 0.8897 recall_test: 0.9032 f1_test: 0.8964 cm_test: (tn=470, fp=59, fn=51, tp=476)
+2025-10-18 22:56:46 | INFO | EM | Fold 1 completed.
+2025-10-18 22:56:46 | INFO | EM | === Fold 2/5 ===
+2025-10-18 22:56:46 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/adv_config_fold_2_20251018_225252.json.txt
+2025-10-18 22:56:46 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_2_20251018_225252.json
+2025-10-18 22:56:46 | INFO | EM.print | Start Training...
+2025-10-18 22:56:46 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-18 22:56:46 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.7865224 | task_loss:0.6891 cont_loss:0.7966 adv_loss:0.8156
+2025-10-18 22:56:49 | INFO | EM.print | epoch: 1/ iteration: 101/ loss_train: 1.7727518 | task_loss:0.2449 cont_loss:8.6136 adv_loss:0.0018
+2025-10-18 22:56:50 | INFO | EM.print | epoch: 0001 loss_train: 1.7593 task_loss: 0.2122 cont_loss: 8.5808 adv_loss: 0.0012 auroc_train: 0.8782 auprc_train: 0.8712 precision_train: 0.7752 recall_train: 0.8067 f1_train: 0.7907 cm_train: (tn=1645, fp=501, fn=414, tp=1728)
+2025-10-18 22:56:50 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-18 22:56:50 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 1.7708986 | task_loss:0.2617 cont_loss:8.5855 adv_loss:0.0024
+2025-10-18 22:56:53 | INFO | EM.print | epoch: 2/ iteration: 101/ loss_train: 1.7946204 | task_loss:0.4594 cont_loss:8.5128 adv_loss:0.0003
+2025-10-18 22:56:54 | INFO | EM.print | epoch: 0002 loss_train: 1.7317 task_loss: 0.3302 cont_loss: 8.3277 adv_loss: 0.0002 auroc_train: 0.9230 auprc_train: 0.9116 precision_train: 0.8353 recall_train: 0.8731 f1_train: 0.8538 cm_train: (tn=1776, fp=369, fn=272, tp=1871)
+2025-10-18 22:56:54 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-18 22:56:54 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 1.7032938 | task_loss:0.1894 cont_loss:8.3252 adv_loss:0.0006
+2025-10-18 22:56:56 | INFO | EM.print | epoch: 3/ iteration: 101/ loss_train: 1.6877196 | task_loss:0.1374 cont_loss:8.3006 adv_loss:0.0002
+2025-10-18 22:56:57 | INFO | EM.print | epoch: 0003 loss_train: 1.7408 task_loss: 0.3968 cont_loss: 8.3068 adv_loss: 0.0002 auroc_train: 0.9478 auprc_train: 0.9447 precision_train: 0.8557 recall_train: 0.8984 f1_train: 0.8766 cm_train: (tn=1817, fp=325, fn=218, tp=1928)
+2025-10-18 22:56:57 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-18 22:56:57 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 1.7058682 | task_loss:0.2223 cont_loss:8.3064 adv_loss:0.0002
+2025-10-18 22:57:00 | INFO | EM.print | epoch: 4/ iteration: 101/ loss_train: 1.793882 | task_loss:0.4682 cont_loss:8.5005 adv_loss:0.0002
+2025-10-18 22:57:01 | INFO | EM.print | epoch: 0004 loss_train: 1.7874 task_loss: 0.3791 cont_loss: 8.5573 adv_loss: 0.0002 auroc_train: 0.9524 auprc_train: 0.9488 precision_train: 0.8707 recall_train: 0.9040 f1_train: 0.8870 cm_train: (tn=1855, fp=288, fn=206, tp=1939)
+2025-10-18 22:57:01 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-18 22:57:01 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 1.7503426 | task_loss:0.1945 cont_loss:8.5558 adv_loss:0.0005
+2025-10-18 22:57:04 | INFO | EM.print | epoch: 5/ iteration: 101/ loss_train: 1.7623719 | task_loss:0.4567 cont_loss:8.3534 adv_loss:0.0006
+2025-10-18 22:57:05 | INFO | EM.print | epoch: 0005 loss_train: 1.7530 task_loss: 0.4356 cont_loss: 8.3249 adv_loss: 0.0014 auroc_train: 0.9514 auprc_train: 0.9461 precision_train: 0.8640 recall_train: 0.9059 f1_train: 0.8844 cm_train: (tn=1836, fp=306, fn=202, tp=1944)
+2025-10-18 22:57:05 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-18 22:57:05 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 1.703575 | task_loss:0.1824 cont_loss:8.3334 adv_loss:0.0007
+2025-10-18 22:57:08 | INFO | EM.print | epoch: 6/ iteration: 101/ loss_train: 1.7855996 | task_loss:0.3000 cont_loss:8.6270 adv_loss:0.0003
+2025-10-18 22:57:09 | INFO | EM.print | epoch: 0006 loss_train: 1.7248 task_loss: 0.2263 cont_loss: 8.3961 adv_loss: 0.0006 auroc_train: 0.9551 auprc_train: 0.9496 precision_train: 0.8608 recall_train: 0.9202 f1_train: 0.8895 cm_train: (tn=1825, fp=319, fn=171, tp=1973)
+2025-10-18 22:57:09 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-18 22:57:09 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 1.7250813 | task_loss:0.2283 cont_loss:8.3958 adv_loss:0.0005
+2025-10-18 22:57:11 | INFO | EM.print | epoch: 7/ iteration: 101/ loss_train: 1.764785 | task_loss:0.3115 cont_loss:8.5111 adv_loss:0.0005
+2025-10-18 22:57:12 | INFO | EM.print | epoch: 0007 loss_train: 1.6932 task_loss: 0.2243 cont_loss: 8.2404 adv_loss: 0.0004 auroc_train: 0.9540 auprc_train: 0.9494 precision_train: 0.8643 recall_train: 0.9207 f1_train: 0.8916 cm_train: (tn=1834, fp=310, fn=170, tp=1974)
+2025-10-18 22:57:12 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-18 22:57:12 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 1.6888314 | task_loss:0.2271 cont_loss:8.2159 adv_loss:0.0004
+2025-10-18 22:57:15 | INFO | EM.print | epoch: 8/ iteration: 101/ loss_train: 1.6925194 | task_loss:0.2347 cont_loss:8.2275 adv_loss:0.0001
+2025-10-18 22:57:16 | INFO | EM.print | epoch: 0008 loss_train: 1.7197 task_loss: 0.1302 cont_loss: 8.4677 adv_loss: 0.0002 auroc_train: 0.9566 auprc_train: 0.9508 precision_train: 0.8688 recall_train: 0.9162 f1_train: 0.8919 cm_train: (tn=1844, fp=297, fn=180, tp=1967)
+2025-10-18 22:57:16 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-18 22:57:16 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 1.7411865 | task_loss:0.2408 cont_loss:8.4645 adv_loss:0.0002
+2025-10-18 22:57:19 | INFO | EM.print | epoch: 9/ iteration: 101/ loss_train: 1.6061833 | task_loss:0.2713 cont_loss:7.7593 adv_loss:0.0001
+2025-10-18 22:57:20 | INFO | EM.print | epoch: 0009 loss_train: 1.7679 task_loss: 0.3945 cont_loss: 8.4448 adv_loss: 0.0001 auroc_train: 0.9631 auprc_train: 0.9602 precision_train: 0.8745 recall_train: 0.9291 f1_train: 0.9009 cm_train: (tn=1858, fp=286, fn=152, tp=1992)
+2025-10-18 22:57:20 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-18 22:57:20 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 1.6976508 | task_loss:0.0455 cont_loss:8.4424 adv_loss:0.0001
+2025-10-18 22:57:23 | INFO | EM.print | epoch: 10/ iteration: 101/ loss_train: 1.6181448 | task_loss:0.1854 cont_loss:7.9050 adv_loss:0.0001
+2025-10-18 22:57:24 | INFO | EM.print | epoch: 0010 loss_train: 1.7511 task_loss: 0.3240 cont_loss: 8.4305 adv_loss: 0.0003 auroc_train: 0.9619 auprc_train: 0.9596 precision_train: 0.8724 recall_train: 0.9221 f1_train: 0.8966 cm_train: (tn=1856, fp=289, fn=167, tp=1976)
+2025-10-18 22:57:24 | INFO | EM.print | -------- Epoch 11 --------
+2025-10-18 22:57:24 | INFO | EM.print | epoch: 11/ iteration: 1/ loss_train: 1.73535 | task_loss:0.2437 cont_loss:8.4325 adv_loss:0.0002
+2025-10-18 22:57:26 | INFO | EM.print | epoch: 11/ iteration: 101/ loss_train: 1.7738981 | task_loss:0.3051 cont_loss:8.5641 adv_loss:0.0001
+2025-10-18 22:57:27 | INFO | EM.print | epoch: 0011 loss_train: 1.4308 task_loss: 0.2049 cont_loss: 6.9487 adv_loss: 0.0002 auroc_train: 0.9635 auprc_train: 0.9587 precision_train: 0.8734 recall_train: 0.9385 f1_train: 0.9048 cm_train: (tn=1850, fp=292, fn=132, tp=2014)
+2025-10-18 22:57:27 | INFO | EM.print | -------- Epoch 12 --------
+2025-10-18 22:57:27 | INFO | EM.print | epoch: 12/ iteration: 1/ loss_train: 1.4307237 | task_loss:0.2075 cont_loss:6.9458 adv_loss:0.0001
+2025-10-18 22:57:30 | INFO | EM.print | epoch: 12/ iteration: 101/ loss_train: 1.7897772 | task_loss:0.3036 cont_loss:8.6446 adv_loss:0.0002
+2025-10-18 22:57:31 | INFO | EM.print | epoch: 0012 loss_train: 1.7455 task_loss: 0.1679 cont_loss: 8.5584 adv_loss: 0.0005 auroc_train: 0.9619 auprc_train: 0.9580 precision_train: 0.8707 recall_train: 0.9291 f1_train: 0.8990 cm_train: (tn=1847, fp=296, fn=152, tp=1993)
+2025-10-18 22:57:31 | INFO | EM.print | -------- Epoch 13 --------
+2025-10-18 22:57:31 | INFO | EM.print | epoch: 13/ iteration: 1/ loss_train: 1.7629156 | task_loss:0.2647 cont_loss:8.5489 adv_loss:0.0003
+2025-10-18 22:57:34 | INFO | EM.print | epoch: 13/ iteration: 101/ loss_train: 1.7632021 | task_loss:0.2147 cont_loss:8.6005 adv_loss:0.0002
+2025-10-18 22:57:35 | INFO | EM.print | epoch: 0013 loss_train: 1.7908 task_loss: 0.3151 cont_loss: 8.6386 adv_loss: 0.0001 auroc_train: 0.9678 auprc_train: 0.9646 precision_train: 0.8783 recall_train: 0.9352 f1_train: 0.9058 cm_train: (tn=1865, fp=278, fn=139, tp=2006)
+2025-10-18 22:57:35 | INFO | EM.print | -------- Epoch 14 --------
+2025-10-18 22:57:35 | INFO | EM.print | epoch: 14/ iteration: 1/ loss_train: 1.7599517 | task_loss:0.1516 cont_loss:8.6480 adv_loss:0.0000
+2025-10-18 22:57:38 | INFO | EM.print | epoch: 14/ iteration: 101/ loss_train: 1.7700619 | task_loss:0.1127 cont_loss:8.7365 adv_loss:0.0004
+2025-10-18 22:57:39 | INFO | EM.print | epoch: 0014 loss_train: 1.8002 task_loss: 0.3076 cont_loss: 8.6931 adv_loss: 0.0001 auroc_train: 0.9746 auprc_train: 0.9721 precision_train: 0.9016 recall_train: 0.9385 f1_train: 0.9197 cm_train: (tn=1921, fp=220, fn=132, tp=2015)
+2025-10-18 22:57:39 | INFO | EM.print | -------- Epoch 15 --------
+2025-10-18 22:57:39 | INFO | EM.print | epoch: 15/ iteration: 1/ loss_train: 1.7607656 | task_loss:0.1122 cont_loss:8.6915 adv_loss:0.0001
+2025-10-18 22:57:42 | INFO | EM.print | epoch: 15/ iteration: 101/ loss_train: 2.1033642 | task_loss:0.3779 cont_loss:10.1388 adv_loss:0.0000
+2025-10-18 22:57:43 | INFO | EM.print | epoch: 0015 loss_train: 1.7724 task_loss: 0.0718 cont_loss: 8.7874 adv_loss: 0.0009 auroc_train: 0.9740 auprc_train: 0.9709 precision_train: 0.9004 recall_train: 0.9369 f1_train: 0.9183 cm_train: (tn=1925, fp=222, fn=135, tp=2006)
+2025-10-18 22:57:43 | INFO | EM.print | -------- Epoch 16 --------
+2025-10-18 22:57:43 | INFO | EM.print | epoch: 16/ iteration: 1/ loss_train: 1.814535 | task_loss:0.2846 cont_loss:8.7876 adv_loss:0.0002
+2025-10-18 22:57:45 | INFO | EM.print | epoch: 16/ iteration: 101/ loss_train: 1.7766753 | task_loss:0.1658 cont_loss:8.7176 adv_loss:0.0000
+2025-10-18 22:57:46 | INFO | EM.print | epoch: 0016 loss_train: 1.7677 task_loss: 0.0667 cont_loss: 8.7717 adv_loss: 0.0000 auroc_train: 0.9703 auprc_train: 0.9664 precision_train: 0.8906 recall_train: 0.9375 f1_train: 0.9134 cm_train: (tn=1897, fp=247, fn=134, tp=2010)
+2025-10-18 22:57:46 | INFO | EM.print | -------- Epoch 17 --------
+2025-10-18 22:57:46 | INFO | EM.print | epoch: 17/ iteration: 1/ loss_train: 1.7714852 | task_loss:0.0821 cont_loss:8.7752 adv_loss:0.0000
+2025-10-18 22:57:49 | INFO | EM.print | epoch: 17/ iteration: 101/ loss_train: 1.8426036 | task_loss:0.3090 cont_loss:8.9039 adv_loss:0.0000
+2025-10-18 22:57:50 | INFO | EM.print | epoch: 0017 loss_train: 1.7902 task_loss: 0.1858 cont_loss: 8.7591 adv_loss: 0.0020 auroc_train: 0.9760 auprc_train: 0.9731 precision_train: 0.8998 recall_train: 0.9435 f1_train: 0.9211 cm_train: (tn=1921, fp=225, fn=121, tp=2021)
+2025-10-18 22:57:50 | INFO | EM.print | -------- Epoch 18 --------
+2025-10-18 22:57:50 | INFO | EM.print | epoch: 18/ iteration: 1/ loss_train: 1.7827771 | task_loss:0.1721 cont_loss:8.7410 adv_loss:0.0003
+2025-10-18 22:57:53 | INFO | EM.print | epoch: 18/ iteration: 101/ loss_train: 1.7781116 | task_loss:0.0906 cont_loss:8.7997 adv_loss:0.0001
+2025-10-18 22:57:54 | INFO | EM.print | epoch: 0018 loss_train: 1.7838 task_loss: 0.1319 cont_loss: 8.7868 adv_loss: 0.0000 auroc_train: 0.9741 auprc_train: 0.9708 precision_train: 0.9025 recall_train: 0.9426 f1_train: 0.9221 cm_train: (tn=1929, fp=218, fn=123, tp=2018)
+2025-10-18 22:57:54 | INFO | EM.print | -------- Epoch 19 --------
+2025-10-18 22:57:54 | INFO | EM.print | epoch: 19/ iteration: 1/ loss_train: 1.8071791 | task_loss:0.2525 cont_loss:8.7832 adv_loss:0.0001
+2025-10-18 22:57:57 | INFO | EM.print | epoch: 19/ iteration: 101/ loss_train: 1.8008012 | task_loss:0.1593 cont_loss:8.8441 adv_loss:0.0002
+2025-10-18 22:57:58 | INFO | EM.print | epoch: 0019 loss_train: 1.8171 task_loss: 0.1992 cont_loss: 8.8864 adv_loss: 0.0000 auroc_train: 0.9805 auprc_train: 0.9779 precision_train: 0.9181 recall_train: 0.9515 f1_train: 0.9345 cm_train: (tn=1961, fp=182, fn=104, tp=2041)
+2025-10-18 22:57:58 | INFO | EM.print | -------- Epoch 20 --------
+2025-10-18 22:57:58 | INFO | EM.print | epoch: 20/ iteration: 1/ loss_train: 1.8285062 | task_loss:0.2449 cont_loss:8.8968 adv_loss:0.0003
+2025-10-18 22:58:01 | INFO | EM.print | epoch: 20/ iteration: 101/ loss_train: 1.7947214 | task_loss:0.0909 cont_loss:8.8822 adv_loss:0.0002
+2025-10-18 22:58:02 | INFO | EM.print | epoch: 0020 loss_train: 1.5244 task_loss: 0.2396 cont_loss: 7.3806 adv_loss: 0.0007 auroc_train: 0.9822 auprc_train: 0.9791 precision_train: 0.9193 recall_train: 0.9557 f1_train: 0.9371 cm_train: (tn=1963, fp=180, fn=95, tp=2050)
+2025-10-18 22:58:02 | INFO | EM.print | -------- Epoch 21 --------
+2025-10-18 22:58:02 | INFO | EM.print | epoch: 21/ iteration: 1/ loss_train: 1.5417807 | task_loss:0.2708 cont_loss:7.4200 adv_loss:0.0060
+2025-10-18 22:58:04 | INFO | EM.print | epoch: 21/ iteration: 101/ loss_train: 1.8473101 | task_loss:0.2981 cont_loss:8.9295 adv_loss:0.0030
+2025-10-18 22:58:05 | INFO | EM.print | epoch: 0021 loss_train: 1.8232 task_loss: 0.2254 cont_loss: 8.8905 adv_loss: 0.0000 auroc_train: 0.9809 auprc_train: 0.9776 precision_train: 0.9142 recall_train: 0.9552 f1_train: 0.9342 cm_train: (tn=1954, fp=192, fn=96, tp=2046)
+2025-10-18 22:58:05 | INFO | EM.print | -------- Epoch 22 --------
+2025-10-18 22:58:05 | INFO | EM.print | epoch: 22/ iteration: 1/ loss_train: 1.8407155 | task_loss:0.3169 cont_loss:8.8867 adv_loss:0.0000
+2025-10-18 22:58:08 | INFO | EM.print | epoch: 22/ iteration: 101/ loss_train: 1.7663902 | task_loss:0.3145 cont_loss:8.5146 adv_loss:0.0010
+2025-10-18 22:58:09 | INFO | EM.print | epoch: 0022 loss_train: 1.7290 task_loss: 0.2163 cont_loss: 8.4282 adv_loss: 0.0002 auroc_train: 0.9820 auprc_train: 0.9790 precision_train: 0.9220 recall_train: 0.9594 f1_train: 0.9403 cm_train: (tn=1971, fp=174, fn=87, tp=2056)
+2025-10-18 22:58:09 | INFO | EM.print | -------- Epoch 23 --------
+2025-10-18 22:58:09 | INFO | EM.print | epoch: 23/ iteration: 1/ loss_train: 1.7019379 | task_loss:0.1026 cont_loss:8.4070 adv_loss:0.0000
+2025-10-18 22:58:12 | INFO | EM.print | epoch: 23/ iteration: 101/ loss_train: 1.8036684 | task_loss:0.1513 cont_loss:8.8607 adv_loss:0.0021
+2025-10-18 22:58:13 | INFO | EM.print | epoch: 0023 loss_train: 1.8025 task_loss: 0.3622 cont_loss: 8.6392 adv_loss: 0.0036 auroc_train: 0.9769 auprc_train: 0.9725 precision_train: 0.9098 recall_train: 0.9510 f1_train: 0.9299 cm_train: (tn=1944, fp=202, fn=105, tp=2037)
+2025-10-18 22:58:13 | INFO | EM.print | -------- Epoch 24 --------
+2025-10-18 22:58:13 | INFO | EM.print | epoch: 24/ iteration: 1/ loss_train: 1.7407392 | task_loss:0.0676 cont_loss:8.6304 adv_loss:0.0019
+2025-10-18 22:58:16 | INFO | EM.print | epoch: 24/ iteration: 101/ loss_train: 1.757278 | task_loss:0.0911 cont_loss:8.6947 adv_loss:0.0002
+2025-10-18 22:58:17 | INFO | EM.print | epoch: 0024 loss_train: 1.7467 task_loss: 0.1569 cont_loss: 8.5766 adv_loss: 0.0000 auroc_train: 0.9799 auprc_train: 0.9777 precision_train: 0.9135 recall_train: 0.9557 f1_train: 0.9341 cm_train: (tn=1950, fp=194, fn=95, tp=2049)
+2025-10-18 22:58:17 | INFO | EM.print | -------- Epoch 25 --------
+2025-10-18 22:58:17 | INFO | EM.print | epoch: 25/ iteration: 1/ loss_train: 1.7640282 | task_loss:0.2449 cont_loss:8.5750 adv_loss:0.0001
+2025-10-18 22:58:19 | INFO | EM.print | epoch: 25/ iteration: 101/ loss_train: 1.8332062 | task_loss:0.2694 cont_loss:8.8960 adv_loss:0.0002
+2025-10-18 22:58:20 | INFO | EM.print | epoch: 0025 loss_train: 1.8117 task_loss: 0.1399 cont_loss: 8.9183 adv_loss: 0.0000 auroc_train: 0.9826 auprc_train: 0.9800 precision_train: 0.9203 recall_train: 0.9580 f1_train: 0.9388 cm_train: (tn=1965, fp=178, fn=90, tp=2055)
+2025-10-18 22:58:20 | INFO | EM.print | -------- Epoch 26 --------
+2025-10-18 22:58:20 | INFO | EM.print | epoch: 26/ iteration: 1/ loss_train: 1.7923366 | task_loss:0.0453 cont_loss:8.9163 adv_loss:0.0000
+2025-10-18 22:58:23 | INFO | EM.print | epoch: 26/ iteration: 101/ loss_train: 1.8084033 | task_loss:0.1118 cont_loss:8.9301 adv_loss:0.0000
+2025-10-18 22:58:24 | INFO | EM.print | epoch: 0026 loss_train: 1.8021 task_loss: 0.1367 cont_loss: 8.8735 adv_loss: 0.0001 auroc_train: 0.9870 auprc_train: 0.9853 precision_train: 0.9262 recall_train: 0.9660 f1_train: 0.9457 cm_train: (tn=1979, fp=165, fn=73, tp=2071)
+2025-10-18 22:58:24 | INFO | EM.print | -------- Epoch 27 --------
+2025-10-18 22:58:24 | INFO | EM.print | epoch: 27/ iteration: 1/ loss_train: 1.8301388 | task_loss:0.2810 cont_loss:8.8695 adv_loss:0.0001
+2025-10-18 22:58:27 | INFO | EM.print | epoch: 27/ iteration: 101/ loss_train: 1.7649205 | task_loss:0.0472 cont_loss:8.7774 adv_loss:0.0000
+2025-10-18 22:58:28 | INFO | EM.print | epoch: 0027 loss_train: 1.7705 task_loss: 0.0804 cont_loss: 8.7719 adv_loss: 0.0000 auroc_train: 0.9867 auprc_train: 0.9846 precision_train: 0.9302 recall_train: 0.9645 f1_train: 0.9470 cm_train: (tn=1992, fp=155, fn=76, tp=2065)
+2025-10-18 22:58:28 | INFO | EM.print | -------- Epoch 28 --------
+2025-10-18 22:58:28 | INFO | EM.print | epoch: 28/ iteration: 1/ loss_train: 1.781056 | task_loss:0.1304 cont_loss:8.7748 adv_loss:0.0000
+2025-10-18 22:58:31 | INFO | EM.print | epoch: 28/ iteration: 101/ loss_train: 1.7784066 | task_loss:0.0836 cont_loss:8.8083 adv_loss:0.0000
+2025-10-18 22:58:32 | INFO | EM.print | epoch: 0028 loss_train: 1.4691 task_loss: 0.1214 cont_loss: 7.2138 adv_loss: 0.0034 auroc_train: 0.9883 auprc_train: 0.9866 precision_train: 0.9357 recall_train: 0.9693 f1_train: 0.9522 cm_train: (tn=1998, fp=143, fn=66, tp=2081)
+2025-10-18 22:58:32 | INFO | EM.print | -------- Epoch 29 --------
+2025-10-18 22:58:32 | INFO | EM.print | epoch: 29/ iteration: 1/ loss_train: 1.4963996 | task_loss:0.2249 cont_loss:7.2527 adv_loss:0.0015
+2025-10-18 22:58:35 | INFO | EM.print | epoch: 29/ iteration: 101/ loss_train: 1.8083963 | task_loss:0.2647 cont_loss:8.7750 adv_loss:0.0008
+2025-10-18 22:58:36 | INFO | EM.print | epoch: 0029 loss_train: 1.7565 task_loss: 0.0945 cont_loss: 8.6877 adv_loss: 0.0001 auroc_train: 0.9821 auprc_train: 0.9787 precision_train: 0.9240 recall_train: 0.9603 f1_train: 0.9418 cm_train: (tn=1978, fp=169, fn=85, tp=2056)
+2025-10-18 22:58:36 | INFO | EM.print | -------- Epoch 30 --------
+2025-10-18 22:58:36 | INFO | EM.print | epoch: 30/ iteration: 1/ loss_train: 1.7650704 | task_loss:0.1380 cont_loss:8.6874 adv_loss:0.0000
+2025-10-18 22:58:38 | INFO | EM.print | epoch: 30/ iteration: 101/ loss_train: 1.7560377 | task_loss:0.1908 cont_loss:8.5878 adv_loss:0.0005
+2025-10-18 22:58:39 | INFO | EM.print | epoch: 0030 loss_train: 1.7665 task_loss: 0.2370 cont_loss: 8.5942 adv_loss: 0.0004 auroc_train: 0.9871 auprc_train: 0.9851 precision_train: 0.9357 recall_train: 0.9632 f1_train: 0.9492 cm_train: (tn=2001, fp=142, fn=79, tp=2066)
+2025-10-18 22:58:39 | INFO | EM.print | -------- Epoch 31 --------
+2025-10-18 22:58:39 | INFO | EM.print | epoch: 31/ iteration: 1/ loss_train: 1.7434895 | task_loss:0.1163 cont_loss:8.6012 adv_loss:0.0000
+2025-10-18 22:58:42 | INFO | EM.print | epoch: 31/ iteration: 101/ loss_train: 1.7151779 | task_loss:0.1643 cont_loss:8.4052 adv_loss:0.0021
+2025-10-18 22:58:43 | INFO | EM.print | epoch: 0031 loss_train: 1.6968 task_loss: 0.0327 cont_loss: 8.4340 adv_loss: 0.0058 auroc_train: 0.9862 auprc_train: 0.9839 precision_train: 0.9333 recall_train: 0.9594 f1_train: 0.9462 cm_train: (tn=1998, fp=147, fn=87, tp=2056)
+2025-10-18 22:58:43 | INFO | EM.print | -------- Epoch 32 --------
+2025-10-18 22:58:43 | INFO | EM.print | epoch: 32/ iteration: 1/ loss_train: 1.7207897 | task_loss:0.1425 cont_loss:8.4490 adv_loss:0.0041
+2025-10-18 22:58:46 | INFO | EM.print | epoch: 32/ iteration: 101/ loss_train: 1.7291269 | task_loss:0.1088 cont_loss:8.5369 adv_loss:0.0000
+2025-10-18 22:58:47 | INFO | EM.print | epoch: 0032 loss_train: 1.7296 task_loss: 0.0861 cont_loss: 8.5611 adv_loss: 0.0003 auroc_train: 0.9890 auprc_train: 0.9870 precision_train: 0.9402 recall_train: 0.9762 f1_train: 0.9579 cm_train: (tn=2012, fp=133, fn=51, tp=2092)
+2025-10-18 22:58:47 | INFO | EM.print | -------- Epoch 33 --------
+2025-10-18 22:58:47 | INFO | EM.print | epoch: 33/ iteration: 1/ loss_train: 1.7276015 | task_loss:0.0711 cont_loss:8.5670 adv_loss:0.0000
+2025-10-18 22:58:50 | INFO | EM.print | epoch: 33/ iteration: 101/ loss_train: 1.7528557 | task_loss:0.0851 cont_loss:8.6789 adv_loss:0.0001
+2025-10-18 22:58:51 | INFO | EM.print | epoch: 0033 loss_train: 1.7661 task_loss: 0.1137 cont_loss: 8.7166 adv_loss: 0.0000 auroc_train: 0.9904 auprc_train: 0.9892 precision_train: 0.9451 recall_train: 0.9711 f1_train: 0.9579 cm_train: (tn=2022, fp=121, fn=62, tp=2083)
+2025-10-18 22:58:51 | INFO | EM.print | -------- Epoch 34 --------
+2025-10-18 22:58:51 | INFO | EM.print | epoch: 34/ iteration: 1/ loss_train: 1.770809 | task_loss:0.1218 cont_loss:8.7323 adv_loss:0.0000
+2025-10-18 22:58:54 | INFO | EM.print | epoch: 34/ iteration: 101/ loss_train: 1.8137654 | task_loss:0.2260 cont_loss:8.8428 adv_loss:0.0000
+2025-10-18 22:58:55 | INFO | EM.print | epoch: 0034 loss_train: 1.7980 task_loss: 0.1356 cont_loss: 8.8542 adv_loss: 0.0000 auroc_train: 0.9902 auprc_train: 0.9885 precision_train: 0.9438 recall_train: 0.9697 f1_train: 0.9566 cm_train: (tn=2018, fp=124, fn=65, tp=2081)
+2025-10-18 22:58:55 | INFO | EM.print | -------- Epoch 35 --------
+2025-10-18 22:58:55 | INFO | EM.print | epoch: 35/ iteration: 1/ loss_train: 1.7791789 | task_loss:0.0269 cont_loss:8.8690 adv_loss:0.0000
+2025-10-18 22:58:57 | INFO | EM.print | epoch: 35/ iteration: 101/ loss_train: 1.8251052 | task_loss:0.2689 cont_loss:8.8566 adv_loss:0.0000
+2025-10-18 22:58:58 | INFO | EM.print | epoch: 0035 loss_train: 1.7959 task_loss: 0.1462 cont_loss: 8.8334 adv_loss: 0.0000 auroc_train: 0.9910 auprc_train: 0.9894 precision_train: 0.9493 recall_train: 0.9785 f1_train: 0.9637 cm_train: (tn=2033, fp=112, fn=46, tp=2097)
+2025-10-18 22:58:58 | INFO | EM.print | -------- Epoch 36 --------
+2025-10-18 22:58:58 | INFO | EM.print | epoch: 36/ iteration: 1/ loss_train: 1.7789507 | task_loss:0.0543 cont_loss:8.8404 adv_loss:0.0000
+2025-10-18 22:59:01 | INFO | EM.print | epoch: 36/ iteration: 101/ loss_train: 1.7684133 | task_loss:0.1050 cont_loss:8.7371 adv_loss:0.0000
+2025-10-18 22:59:02 | INFO | EM.print | epoch: 0036 loss_train: 1.7514 task_loss: 0.0427 cont_loss: 8.7142 adv_loss: 0.0000 auroc_train: 0.9921 auprc_train: 0.9912 precision_train: 0.9500 recall_train: 0.9739 f1_train: 0.9618 cm_train: (tn=2033, fp=110, fn=56, tp=2089)
+2025-10-18 22:59:02 | INFO | EM.print | -------- Epoch 37 --------
+2025-10-18 22:59:02 | INFO | EM.print | epoch: 37/ iteration: 1/ loss_train: 1.7583505 | task_loss:0.0858 cont_loss:8.7057 adv_loss:0.0001
+2025-10-18 22:59:05 | INFO | EM.print | epoch: 37/ iteration: 101/ loss_train: 1.7741077 | task_loss:0.1254 cont_loss:8.7451 adv_loss:0.0000
+2025-10-18 22:59:06 | INFO | EM.print | epoch: 0037 loss_train: 1.7864 task_loss: 0.2014 cont_loss: 8.7303 adv_loss: 0.0000 auroc_train: 0.9914 auprc_train: 0.9904 precision_train: 0.9466 recall_train: 0.9739 f1_train: 0.9601 cm_train: (tn=2023, fp=118, fn=56, tp=2091)
+2025-10-18 22:59:06 | INFO | EM.print | -------- Epoch 38 --------
+2025-10-18 22:59:06 | INFO | EM.print | epoch: 38/ iteration: 1/ loss_train: 1.7599163 | task_loss:0.0338 cont_loss:8.7657 adv_loss:0.0000
+2025-10-18 22:59:09 | INFO | EM.print | epoch: 38/ iteration: 101/ loss_train: 1.758564 | task_loss:0.0684 cont_loss:8.7244 adv_loss:0.0000
+2025-10-18 22:59:10 | INFO | EM.print | epoch: 0038 loss_train: 1.7763 task_loss: 0.1814 cont_loss: 8.7001 adv_loss: 0.0000 auroc_train: 0.9919 auprc_train: 0.9909 precision_train: 0.9467 recall_train: 0.9697 f1_train: 0.9581 cm_train: (tn=2026, fp=117, fn=65, tp=2080)
+2025-10-18 22:59:10 | INFO | EM.print | -------- Epoch 39 --------
+2025-10-18 22:59:10 | INFO | EM.print | epoch: 39/ iteration: 1/ loss_train: 1.7777423 | task_loss:0.1819 cont_loss:8.7068 adv_loss:0.0000
+2025-10-18 22:59:13 | INFO | EM.print | epoch: 39/ iteration: 101/ loss_train: 1.7928116 | task_loss:0.2866 cont_loss:8.6775 adv_loss:0.0000
+2025-10-18 22:59:14 | INFO | EM.print | epoch: 0039 loss_train: 1.7884 task_loss: 0.2866 cont_loss: 8.6554 adv_loss: 0.0000 auroc_train: 0.9928 auprc_train: 0.9919 precision_train: 0.9503 recall_train: 0.9804 f1_train: 0.9651 cm_train: (tn=2033, fp=110, fn=42, tp=2103)
+2025-10-18 22:59:14 | INFO | EM.print | -------- Epoch 40 --------
+2025-10-18 22:59:14 | INFO | EM.print | epoch: 40/ iteration: 1/ loss_train: 1.7477094 | task_loss:0.0944 cont_loss:8.6441 adv_loss:0.0000
+2025-10-18 22:59:16 | INFO | EM.print | epoch: 40/ iteration: 101/ loss_train: 1.7295607 | task_loss:0.0597 cont_loss:8.5881 adv_loss:0.0000
+2025-10-18 22:59:17 | INFO | EM.print | epoch: 0040 loss_train: 1.7307 task_loss: 0.0982 cont_loss: 8.5553 adv_loss: 0.0000 auroc_train: 0.9930 auprc_train: 0.9923 precision_train: 0.9459 recall_train: 0.9781 f1_train: 0.9617 cm_train: (tn=2022, fp=120, fn=47, tp=2099)
+2025-10-18 22:59:17 | INFO | EM.print | -------- Epoch 41 --------
+2025-10-18 22:59:17 | INFO | EM.print | epoch: 41/ iteration: 1/ loss_train: 1.7214622 | task_loss:0.0312 cont_loss:8.5761 adv_loss:0.0000
+2025-10-18 22:59:20 | INFO | EM.print | epoch: 41/ iteration: 101/ loss_train: 1.7236645 | task_loss:0.0995 cont_loss:8.5187 adv_loss:0.0000
+2025-10-18 22:59:21 | INFO | EM.print | epoch: 0041 loss_train: 1.7173 task_loss: 0.0754 cont_loss: 8.5112 adv_loss: 0.0000 auroc_train: 0.9935 auprc_train: 0.9929 precision_train: 0.9495 recall_train: 0.9729 f1_train: 0.9611 cm_train: (tn=2033, fp=111, fn=58, tp=2086)
+2025-10-18 22:59:21 | INFO | EM.print | -------- Epoch 42 --------
+2025-10-18 22:59:21 | INFO | EM.print | epoch: 42/ iteration: 1/ loss_train: 1.7293782 | task_loss:0.1269 cont_loss:8.5200 adv_loss:0.0000
+2025-10-18 22:59:24 | INFO | EM.print | epoch: 42/ iteration: 101/ loss_train: 1.7223841 | task_loss:0.1218 cont_loss:8.4901 adv_loss:0.0000
+2025-10-18 22:59:25 | INFO | EM.print | epoch: 0042 loss_train: 1.7206 task_loss: 0.1042 cont_loss: 8.4988 adv_loss: 0.0000 auroc_train: 0.9931 auprc_train: 0.9923 precision_train: 0.9536 recall_train: 0.9758 f1_train: 0.9645 cm_train: (tn=2039, fp=102, fn=52, tp=2095)
+2025-10-18 22:59:25 | INFO | EM.print | -------- Epoch 43 --------
+2025-10-18 22:59:25 | INFO | EM.print | epoch: 43/ iteration: 1/ loss_train: 1.7149947 | task_loss:0.0620 cont_loss:8.5130 adv_loss:0.0000
+2025-10-18 22:59:28 | INFO | EM.print | epoch: 43/ iteration: 101/ loss_train: 1.7173955 | task_loss:0.0682 cont_loss:8.5188 adv_loss:0.0000
+2025-10-18 22:59:29 | INFO | EM.print | epoch: 0043 loss_train: 1.7170 task_loss: 0.1054 cont_loss: 8.4795 adv_loss: 0.0000 auroc_train: 0.9935 auprc_train: 0.9929 precision_train: 0.9526 recall_train: 0.9766 f1_train: 0.9645 cm_train: (tn=2043, fp=104, fn=50, tp=2091)
+2025-10-18 22:59:29 | INFO | EM.print | -------- Epoch 44 --------
+2025-10-18 22:59:29 | INFO | EM.print | epoch: 44/ iteration: 1/ loss_train: 1.7186216 | task_loss:0.0879 cont_loss:8.5023 adv_loss:0.0010
+2025-10-18 22:59:31 | INFO | EM.print | epoch: 44/ iteration: 101/ loss_train: 1.6954317 | task_loss:0.0260 cont_loss:8.4511 adv_loss:0.0000
+2025-10-18 22:59:32 | INFO | EM.print | epoch: 0044 loss_train: 1.7165 task_loss: 0.1855 cont_loss: 8.3969 adv_loss: 0.0000 auroc_train: 0.9941 auprc_train: 0.9934 precision_train: 0.9533 recall_train: 0.9799 f1_train: 0.9664 cm_train: (tn=2041, fp=103, fn=43, tp=2101)
+2025-10-18 22:59:32 | INFO | EM.print | -------- Epoch 45 --------
+2025-10-18 22:59:32 | INFO | EM.print | epoch: 45/ iteration: 1/ loss_train: 1.7001163 | task_loss:0.0889 cont_loss:8.4114 adv_loss:0.0001
+2025-10-18 22:59:35 | INFO | EM.print | epoch: 45/ iteration: 101/ loss_train: 1.706563 | task_loss:0.0935 cont_loss:8.4393 adv_loss:0.0000
+2025-10-18 22:59:36 | INFO | EM.print | epoch: 0045 loss_train: 1.6957 task_loss: 0.0462 cont_loss: 8.4325 adv_loss: 0.0000 auroc_train: 0.9939 auprc_train: 0.9930 precision_train: 0.9536 recall_train: 0.9799 f1_train: 0.9666 cm_train: (tn=2045, fp=102, fn=43, tp=2098)
+2025-10-18 22:59:36 | INFO | EM.print | -------- Epoch 46 --------
+2025-10-18 22:59:36 | INFO | EM.print | epoch: 46/ iteration: 1/ loss_train: 1.6993024 | task_loss:0.0793 cont_loss:8.4172 adv_loss:0.0000
+2025-10-18 22:59:39 | INFO | EM.print | epoch: 46/ iteration: 101/ loss_train: 1.7779425 | task_loss:0.3634 cont_loss:8.5262 adv_loss:0.0000
+2025-10-18 22:59:40 | INFO | EM.print | epoch: 0046 loss_train: 1.7184 task_loss: 0.0929 cont_loss: 8.4990 adv_loss: 0.0000 auroc_train: 0.9936 auprc_train: 0.9930 precision_train: 0.9552 recall_train: 0.9743 f1_train: 0.9647 cm_train: (tn=2047, fp=98, fn=55, tp=2088)
+2025-10-18 22:59:40 | INFO | EM.print | -------- Epoch 47 --------
+2025-10-18 22:59:40 | INFO | EM.print | epoch: 47/ iteration: 1/ loss_train: 1.714498 | task_loss:0.0664 cont_loss:8.5061 adv_loss:0.0000
+2025-10-18 22:59:43 | INFO | EM.print | epoch: 47/ iteration: 101/ loss_train: 1.7182397 | task_loss:0.1216 cont_loss:8.4695 adv_loss:0.0000
+2025-10-18 22:59:44 | INFO | EM.print | epoch: 0047 loss_train: 1.7231 task_loss: 0.1555 cont_loss: 8.4573 adv_loss: 0.0009 auroc_train: 0.9950 auprc_train: 0.9944 precision_train: 0.9555 recall_train: 0.9818 f1_train: 0.9685 cm_train: (tn=2046, fp=98, fn=39, tp=2105)
+2025-10-18 22:59:44 | INFO | EM.print | -------- Epoch 48 --------
+2025-10-18 22:59:44 | INFO | EM.print | epoch: 48/ iteration: 1/ loss_train: 1.7102203 | task_loss:0.0823 cont_loss:8.4688 adv_loss:0.0000
+2025-10-18 22:59:47 | INFO | EM.print | epoch: 48/ iteration: 101/ loss_train: 1.7108727 | task_loss:0.0467 cont_loss:8.5028 adv_loss:0.0016
+2025-10-18 22:59:48 | INFO | EM.print | epoch: 0048 loss_train: 1.6961 task_loss: 0.0118 cont_loss: 8.4686 adv_loss: 0.0000 auroc_train: 0.9953 auprc_train: 0.9948 precision_train: 0.9620 recall_train: 0.9804 f1_train: 0.9711 cm_train: (tn=2061, fp=83, fn=42, tp=2102)
+2025-10-18 22:59:48 | INFO | EM.print | -------- Epoch 49 --------
+2025-10-18 22:59:48 | INFO | EM.print | epoch: 49/ iteration: 1/ loss_train: 1.7490258 | task_loss:0.2652 cont_loss:8.4799 adv_loss:0.0000
+2025-10-18 22:59:50 | INFO | EM.print | epoch: 49/ iteration: 101/ loss_train: 1.7215543 | task_loss:0.0754 cont_loss:8.5323 adv_loss:0.0000
+2025-10-18 22:59:51 | INFO | EM.print | epoch: 0049 loss_train: 1.7099 task_loss: 0.0947 cont_loss: 8.4545 adv_loss: 0.0001 auroc_train: 0.9944 auprc_train: 0.9936 precision_train: 0.9566 recall_train: 0.9762 f1_train: 0.9663 cm_train: (tn=2049, fp=95, fn=51, tp=2093)
+2025-10-18 22:59:51 | INFO | EM.print | -------- Epoch 50 --------
+2025-10-18 22:59:51 | INFO | EM.print | epoch: 50/ iteration: 1/ loss_train: 1.7195247 | task_loss:0.1202 cont_loss:8.4774 adv_loss:0.0000
+2025-10-18 22:59:54 | INFO | EM.print | epoch: 50/ iteration: 101/ loss_train: 1.7405647 | task_loss:0.1788 cont_loss:8.5240 adv_loss:0.0000
+2025-10-18 22:59:55 | INFO | EM.print | epoch: 0050 loss_train: 1.6997 task_loss: 0.0745 cont_loss: 8.4241 adv_loss: 0.0000 auroc_train: 0.9951 auprc_train: 0.9946 precision_train: 0.9616 recall_train: 0.9809 f1_train: 0.9711 cm_train: (tn=2060, fp=84, fn=41, tp=2103)
+2025-10-18 22:59:55 | INFO | EM.print | Optimization Finished!
+2025-10-18 22:59:55 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/train_epoch_metrics_fold_2_20251018_225252.csv.txt
+2025-10-18 22:59:55 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_2_20251018_225252.csv
+2025-10-18 22:59:56 | INFO | EM.print | loss_test: 1.8911 auroc_test: 0.9444 auprc_test: 0.9330 precision_test: 0.8858 recall_test: 0.8539 f1_test: 0.8696 cm_test: (tn=471, fp=58, fn=77, tp=450)
+2025-10-18 22:59:56 | INFO | EM | Fold 2 completed.
+2025-10-18 22:59:56 | INFO | EM | === Fold 3/5 ===
+2025-10-18 22:59:56 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/adv_config_fold_3_20251018_225252.json.txt
+2025-10-18 22:59:56 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_3_20251018_225252.json
+2025-10-18 22:59:56 | INFO | EM.print | Start Training...
+2025-10-18 22:59:56 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-18 22:59:57 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.7488432 | task_loss:0.7498 cont_loss:0.8175 adv_loss:0.7257
+2025-10-18 22:59:59 | INFO | EM.print | epoch: 1/ iteration: 101/ loss_train: 1.8214287 | task_loss:0.4740 cont_loss:8.6299 adv_loss:0.0011
+2025-10-18 23:00:00 | INFO | EM.print | epoch: 0001 loss_train: 1.7258 task_loss: 0.2606 cont_loss: 8.3639 adv_loss: 0.0016 auroc_train: 0.8639 auprc_train: 0.8590 precision_train: 0.7607 recall_train: 0.7813 f1_train: 0.7709 cm_train: (tn=1622, fp=526, fn=468, tp=1672)
+2025-10-18 23:00:00 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-18 23:00:00 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 1.7324141 | task_loss:0.3085 cont_loss:8.3500 adv_loss:0.0012
+2025-10-18 23:00:03 | INFO | EM.print | epoch: 2/ iteration: 101/ loss_train: 1.8345169 | task_loss:0.3762 cont_loss:8.7950 adv_loss:0.0005
+2025-10-18 23:00:04 | INFO | EM.print | epoch: 0002 loss_train: 1.7992 task_loss: 0.3054 cont_loss: 8.6900 adv_loss: 0.0003 auroc_train: 0.9148 auprc_train: 0.9040 precision_train: 0.8243 recall_train: 0.8635 f1_train: 0.8434 cm_train: (tn=1747, fp=395, fn=293, tp=1853)
+2025-10-18 23:00:04 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-18 23:00:04 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 1.7923056 | task_loss:0.2739 cont_loss:8.6862 adv_loss:0.0005
+2025-10-18 23:00:07 | INFO | EM.print | epoch: 3/ iteration: 101/ loss_train: 1.7322018 | task_loss:0.3492 cont_loss:8.3116 adv_loss:0.0001
+2025-10-18 23:00:08 | INFO | EM.print | epoch: 0003 loss_train: 1.7382 task_loss: 0.2801 cont_loss: 8.4106 adv_loss: 0.0001 auroc_train: 0.9386 auprc_train: 0.9294 precision_train: 0.8517 recall_train: 0.8894 f1_train: 0.8701 cm_train: (tn=1813, fp=332, fn=237, tp=1906)
+2025-10-18 23:00:08 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-18 23:00:08 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 1.7601455 | task_loss:0.3893 cont_loss:8.4112 adv_loss:0.0001
+2025-10-18 23:00:11 | INFO | EM.print | epoch: 4/ iteration: 101/ loss_train: 1.7366611 | task_loss:0.2890 cont_loss:8.3936 adv_loss:0.0002
+2025-10-18 23:00:12 | INFO | EM.print | epoch: 0004 loss_train: 1.6983 task_loss: 0.2140 cont_loss: 8.2754 adv_loss: 0.0007 auroc_train: 0.9462 auprc_train: 0.9378 precision_train: 0.8561 recall_train: 0.9076 f1_train: 0.8811 cm_train: (tn=1818, fp=327, fn=198, tp=1945)
+2025-10-18 23:00:12 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-18 23:00:12 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 1.716045 | task_loss:0.3021 cont_loss:8.2776 adv_loss:0.0002
+2025-10-18 23:00:15 | INFO | EM.print | epoch: 5/ iteration: 101/ loss_train: 1.755363 | task_loss:0.3586 cont_loss:8.4179 adv_loss:0.0001
+2025-10-18 23:00:16 | INFO | EM.print | epoch: 0005 loss_train: 1.7559 task_loss: 0.3552 cont_loss: 8.4240 adv_loss: 0.0002 auroc_train: 0.9482 auprc_train: 0.9412 precision_train: 0.8575 recall_train: 0.9095 f1_train: 0.8828 cm_train: (tn=1820, fp=324, fn=194, tp=1950)
+2025-10-18 23:00:16 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-18 23:00:16 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 1.7328172 | task_loss:0.2399 cont_loss:8.4239 adv_loss:0.0001
+2025-10-18 23:00:18 | INFO | EM.print | epoch: 6/ iteration: 101/ loss_train: 1.74984 | task_loss:0.3173 cont_loss:8.4313 adv_loss:0.0002
+2025-10-18 23:00:19 | INFO | EM.print | epoch: 0006 loss_train: 1.7771 task_loss: 0.3296 cont_loss: 8.5557 adv_loss: 0.0001 auroc_train: 0.9534 auprc_train: 0.9481 precision_train: 0.8618 recall_train: 0.9165 f1_train: 0.8883 cm_train: (tn=1830, fp=315, fn=179, tp=1964)
+2025-10-18 23:00:19 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-18 23:00:19 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 1.748447 | task_loss:0.1850 cont_loss:8.5569 adv_loss:0.0001
+2025-10-18 23:00:22 | INFO | EM.print | epoch: 7/ iteration: 101/ loss_train: 1.7656553 | task_loss:0.1688 cont_loss:8.6591 adv_loss:0.0001
+2025-10-18 23:00:23 | INFO | EM.print | epoch: 0007 loss_train: 1.7793 task_loss: 0.2920 cont_loss: 8.6036 adv_loss: 0.0003 auroc_train: 0.9528 auprc_train: 0.9443 precision_train: 0.8591 recall_train: 0.9235 f1_train: 0.8901 cm_train: (tn=1818, fp=325, fn=164, tp=1981)
+2025-10-18 23:00:23 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-18 23:00:23 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 1.7671716 | task_loss:0.2325 cont_loss:8.6029 adv_loss:0.0001
+2025-10-18 23:00:26 | INFO | EM.print | epoch: 8/ iteration: 101/ loss_train: 1.7490395 | task_loss:0.1648 cont_loss:8.5798 adv_loss:0.0002
+2025-10-18 23:00:27 | INFO | EM.print | epoch: 0008 loss_train: 1.7818 task_loss: 0.2950 cont_loss: 8.6138 adv_loss: 0.0001 auroc_train: 0.9514 auprc_train: 0.9451 precision_train: 0.8570 recall_train: 0.9133 f1_train: 0.8843 cm_train: (tn=1815, fp=327, fn=186, tp=1960)
+2025-10-18 23:00:27 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-18 23:00:27 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 1.7676036 | task_loss:0.2511 cont_loss:8.5863 adv_loss:0.0002
+2025-10-18 23:00:30 | INFO | EM.print | epoch: 9/ iteration: 101/ loss_train: 1.82081 | task_loss:0.3037 cont_loss:8.7999 adv_loss:0.0002
+2025-10-18 23:00:31 | INFO | EM.print | epoch: 0009 loss_train: 1.7683 task_loss: 0.0937 cont_loss: 8.7469 adv_loss: 0.0002 auroc_train: 0.9437 auprc_train: 0.9367 precision_train: 0.8486 recall_train: 0.9052 f1_train: 0.8760 cm_train: (tn=1800, fp=346, fn=203, tp=1939)
+2025-10-18 23:00:31 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-18 23:00:31 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 1.7865351 | task_loss:0.1889 cont_loss:8.7435 adv_loss:0.0001
+2025-10-18 23:00:33 | INFO | EM.print | epoch: 10/ iteration: 101/ loss_train: 1.771438 | task_loss:0.2085 cont_loss:8.6482 adv_loss:0.0002
+2025-10-18 23:00:34 | INFO | EM.print | epoch: 0010 loss_train: 1.7857 task_loss: 0.1884 cont_loss: 8.7397 adv_loss: 0.0001 auroc_train: 0.9521 auprc_train: 0.9469 precision_train: 0.8622 recall_train: 0.9165 f1_train: 0.8885 cm_train: (tn=1830, fp=314, fn=179, tp=1965)
+2025-10-18 23:00:34 | INFO | EM.print | -------- Epoch 11 --------
+2025-10-18 23:00:34 | INFO | EM.print | epoch: 11/ iteration: 1/ loss_train: 1.7961929 | task_loss:0.2346 cont_loss:8.7452 adv_loss:0.0004
+2025-10-18 23:00:37 | INFO | EM.print | epoch: 11/ iteration: 101/ loss_train: 1.7836761 | task_loss:0.2976 cont_loss:8.6206 adv_loss:0.0000
+2025-10-18 23:00:38 | INFO | EM.print | epoch: 0011 loss_train: 1.7756 task_loss: 0.3691 cont_loss: 8.5085 adv_loss: 0.0002 auroc_train: 0.9550 auprc_train: 0.9502 precision_train: 0.8587 recall_train: 0.9264 f1_train: 0.8913 cm_train: (tn=1815, fp=327, fn=158, tp=1988)
+2025-10-18 23:00:38 | INFO | EM.print | -------- Epoch 12 --------
+2025-10-18 23:00:38 | INFO | EM.print | epoch: 12/ iteration: 1/ loss_train: 1.7414743 | task_loss:0.2020 cont_loss:8.5046 adv_loss:0.0002
+2025-10-18 23:00:41 | INFO | EM.print | epoch: 12/ iteration: 101/ loss_train: 1.7763393 | task_loss:0.2261 cont_loss:8.6555 adv_loss:0.0000
+2025-10-18 23:00:42 | INFO | EM.print | epoch: 0012 loss_train: 1.7610 task_loss: 0.2555 cont_loss: 8.5476 adv_loss: 0.0007 auroc_train: 0.9587 auprc_train: 0.9544 precision_train: 0.8611 recall_train: 0.9249 f1_train: 0.8918 cm_train: (tn=1824, fp=320, fn=161, tp=1983)
+2025-10-18 23:00:42 | INFO | EM.print | -------- Epoch 13 --------
+2025-10-18 23:00:42 | INFO | EM.print | epoch: 13/ iteration: 1/ loss_train: 1.7418517 | task_loss:0.1638 cont_loss:8.5454 adv_loss:0.0000
+2025-10-18 23:00:45 | INFO | EM.print | epoch: 13/ iteration: 101/ loss_train: 1.797994 | task_loss:0.3167 cont_loss:8.6730 adv_loss:0.0001
+2025-10-18 23:00:46 | INFO | EM.print | epoch: 0013 loss_train: 1.7759 task_loss: 0.1604 cont_loss: 8.7183 adv_loss: 0.0003 auroc_train: 0.9612 auprc_train: 0.9556 precision_train: 0.8642 recall_train: 0.9347 f1_train: 0.8981 cm_train: (tn=1828, fp=315, fn=140, tp=2005)
+2025-10-18 23:00:46 | INFO | EM.print | -------- Epoch 14 --------
+2025-10-18 23:00:46 | INFO | EM.print | epoch: 14/ iteration: 1/ loss_train: 1.7571576 | task_loss:0.0659 cont_loss:8.7193 adv_loss:0.0002
+2025-10-18 23:00:49 | INFO | EM.print | epoch: 14/ iteration: 101/ loss_train: 1.7829014 | task_loss:0.1571 cont_loss:8.7569 adv_loss:0.0002
+2025-10-18 23:00:50 | INFO | EM.print | epoch: 0014 loss_train: 1.7927 task_loss: 0.1763 cont_loss: 8.7869 adv_loss: 0.0001 auroc_train: 0.9611 auprc_train: 0.9567 precision_train: 0.8645 recall_train: 0.9355 f1_train: 0.8986 cm_train: (tn=1833, fp=314, fn=138, tp=2003)
+2025-10-18 23:00:50 | INFO | EM.print | -------- Epoch 15 --------
+2025-10-18 23:00:50 | INFO | EM.print | epoch: 15/ iteration: 1/ loss_train: 1.7731429 | task_loss:0.0810 cont_loss:8.7842 adv_loss:0.0002
+2025-10-18 23:00:53 | INFO | EM.print | epoch: 15/ iteration: 101/ loss_train: 1.7865288 | task_loss:0.2225 cont_loss:8.7087 adv_loss:0.0005
+2025-10-18 23:00:53 | INFO | EM.print | epoch: 0015 loss_train: 1.7983 task_loss: 0.2624 cont_loss: 8.7282 adv_loss: 0.0004 auroc_train: 0.9585 auprc_train: 0.9526 precision_train: 0.8645 recall_train: 0.9455 f1_train: 0.9031 cm_train: (tn=1825, fp=318, fn=117, tp=2028)
+2025-10-18 23:00:53 | INFO | EM.print | -------- Epoch 16 --------
+2025-10-18 23:00:54 | INFO | EM.print | epoch: 16/ iteration: 1/ loss_train: 1.7788749 | task_loss:0.1636 cont_loss:8.7300 adv_loss:0.0002
+2025-10-18 23:00:56 | INFO | EM.print | epoch: 16/ iteration: 101/ loss_train: 1.7832607 | task_loss:0.1870 cont_loss:8.7287 adv_loss:0.0002
+2025-10-18 23:00:57 | INFO | EM.print | epoch: 0016 loss_train: 1.7884 task_loss: 0.2259 cont_loss: 8.7153 adv_loss: 0.0002 auroc_train: 0.9548 auprc_train: 0.9472 precision_train: 0.8581 recall_train: 0.9357 f1_train: 0.8952 cm_train: (tn=1811, fp=332, fn=138, tp=2007)
+2025-10-18 23:00:57 | INFO | EM.print | -------- Epoch 17 --------
+2025-10-18 23:00:57 | INFO | EM.print | epoch: 17/ iteration: 1/ loss_train: 1.7760335 | task_loss:0.1672 cont_loss:8.7128 adv_loss:0.0001
+2025-10-18 23:01:00 | INFO | EM.print | epoch: 17/ iteration: 101/ loss_train: 1.7873187 | task_loss:0.2335 cont_loss:8.7026 adv_loss:0.0001
+2025-10-18 23:01:01 | INFO | EM.print | epoch: 0017 loss_train: 1.7794 task_loss: 0.1808 cont_loss: 8.7161 adv_loss: 0.0000 auroc_train: 0.9627 auprc_train: 0.9582 precision_train: 0.8601 recall_train: 0.9440 f1_train: 0.9001 cm_train: (tn=1816, fp=329, fn=120, tp=2023)
+2025-10-18 23:01:01 | INFO | EM.print | -------- Epoch 18 --------
+2025-10-18 23:01:01 | INFO | EM.print | epoch: 18/ iteration: 1/ loss_train: 1.7826427 | task_loss:0.1979 cont_loss:8.7153 adv_loss:0.0000
+2025-10-18 23:01:04 | INFO | EM.print | epoch: 18/ iteration: 101/ loss_train: 1.7455534 | task_loss:0.2126 cont_loss:8.5127 adv_loss:0.0008
+2025-10-18 23:01:05 | INFO | EM.print | epoch: 0018 loss_train: 1.8036 task_loss: 0.1575 cont_loss: 8.8601 adv_loss: 0.0002 auroc_train: 0.9636 auprc_train: 0.9592 precision_train: 0.8702 recall_train: 0.9427 f1_train: 0.9050 cm_train: (tn=1839, fp=302, fn=123, tp=2024)
+2025-10-18 23:01:05 | INFO | EM.print | -------- Epoch 19 --------
+2025-10-18 23:01:05 | INFO | EM.print | epoch: 19/ iteration: 1/ loss_train: 1.8143646 | task_loss:0.2201 cont_loss:8.8513 adv_loss:0.0002
+2025-10-18 23:01:08 | INFO | EM.print | epoch: 19/ iteration: 101/ loss_train: 1.8340578 | task_loss:0.2787 cont_loss:8.8911 adv_loss:0.0002
+2025-10-18 23:01:09 | INFO | EM.print | epoch: 0019 loss_train: 1.7875 task_loss: 0.1576 cont_loss: 8.7790 adv_loss: 0.0003 auroc_train: 0.9653 auprc_train: 0.9612 precision_train: 0.8638 recall_train: 0.9440 f1_train: 0.9021 cm_train: (tn=1826, fp=319, fn=120, tp=2023)
+2025-10-18 23:01:09 | INFO | EM.print | -------- Epoch 20 --------
+2025-10-18 23:01:09 | INFO | EM.print | epoch: 20/ iteration: 1/ loss_train: 1.826459 | task_loss:0.3587 cont_loss:8.7735 adv_loss:0.0000
+2025-10-18 23:01:12 | INFO | EM.print | epoch: 20/ iteration: 101/ loss_train: 1.8402712 | task_loss:0.3880 cont_loss:8.8132 adv_loss:0.0001
+2025-10-18 23:01:13 | INFO | EM.print | epoch: 0020 loss_train: 1.8321 task_loss: 0.2117 cont_loss: 8.9489 adv_loss: 0.0000 auroc_train: 0.9679 auprc_train: 0.9645 precision_train: 0.8670 recall_train: 0.9478 f1_train: 0.9056 cm_train: (tn=1830, fp=312, fn=112, tp=2034)
+2025-10-18 23:01:13 | INFO | EM.print | -------- Epoch 21 --------
+2025-10-18 23:01:13 | INFO | EM.print | epoch: 21/ iteration: 1/ loss_train: 1.8291885 | task_loss:0.1902 cont_loss:8.9556 adv_loss:0.0000
+2025-10-18 23:01:15 | INFO | EM.print | epoch: 21/ iteration: 101/ loss_train: 1.8022534 | task_loss:0.0522 cont_loss:8.9588 adv_loss:0.0001
+2025-10-18 23:01:16 | INFO | EM.print | epoch: 0021 loss_train: 1.8337 task_loss: 0.1826 cont_loss: 8.9861 adv_loss: 0.0000 auroc_train: 0.9715 auprc_train: 0.9686 precision_train: 0.8813 recall_train: 0.9491 f1_train: 0.9140 cm_train: (tn=1871, fp=274, fn=109, tp=2034)
+2025-10-18 23:01:16 | INFO | EM.print | -------- Epoch 22 --------
+2025-10-18 23:01:16 | INFO | EM.print | epoch: 22/ iteration: 1/ loss_train: 1.8226069 | task_loss:0.1270 cont_loss:8.9853 adv_loss:0.0002
+2025-10-18 23:01:19 | INFO | EM.print | epoch: 22/ iteration: 101/ loss_train: 1.8292327 | task_loss:0.1911 cont_loss:8.9547 adv_loss:0.0001
+2025-10-18 23:01:20 | INFO | EM.print | epoch: 0022 loss_train: 1.8077 task_loss: 0.1634 cont_loss: 8.8748 adv_loss: 0.0001 auroc_train: 0.9731 auprc_train: 0.9698 precision_train: 0.8919 recall_train: 0.9538 f1_train: 0.9218 cm_train: (tn=1895, fp=248, fn=99, tp=2046)
+2025-10-18 23:01:20 | INFO | EM.print | -------- Epoch 23 --------
+2025-10-18 23:01:20 | INFO | EM.print | epoch: 23/ iteration: 1/ loss_train: 1.8066766 | task_loss:0.1535 cont_loss:8.8796 adv_loss:0.0001
+2025-10-18 23:01:23 | INFO | EM.print | epoch: 23/ iteration: 101/ loss_train: 1.8273805 | task_loss:0.2861 cont_loss:8.8498 adv_loss:0.0004
+2025-10-18 23:01:24 | INFO | EM.print | epoch: 0023 loss_train: 1.8056 task_loss: 0.1946 cont_loss: 8.8329 adv_loss: 0.0002 auroc_train: 0.9758 auprc_train: 0.9733 precision_train: 0.9016 recall_train: 0.9483 f1_train: 0.9243 cm_train: (tn=1921, fp=222, fn=111, tp=2034)
+2025-10-18 23:01:24 | INFO | EM.print | -------- Epoch 24 --------
+2025-10-18 23:01:24 | INFO | EM.print | epoch: 24/ iteration: 1/ loss_train: 1.8163029 | task_loss:0.2525 cont_loss:8.8285 adv_loss:0.0002
+2025-10-18 23:01:27 | INFO | EM.print | epoch: 24/ iteration: 101/ loss_train: 1.7682418 | task_loss:0.0850 cont_loss:8.7559 adv_loss:0.0001
+2025-10-18 23:01:28 | INFO | EM.print | epoch: 0024 loss_train: 1.7871 task_loss: 0.1619 cont_loss: 8.7733 adv_loss: 0.0001 auroc_train: 0.9768 auprc_train: 0.9738 precision_train: 0.9037 recall_train: 0.9534 f1_train: 0.9279 cm_train: (tn=1924, fp=218, fn=100, tp=2046)
+2025-10-18 23:01:28 | INFO | EM.print | -------- Epoch 25 --------
+2025-10-18 23:01:28 | INFO | EM.print | epoch: 25/ iteration: 1/ loss_train: 1.7839923 | task_loss:0.1320 cont_loss:8.7875 adv_loss:0.0002
+2025-10-18 23:01:31 | INFO | EM.print | epoch: 25/ iteration: 101/ loss_train: 1.7670383 | task_loss:0.1535 cont_loss:8.6815 adv_loss:0.0001
+2025-10-18 23:01:32 | INFO | EM.print | epoch: 0025 loss_train: 1.7760 task_loss: 0.1947 cont_loss: 8.6851 adv_loss: 0.0000 auroc_train: 0.9785 auprc_train: 0.9755 precision_train: 0.9060 recall_train: 0.9589 f1_train: 0.9317 cm_train: (tn=1933, fp=213, fn=88, tp=2054)
+2025-10-18 23:01:32 | INFO | EM.print | -------- Epoch 26 --------
+2025-10-18 23:01:32 | INFO | EM.print | epoch: 26/ iteration: 1/ loss_train: 1.7736877 | task_loss:0.1871 cont_loss:8.6811 adv_loss:0.0001
+2025-10-18 23:01:34 | INFO | EM.print | epoch: 26/ iteration: 101/ loss_train: 1.7677845 | task_loss:0.2076 cont_loss:8.6310 adv_loss:0.0001
+2025-10-18 23:01:35 | INFO | EM.print | epoch: 0026 loss_train: 1.7722 task_loss: 0.2172 cont_loss: 8.6437 adv_loss: 0.0000 auroc_train: 0.9813 auprc_train: 0.9784 precision_train: 0.9124 recall_train: 0.9631 f1_train: 0.9370 cm_train: (tn=1950, fp=198, fn=79, tp=2061)
+2025-10-18 23:01:35 | INFO | EM.print | -------- Epoch 27 --------
+2025-10-18 23:01:35 | INFO | EM.print | epoch: 27/ iteration: 1/ loss_train: 1.7453561 | task_loss:0.1190 cont_loss:8.6076 adv_loss:0.0000
+2025-10-18 23:01:38 | INFO | EM.print | epoch: 27/ iteration: 101/ loss_train: 1.8157209 | task_loss:0.3151 cont_loss:8.7631 adv_loss:0.0001
+2025-10-18 23:01:39 | INFO | EM.print | epoch: 0027 loss_train: 1.8526 task_loss: 0.3943 cont_loss: 8.8684 adv_loss: 0.0000 auroc_train: 0.9767 auprc_train: 0.9736 precision_train: 0.9027 recall_train: 0.9520 f1_train: 0.9267 cm_train: (tn=1923, fp=220, fn=103, tp=2042)
+2025-10-18 23:01:39 | INFO | EM.print | -------- Epoch 28 --------
+2025-10-18 23:01:39 | INFO | EM.print | epoch: 28/ iteration: 1/ loss_train: 1.80662 | task_loss:0.1547 cont_loss:8.8783 adv_loss:0.0000
+2025-10-18 23:01:42 | INFO | EM.print | epoch: 28/ iteration: 101/ loss_train: 1.8225791 | task_loss:0.2187 cont_loss:8.8942 adv_loss:0.0000
+2025-10-18 23:01:43 | INFO | EM.print | epoch: 0028 loss_train: 1.8444 task_loss: 0.1444 cont_loss: 9.0774 adv_loss: 0.0000 auroc_train: 0.9771 auprc_train: 0.9726 precision_train: 0.9056 recall_train: 0.9576 f1_train: 0.9309 cm_train: (tn=1930, fp=214, fn=91, tp=2053)
+2025-10-18 23:01:43 | INFO | EM.print | -------- Epoch 29 --------
+2025-10-18 23:01:43 | INFO | EM.print | epoch: 29/ iteration: 1/ loss_train: 1.8496742 | task_loss:0.1679 cont_loss:9.0804 adv_loss:0.0000
+2025-10-18 23:01:46 | INFO | EM.print | epoch: 29/ iteration: 101/ loss_train: 1.79428 | task_loss:0.0698 cont_loss:8.9012 adv_loss:0.0001
+2025-10-18 23:01:47 | INFO | EM.print | epoch: 0029 loss_train: 1.8115 task_loss: 0.1146 cont_loss: 8.9367 adv_loss: 0.0020 auroc_train: 0.9765 auprc_train: 0.9722 precision_train: 0.9056 recall_train: 0.9538 f1_train: 0.9291 cm_train: (tn=1932, fp=213, fn=99, tp=2044)
+2025-10-18 23:01:47 | INFO | EM.print | -------- Epoch 30 --------
+2025-10-18 23:01:47 | INFO | EM.print | epoch: 30/ iteration: 1/ loss_train: 1.8256152 | task_loss:0.1883 cont_loss:8.9394 adv_loss:0.0001
+2025-10-18 23:01:50 | INFO | EM.print | epoch: 30/ iteration: 101/ loss_train: 1.7962859 | task_loss:0.0365 cont_loss:8.9449 adv_loss:0.0000
+2025-10-18 23:01:51 | INFO | EM.print | epoch: 0030 loss_train: 1.8206 task_loss: 0.2427 cont_loss: 8.8603 adv_loss: 0.0000 auroc_train: 0.9803 auprc_train: 0.9764 precision_train: 0.9177 recall_train: 0.9631 f1_train: 0.9398 cm_train: (tn=1962, fp=185, fn=79, tp=2062)
+2025-10-18 23:01:51 | INFO | EM.print | -------- Epoch 31 --------
+2025-10-18 23:01:51 | INFO | EM.print | epoch: 31/ iteration: 1/ loss_train: 1.7908957 | task_loss:0.1153 cont_loss:8.8392 adv_loss:0.0000
+2025-10-18 23:01:53 | INFO | EM.print | epoch: 31/ iteration: 101/ loss_train: 1.789585 | task_loss:0.1245 cont_loss:8.8235 adv_loss:0.0000
+2025-10-18 23:01:54 | INFO | EM.print | epoch: 0031 loss_train: 1.7739 task_loss: 0.0583 cont_loss: 8.8105 adv_loss: 0.0002 auroc_train: 0.9840 auprc_train: 0.9814 precision_train: 0.9212 recall_train: 0.9659 f1_train: 0.9430 cm_train: (tn=1970, fp=177, fn=73, tp=2068)
+2025-10-18 23:01:54 | INFO | EM.print | -------- Epoch 32 --------
+2025-10-18 23:01:54 | INFO | EM.print | epoch: 32/ iteration: 1/ loss_train: 1.8111134 | task_loss:0.2289 cont_loss:8.8266 adv_loss:0.0000
+2025-10-18 23:01:57 | INFO | EM.print | epoch: 32/ iteration: 101/ loss_train: 1.7902453 | task_loss:0.1411 cont_loss:8.8078 adv_loss:0.0008
+2025-10-18 23:01:58 | INFO | EM.print | epoch: 0032 loss_train: 1.8114 task_loss: 0.1389 cont_loss: 8.9170 adv_loss: 0.0004 auroc_train: 0.9837 auprc_train: 0.9810 precision_train: 0.9259 recall_train: 0.9678 f1_train: 0.9464 cm_train: (tn=1979, fp=166, fn=69, tp=2074)
+2025-10-18 23:01:58 | INFO | EM.print | -------- Epoch 33 --------
+2025-10-18 23:01:58 | INFO | EM.print | epoch: 33/ iteration: 1/ loss_train: 1.8054852 | task_loss:0.0942 cont_loss:8.9332 adv_loss:0.0000
+2025-10-18 23:02:01 | INFO | EM.print | epoch: 33/ iteration: 101/ loss_train: 1.7690381 | task_loss:0.1137 cont_loss:8.7315 adv_loss:0.0000
+2025-10-18 23:02:02 | INFO | EM.print | epoch: 0033 loss_train: 1.7653 task_loss: 0.1349 cont_loss: 8.6916 adv_loss: 0.0000 auroc_train: 0.9854 auprc_train: 0.9830 precision_train: 0.9285 recall_train: 0.9641 f1_train: 0.9460 cm_train: (tn=1986, fp=159, fn=77, tp=2066)
+2025-10-18 23:02:02 | INFO | EM.print | -------- Epoch 34 --------
+2025-10-18 23:02:02 | INFO | EM.print | epoch: 34/ iteration: 1/ loss_train: 1.7469331 | task_loss:0.0440 cont_loss:8.6906 adv_loss:0.0000
+2025-10-18 23:02:05 | INFO | EM.print | epoch: 34/ iteration: 101/ loss_train: 1.8082508 | task_loss:0.1637 cont_loss:8.8775 adv_loss:0.0000
+2025-10-18 23:02:06 | INFO | EM.print | epoch: 0034 loss_train: 1.7641 task_loss: 0.0938 cont_loss: 8.7266 adv_loss: 0.0000 auroc_train: 0.9864 auprc_train: 0.9843 precision_train: 0.9308 recall_train: 0.9651 f1_train: 0.9476 cm_train: (tn=1988, fp=154, fn=75, tp=2071)
+2025-10-18 23:02:06 | INFO | EM.print | -------- Epoch 35 --------
+2025-10-18 23:02:06 | INFO | EM.print | epoch: 35/ iteration: 1/ loss_train: 1.7648242 | task_loss:0.0726 cont_loss:8.7515 adv_loss:0.0000
+2025-10-18 23:02:08 | INFO | EM.print | epoch: 35/ iteration: 101/ loss_train: 1.8177668 | task_loss:0.2062 cont_loss:8.8826 adv_loss:0.0000
+2025-10-18 23:02:09 | INFO | EM.print | epoch: 0035 loss_train: 1.7951 task_loss: 0.1504 cont_loss: 8.8250 adv_loss: 0.0000 auroc_train: 0.9882 auprc_train: 0.9867 precision_train: 0.9312 recall_train: 0.9716 f1_train: 0.9509 cm_train: (tn=1989, fp=154, fn=61, tp=2084)
+2025-10-18 23:02:09 | INFO | EM.print | -------- Epoch 36 --------
+2025-10-18 23:02:09 | INFO | EM.print | epoch: 36/ iteration: 1/ loss_train: 1.7943282 | task_loss:0.1490 cont_loss:8.8227 adv_loss:0.0000
+2025-10-18 23:02:12 | INFO | EM.print | epoch: 36/ iteration: 101/ loss_train: 1.7937788 | task_loss:0.1316 cont_loss:8.8372 adv_loss:0.0000
+2025-10-18 23:02:13 | INFO | EM.print | epoch: 0036 loss_train: 1.8084 task_loss: 0.2421 cont_loss: 8.8001 adv_loss: 0.0000 auroc_train: 0.9865 auprc_train: 0.9842 precision_train: 0.9309 recall_train: 0.9678 f1_train: 0.9490 cm_train: (tn=1989, fp=154, fn=69, tp=2076)
+2025-10-18 23:02:13 | INFO | EM.print | -------- Epoch 37 --------
+2025-10-18 23:02:13 | INFO | EM.print | epoch: 37/ iteration: 1/ loss_train: 1.7792621 | task_loss:0.0885 cont_loss:8.8078 adv_loss:0.0000
+2025-10-18 23:02:16 | INFO | EM.print | epoch: 37/ iteration: 101/ loss_train: 1.789877 | task_loss:0.1350 cont_loss:8.8144 adv_loss:0.0000
+2025-10-18 23:02:17 | INFO | EM.print | epoch: 0037 loss_train: 1.7640 task_loss: 0.0305 cont_loss: 8.7894 adv_loss: 0.0000 auroc_train: 0.9897 auprc_train: 0.9882 precision_train: 0.9380 recall_train: 0.9725 f1_train: 0.9549 cm_train: (tn=2004, fp=138, fn=59, tp=2087)
+2025-10-18 23:02:17 | INFO | EM.print | -------- Epoch 38 --------
+2025-10-18 23:02:17 | INFO | EM.print | epoch: 38/ iteration: 1/ loss_train: 1.778752 | task_loss:0.0837 cont_loss:8.8100 adv_loss:0.0000
+2025-10-18 23:02:20 | INFO | EM.print | epoch: 38/ iteration: 101/ loss_train: 1.7660326 | task_loss:0.0660 cont_loss:8.7641 adv_loss:0.0000
+2025-10-18 23:02:21 | INFO | EM.print | epoch: 0038 loss_train: 1.7777 task_loss: 0.1974 cont_loss: 8.6910 adv_loss: 0.0000 auroc_train: 0.9886 auprc_train: 0.9869 precision_train: 0.9359 recall_train: 0.9674 f1_train: 0.9514 cm_train: (tn=2002, fp=142, fn=70, tp=2074)
+2025-10-18 23:02:21 | INFO | EM.print | -------- Epoch 39 --------
+2025-10-18 23:02:21 | INFO | EM.print | epoch: 39/ iteration: 1/ loss_train: 1.753791 | task_loss:0.0660 cont_loss:8.7030 adv_loss:0.0000
+2025-10-18 23:02:24 | INFO | EM.print | epoch: 39/ iteration: 101/ loss_train: 1.7515569 | task_loss:0.0878 cont_loss:8.6700 adv_loss:0.0000
+2025-10-18 23:02:25 | INFO | EM.print | epoch: 0039 loss_train: 1.7200 task_loss: 0.0551 cont_loss: 8.5447 adv_loss: 0.0000 auroc_train: 0.9905 auprc_train: 0.9891 precision_train: 0.9406 recall_train: 0.9748 f1_train: 0.9574 cm_train: (tn=2011, fp=132, fn=54, tp=2091)
+2025-10-18 23:02:25 | INFO | EM.print | -------- Epoch 40 --------
+2025-10-18 23:02:25 | INFO | EM.print | epoch: 40/ iteration: 1/ loss_train: 1.7168456 | task_loss:0.0382 cont_loss:8.5461 adv_loss:0.0000
+2025-10-18 23:02:27 | INFO | EM.print | epoch: 40/ iteration: 101/ loss_train: 1.758153 | task_loss:0.0646 cont_loss:8.7262 adv_loss:0.0000
+2025-10-18 23:02:28 | INFO | EM.print | epoch: 0040 loss_train: 1.7726 task_loss: 0.1511 cont_loss: 8.7117 adv_loss: 0.0000 auroc_train: 0.9906 auprc_train: 0.9893 precision_train: 0.9460 recall_train: 0.9715 f1_train: 0.9586 cm_train: (tn=2025, fp=119, fn=61, tp=2083)
+2025-10-18 23:02:28 | INFO | EM.print | -------- Epoch 41 --------
+2025-10-18 23:02:28 | INFO | EM.print | epoch: 41/ iteration: 1/ loss_train: 1.796816 | task_loss:0.2881 cont_loss:8.6960 adv_loss:0.0000
+2025-10-18 23:02:31 | INFO | EM.print | epoch: 41/ iteration: 101/ loss_train: 1.7840204 | task_loss:0.2575 cont_loss:8.6626 adv_loss:0.0000
+2025-10-18 23:02:32 | INFO | EM.print | epoch: 0041 loss_train: 1.7889 task_loss: 0.2784 cont_loss: 8.6659 adv_loss: 0.0000 auroc_train: 0.9888 auprc_train: 0.9873 precision_train: 0.9408 recall_train: 0.9697 f1_train: 0.9550 cm_train: (tn=2012, fp=131, fn=65, tp=2080)
+2025-10-18 23:02:32 | INFO | EM.print | -------- Epoch 42 --------
+2025-10-18 23:02:32 | INFO | EM.print | epoch: 42/ iteration: 1/ loss_train: 1.7556626 | task_loss:0.1216 cont_loss:8.6567 adv_loss:0.0000
+2025-10-18 23:02:35 | INFO | EM.print | epoch: 42/ iteration: 101/ loss_train: 1.7070451 | task_loss:0.0649 cont_loss:8.4703 adv_loss:0.0000
+2025-10-18 23:02:36 | INFO | EM.print | epoch: 0042 loss_train: 1.6959 task_loss: 0.0794 cont_loss: 8.4000 adv_loss: 0.0000 auroc_train: 0.9920 auprc_train: 0.9914 precision_train: 0.9459 recall_train: 0.9701 f1_train: 0.9579 cm_train: (tn=2025, fp=119, fn=64, tp=2080)
+2025-10-18 23:02:36 | INFO | EM.print | -------- Epoch 43 --------
+2025-10-18 23:02:36 | INFO | EM.print | epoch: 43/ iteration: 1/ loss_train: 1.713951 | task_loss:0.1443 cont_loss:8.4254 adv_loss:0.0000
+2025-10-18 23:02:39 | INFO | EM.print | epoch: 43/ iteration: 101/ loss_train: 1.7636913 | task_loss:0.0444 cont_loss:8.7740 adv_loss:0.0000
+2025-10-18 23:02:40 | INFO | EM.print | epoch: 0043 loss_train: 1.7706 task_loss: 0.1450 cont_loss: 8.7082 adv_loss: 0.0000 auroc_train: 0.9908 auprc_train: 0.9896 precision_train: 0.9477 recall_train: 0.9716 f1_train: 0.9595 cm_train: (tn=2028, fp=115, fn=61, tp=2084)
+2025-10-18 23:02:40 | INFO | EM.print | -------- Epoch 44 --------
+2025-10-18 23:02:40 | INFO | EM.print | epoch: 44/ iteration: 1/ loss_train: 1.7589407 | task_loss:0.0811 cont_loss:8.7136 adv_loss:0.0000
+2025-10-18 23:02:42 | INFO | EM.print | epoch: 44/ iteration: 101/ loss_train: 1.719009 | task_loss:0.0448 cont_loss:8.5502 adv_loss:0.0000
+2025-10-18 23:02:43 | INFO | EM.print | epoch: 0044 loss_train: 1.7390 task_loss: 0.0727 cont_loss: 8.6224 adv_loss: 0.0000 auroc_train: 0.9918 auprc_train: 0.9903 precision_train: 0.9478 recall_train: 0.9739 f1_train: 0.9607 cm_train: (tn=2029, fp=115, fn=56, tp=2088)
+2025-10-18 23:02:43 | INFO | EM.print | -------- Epoch 45 --------
+2025-10-18 23:02:43 | INFO | EM.print | epoch: 45/ iteration: 1/ loss_train: 1.7296754 | task_loss:0.0283 cont_loss:8.6201 adv_loss:0.0000
+2025-10-18 23:02:46 | INFO | EM.print | epoch: 45/ iteration: 101/ loss_train: 1.7411004 | task_loss:0.0870 cont_loss:8.6185 adv_loss:0.0000
+2025-10-18 23:02:47 | INFO | EM.print | epoch: 0045 loss_train: 1.7241 task_loss: 0.0164 cont_loss: 8.6042 adv_loss: 0.0000 auroc_train: 0.9920 auprc_train: 0.9908 precision_train: 0.9525 recall_train: 0.9739 f1_train: 0.9631 cm_train: (tn=2042, fp=104, fn=56, tp=2086)
+2025-10-18 23:02:47 | INFO | EM.print | -------- Epoch 46 --------
+2025-10-18 23:02:47 | INFO | EM.print | epoch: 46/ iteration: 1/ loss_train: 1.7213384 | task_loss:0.0215 cont_loss:8.5852 adv_loss:0.0000
+2025-10-18 23:02:50 | INFO | EM.print | epoch: 46/ iteration: 101/ loss_train: 1.7186399 | task_loss:0.0388 cont_loss:8.5544 adv_loss:0.0000
+2025-10-18 23:02:51 | INFO | EM.print | epoch: 0046 loss_train: 1.7164 task_loss: 0.0517 cont_loss: 8.5301 adv_loss: 0.0000 auroc_train: 0.9923 auprc_train: 0.9915 precision_train: 0.9504 recall_train: 0.9734 f1_train: 0.9618 cm_train: (tn=2035, fp=109, fn=57, tp=2087)
+2025-10-18 23:02:51 | INFO | EM.print | -------- Epoch 47 --------
+2025-10-18 23:02:51 | INFO | EM.print | epoch: 47/ iteration: 1/ loss_train: 1.7119672 | task_loss:0.0451 cont_loss:8.5147 adv_loss:0.0000
+2025-10-18 23:02:54 | INFO | EM.print | epoch: 47/ iteration: 101/ loss_train: 1.7156049 | task_loss:0.0611 cont_loss:8.5170 adv_loss:0.0000
+2025-10-18 23:02:55 | INFO | EM.print | epoch: 0047 loss_train: 1.7412 task_loss: 0.1803 cont_loss: 8.5259 adv_loss: 0.0000 auroc_train: 0.9934 auprc_train: 0.9927 precision_train: 0.9505 recall_train: 0.9757 f1_train: 0.9629 cm_train: (tn=2035, fp=109, fn=52, tp=2092)
+2025-10-18 23:02:55 | INFO | EM.print | -------- Epoch 48 --------
+2025-10-18 23:02:55 | INFO | EM.print | epoch: 48/ iteration: 1/ loss_train: 1.7140225 | task_loss:0.0095 cont_loss:8.5606 adv_loss:0.0000
+2025-10-18 23:02:58 | INFO | EM.print | epoch: 48/ iteration: 101/ loss_train: 1.7067101 | task_loss:0.0354 cont_loss:8.4982 adv_loss:0.0000
+2025-10-18 23:02:59 | INFO | EM.print | epoch: 0048 loss_train: 1.6939 task_loss: 0.0154 cont_loss: 8.4543 adv_loss: 0.0000 auroc_train: 0.9922 auprc_train: 0.9914 precision_train: 0.9464 recall_train: 0.9720 f1_train: 0.9590 cm_train: (tn=2026, fp=118, fn=60, tp=2084)
+2025-10-18 23:02:59 | INFO | EM.print | -------- Epoch 49 --------
+2025-10-18 23:02:59 | INFO | EM.print | epoch: 49/ iteration: 1/ loss_train: 1.7042089 | task_loss:0.0588 cont_loss:8.4622 adv_loss:0.0000
+2025-10-18 23:03:01 | INFO | EM.print | epoch: 49/ iteration: 101/ loss_train: 1.6851217 | task_loss:0.0349 cont_loss:8.3907 adv_loss:0.0000
+2025-10-18 23:03:02 | INFO | EM.print | epoch: 0049 loss_train: 1.7055 task_loss: 0.0254 cont_loss: 8.5018 adv_loss: 0.0000 auroc_train: 0.9942 auprc_train: 0.9933 precision_train: 0.9588 recall_train: 0.9757 f1_train: 0.9672 cm_train: (tn=2054, fp=90, fn=52, tp=2092)
+2025-10-18 23:03:02 | INFO | EM.print | -------- Epoch 50 --------
+2025-10-18 23:03:02 | INFO | EM.print | epoch: 50/ iteration: 1/ loss_train: 1.7116158 | task_loss:0.0190 cont_loss:8.5391 adv_loss:0.0000
+2025-10-18 23:03:05 | INFO | EM.print | epoch: 50/ iteration: 101/ loss_train: 1.7035003 | task_loss:0.0821 cont_loss:8.4354 adv_loss:0.0000
+2025-10-18 23:03:06 | INFO | EM.print | epoch: 0050 loss_train: 1.7103 task_loss: 0.0524 cont_loss: 8.4992 adv_loss: 0.0000 auroc_train: 0.9936 auprc_train: 0.9928 precision_train: 0.9531 recall_train: 0.9757 f1_train: 0.9643 cm_train: (tn=2042, fp=103, fn=52, tp=2091)
+2025-10-18 23:03:06 | INFO | EM.print | Optimization Finished!
+2025-10-18 23:03:06 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/train_epoch_metrics_fold_3_20251018_225252.csv.txt
+2025-10-18 23:03:06 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_3_20251018_225252.csv
+2025-10-18 23:03:07 | INFO | EM.print | loss_test: 1.7417 auroc_test: 0.9561 auprc_test: 0.9549 precision_test: 0.8952 recall_test: 0.8935 f1_test: 0.8944 cm_test: (tn=475, fp=55, fn=56, tp=470)
+2025-10-18 23:03:07 | INFO | EM | Fold 3 completed.
+2025-10-18 23:03:07 | INFO | EM | === Fold 4/5 ===
+2025-10-18 23:03:07 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/adv_config_fold_4_20251018_225252.json.txt
+2025-10-18 23:03:07 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_4_20251018_225252.json
+2025-10-18 23:03:07 | INFO | EM.print | Start Training...
+2025-10-18 23:03:07 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-18 23:03:08 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.8227427 | task_loss:0.6977 cont_loss:1.2885 adv_loss:0.7092
+2025-10-18 23:03:10 | INFO | EM.print | epoch: 1/ iteration: 101/ loss_train: 1.7449542 | task_loss:0.2658 cont_loss:8.4495 adv_loss:0.0031
+2025-10-18 23:03:11 | INFO | EM.print | epoch: 0001 loss_train: 1.7184 task_loss: 0.2127 cont_loss: 8.3722 adv_loss: 0.0024 auroc_train: 0.8853 auprc_train: 0.8767 precision_train: 0.7861 recall_train: 0.8228 f1_train: 0.8040 cm_train: (tn=1664, fp=480, fn=380, tp=1764)
+2025-10-18 23:03:11 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-18 23:03:11 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 1.7648212 | task_loss:0.4318 cont_loss:8.3833 adv_loss:0.0030
+2025-10-18 23:03:14 | INFO | EM.print | epoch: 2/ iteration: 101/ loss_train: 1.6095775 | task_loss:0.1913 cont_loss:7.8478 adv_loss:0.0029
+2025-10-18 23:03:15 | INFO | EM.print | epoch: 0002 loss_train: 1.8218 task_loss: 0.4096 cont_loss: 8.6951 adv_loss: 0.0014 auroc_train: 0.9342 auprc_train: 0.9273 precision_train: 0.8415 recall_train: 0.8741 f1_train: 0.8575 cm_train: (tn=1791, fp=353, fn=270, tp=1874)
+2025-10-18 23:03:15 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-18 23:03:15 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 1.8350291 | task_loss:0.4823 cont_loss:8.6877 adv_loss:0.0017
+2025-10-18 23:03:18 | INFO | EM.print | epoch: 3/ iteration: 101/ loss_train: 1.7575226 | task_loss:0.3550 cont_loss:8.4281 adv_loss:0.0015
+2025-10-18 23:03:19 | INFO | EM.print | epoch: 0003 loss_train: 1.7569 task_loss: 0.3667 cont_loss: 8.4144 adv_loss: 0.0011 auroc_train: 0.9406 auprc_train: 0.9310 precision_train: 0.8561 recall_train: 0.8908 f1_train: 0.8731 cm_train: (tn=1824, fp=321, fn=234, tp=1909)
+2025-10-18 23:03:19 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-18 23:03:19 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 1.720186 | task_loss:0.1972 cont_loss:8.4000 adv_loss:0.0012
+2025-10-18 23:03:22 | INFO | EM.print | epoch: 4/ iteration: 101/ loss_train: 1.7379217 | task_loss:0.2667 cont_loss:8.4188 adv_loss:0.0014
+2025-10-18 23:03:23 | INFO | EM.print | epoch: 0004 loss_train: 1.7630 task_loss: 0.3659 cont_loss: 8.4457 adv_loss: 0.0011 auroc_train: 0.9526 auprc_train: 0.9467 precision_train: 0.8616 recall_train: 0.9058 f1_train: 0.8831 cm_train: (tn=1832, fp=312, fn=202, tp=1942)
+2025-10-18 23:03:23 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-18 23:03:23 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 1.7086867 | task_loss:0.0905 cont_loss:8.4485 adv_loss:0.0015
+2025-10-18 23:03:26 | INFO | EM.print | epoch: 5/ iteration: 101/ loss_train: 1.6901741 | task_loss:0.2685 cont_loss:8.1796 adv_loss:0.0009
+2025-10-18 23:03:27 | INFO | EM.print | epoch: 0005 loss_train: 1.7159 task_loss: 0.2894 cont_loss: 8.2870 adv_loss: 0.0010 auroc_train: 0.9574 auprc_train: 0.9535 precision_train: 0.8639 recall_train: 0.9058 f1_train: 0.8843 cm_train: (tn=1838, fp=306, fn=202, tp=1942)
+2025-10-18 23:03:27 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-18 23:03:27 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 1.693321 | task_loss:0.1720 cont_loss:8.2900 adv_loss:0.0015
+2025-10-18 23:03:29 | INFO | EM.print | epoch: 6/ iteration: 101/ loss_train: 1.700827 | task_loss:0.2229 cont_loss:8.2744 adv_loss:0.0023
+2025-10-18 23:03:30 | INFO | EM.print | epoch: 0006 loss_train: 1.7119 task_loss: 0.2694 cont_loss: 8.2879 adv_loss: 0.0008 auroc_train: 0.9579 auprc_train: 0.9516 precision_train: 0.8773 recall_train: 0.9166 f1_train: 0.8965 cm_train: (tn=1868, fp=275, fn=179, tp=1966)
+2025-10-18 23:03:30 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-18 23:03:30 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 1.7027122 | task_loss:0.2227 cont_loss:8.2883 adv_loss:0.0009
+2025-10-18 23:03:33 | INFO | EM.print | epoch: 7/ iteration: 101/ loss_train: 1.7642629 | task_loss:0.2038 cont_loss:8.6137 adv_loss:0.0013
+2025-10-18 23:03:34 | INFO | EM.print | epoch: 0007 loss_train: 1.7467 task_loss: 0.1508 cont_loss: 8.5795 adv_loss: 0.0011 auroc_train: 0.9655 auprc_train: 0.9597 precision_train: 0.8914 recall_train: 0.9300 f1_train: 0.9103 cm_train: (tn=1901, fp=243, fn=150, tp=1994)
+2025-10-18 23:03:34 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-18 23:03:34 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 1.7933638 | task_loss:0.3799 cont_loss:8.5800 adv_loss:0.0023
+2025-10-18 23:03:37 | INFO | EM.print | epoch: 8/ iteration: 101/ loss_train: 1.6715299 | task_loss:0.1567 cont_loss:8.1959 adv_loss:0.0017
+2025-10-18 23:03:38 | INFO | EM.print | epoch: 0008 loss_train: 1.6877 task_loss: 0.2012 cont_loss: 8.2298 adv_loss: 0.0026 auroc_train: 0.9692 auprc_train: 0.9641 precision_train: 0.8951 recall_train: 0.9413 f1_train: 0.9176 cm_train: (tn=1903, fp=237, fn=126, tp=2022)
+2025-10-18 23:03:38 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-18 23:03:38 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 1.7053641 | task_loss:0.2402 cont_loss:8.2798 adv_loss:0.0023
+2025-10-18 23:03:41 | INFO | EM.print | epoch: 9/ iteration: 101/ loss_train: 1.7483758 | task_loss:0.1339 cont_loss:8.6067 adv_loss:0.0004
+2025-10-18 23:03:41 | INFO | EM.print | epoch: 0009 loss_train: 1.7555 task_loss: 0.2698 cont_loss: 8.5043 adv_loss: 0.0012 auroc_train: 0.9714 auprc_train: 0.9659 precision_train: 0.8985 recall_train: 0.9379 f1_train: 0.9178 cm_train: (tn=1919, fp=227, fn=133, tp=2009)
+2025-10-18 23:03:41 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-18 23:03:42 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 1.7448255 | task_loss:0.2086 cont_loss:8.5115 adv_loss:0.0013
+2025-10-18 23:03:44 | INFO | EM.print | epoch: 10/ iteration: 101/ loss_train: 1.777941 | task_loss:0.2908 cont_loss:8.5973 adv_loss:0.0005
+2025-10-18 23:03:45 | INFO | EM.print | epoch: 0010 loss_train: 1.7584 task_loss: 0.0869 cont_loss: 8.6999 adv_loss: 0.0018 auroc_train: 0.9735 auprc_train: 0.9699 precision_train: 0.9054 recall_train: 0.9430 f1_train: 0.9239 cm_train: (tn=1935, fp=211, fn=122, tp=2020)
+2025-10-18 23:03:45 | INFO | EM.print | -------- Epoch 11 --------
+2025-10-18 23:03:45 | INFO | EM.print | epoch: 11/ iteration: 1/ loss_train: 1.7994038 | task_loss:0.2940 cont_loss:8.7002 adv_loss:0.0009
+2025-10-18 23:03:48 | INFO | EM.print | epoch: 11/ iteration: 101/ loss_train: 1.7206728 | task_loss:0.1982 cont_loss:8.4016 adv_loss:0.0012
+2025-10-18 23:03:49 | INFO | EM.print | epoch: 0011 loss_train: 1.4863 task_loss: 0.3971 cont_loss: 7.0280 adv_loss: 0.0022 auroc_train: 0.9778 auprc_train: 0.9732 precision_train: 0.9112 recall_train: 0.9491 f1_train: 0.9298 cm_train: (tn=1949, fp=198, fn=109, tp=2032)
+2025-10-18 23:03:49 | INFO | EM.print | -------- Epoch 12 --------
+2025-10-18 23:03:49 | INFO | EM.print | epoch: 12/ iteration: 1/ loss_train: 1.4148778 | task_loss:0.0553 cont_loss:7.0160 adv_loss:0.0010
+2025-10-18 23:03:52 | INFO | EM.print | epoch: 12/ iteration: 101/ loss_train: 1.8030466 | task_loss:0.3170 cont_loss:8.6963 adv_loss:0.0007
+2025-10-18 23:03:53 | INFO | EM.print | epoch: 0012 loss_train: 1.8091 task_loss: 0.2360 cont_loss: 8.8063 adv_loss: 0.0011 auroc_train: 0.9710 auprc_train: 0.9649 precision_train: 0.9012 recall_train: 0.9450 f1_train: 0.9226 cm_train: (tn=1922, fp=222, fn=118, tp=2026)
+2025-10-18 23:03:53 | INFO | EM.print | -------- Epoch 13 --------
+2025-10-18 23:03:53 | INFO | EM.print | epoch: 13/ iteration: 1/ loss_train: 1.8145308 | task_loss:0.2585 cont_loss:8.8112 adv_loss:0.0010
+2025-10-18 23:03:56 | INFO | EM.print | epoch: 13/ iteration: 101/ loss_train: 1.7921637 | task_loss:0.0853 cont_loss:8.8724 adv_loss:0.0010
+2025-10-18 23:03:57 | INFO | EM.print | epoch: 0013 loss_train: 1.7974 task_loss: 0.1369 cont_loss: 8.8469 adv_loss: 0.0010 auroc_train: 0.9792 auprc_train: 0.9750 precision_train: 0.9134 recall_train: 0.9505 f1_train: 0.9316 cm_train: (tn=1953, fp=193, fn=106, tp=2036)
+2025-10-18 23:03:57 | INFO | EM.print | -------- Epoch 14 --------
+2025-10-18 23:03:57 | INFO | EM.print | epoch: 14/ iteration: 1/ loss_train: 1.8114198 | task_loss:0.2079 cont_loss:8.8473 adv_loss:0.0006
+2025-10-18 23:04:00 | INFO | EM.print | epoch: 14/ iteration: 101/ loss_train: 1.5624603 | task_loss:0.1589 cont_loss:7.6477 adv_loss:0.0019
+2025-10-18 23:04:01 | INFO | EM.print | epoch: 0014 loss_train: 1.7814 task_loss: 0.2706 cont_loss: 8.6336 adv_loss: 0.0010 auroc_train: 0.9763 auprc_train: 0.9719 precision_train: 0.9103 recall_train: 0.9468 f1_train: 0.9282 cm_train: (tn=1944, fp=200, fn=114, tp=2030)
+2025-10-18 23:04:01 | INFO | EM.print | -------- Epoch 15 --------
+2025-10-18 23:04:01 | INFO | EM.print | epoch: 15/ iteration: 1/ loss_train: 1.7454814 | task_loss:0.0776 cont_loss:8.6457 adv_loss:0.0014
+2025-10-18 23:04:04 | INFO | EM.print | epoch: 15/ iteration: 101/ loss_train: 1.8059651 | task_loss:0.1538 cont_loss:8.8738 adv_loss:0.0007
+2025-10-18 23:04:05 | INFO | EM.print | epoch: 0015 loss_train: 1.8104 task_loss: 0.1626 cont_loss: 8.8870 adv_loss: 0.0007 auroc_train: 0.9784 auprc_train: 0.9734 precision_train: 0.9207 recall_train: 0.9542 f1_train: 0.9372 cm_train: (tn=1970, fp=176, fn=98, tp=2044)
+2025-10-18 23:04:05 | INFO | EM.print | -------- Epoch 16 --------
+2025-10-18 23:04:05 | INFO | EM.print | epoch: 16/ iteration: 1/ loss_train: 1.8301942 | task_loss:0.2630 cont_loss:8.8857 adv_loss:0.0008
+2025-10-18 23:04:07 | INFO | EM.print | epoch: 16/ iteration: 101/ loss_train: 1.8001364 | task_loss:0.1313 cont_loss:8.8684 adv_loss:0.0003
+2025-10-18 23:04:08 | INFO | EM.print | epoch: 0016 loss_train: 1.8329 task_loss: 0.3101 cont_loss: 8.8528 adv_loss: 0.0005 auroc_train: 0.9825 auprc_train: 0.9794 precision_train: 0.9220 recall_train: 0.9585 f1_train: 0.9399 cm_train: (tn=1968, fp=174, fn=89, tp=2057)
+2025-10-18 23:04:08 | INFO | EM.print | -------- Epoch 17 --------
+2025-10-18 23:04:08 | INFO | EM.print | epoch: 17/ iteration: 1/ loss_train: 1.7851425 | task_loss:0.0716 cont_loss:8.8516 adv_loss:0.0008
+2025-10-18 23:04:11 | INFO | EM.print | epoch: 17/ iteration: 101/ loss_train: 1.7053539 | task_loss:0.1043 cont_loss:8.4203 adv_loss:0.0007
+2025-10-18 23:04:12 | INFO | EM.print | epoch: 0017 loss_train: 1.6769 task_loss: 0.1082 cont_loss: 8.2699 adv_loss: 0.0021 auroc_train: 0.9844 auprc_train: 0.9817 precision_train: 0.9286 recall_train: 0.9581 f1_train: 0.9431 cm_train: (tn=1984, fp=158, fn=90, tp=2056)
+2025-10-18 23:04:12 | INFO | EM.print | -------- Epoch 18 --------
+2025-10-18 23:04:12 | INFO | EM.print | epoch: 18/ iteration: 1/ loss_train: 1.686643 | task_loss:0.0895 cont_loss:8.3390 adv_loss:0.0016
+2025-10-18 23:04:15 | INFO | EM.print | epoch: 18/ iteration: 101/ loss_train: 1.824553 | task_loss:0.1414 cont_loss:8.9769 adv_loss:0.0015
+2025-10-18 23:04:16 | INFO | EM.print | epoch: 0018 loss_train: 1.8515 task_loss: 0.2796 cont_loss: 8.9751 adv_loss: 0.0009 auroc_train: 0.9702 auprc_train: 0.9660 precision_train: 0.9013 recall_train: 0.9366 f1_train: 0.9186 cm_train: (tn=1924, fp=220, fn=136, tp=2008)
+2025-10-18 23:04:16 | INFO | EM.print | -------- Epoch 19 --------
+2025-10-18 23:04:16 | INFO | EM.print | epoch: 19/ iteration: 1/ loss_train: 1.8191454 | task_loss:0.1192 cont_loss:8.9757 adv_loss:0.0003
+2025-10-18 23:04:19 | INFO | EM.print | epoch: 19/ iteration: 101/ loss_train: 1.7982244 | task_loss:0.0349 cont_loss:8.9539 adv_loss:0.0008
+2025-10-18 23:04:20 | INFO | EM.print | epoch: 0019 loss_train: 1.8157 task_loss: 0.1296 cont_loss: 8.9454 adv_loss: 0.0012 auroc_train: 0.9802 auprc_train: 0.9775 precision_train: 0.9128 recall_train: 0.9575 f1_train: 0.9346 cm_train: (tn=1949, fp=196, fn=91, tp=2052)
+2025-10-18 23:04:20 | INFO | EM.print | -------- Epoch 20 --------
+2025-10-18 23:04:20 | INFO | EM.print | epoch: 20/ iteration: 1/ loss_train: 1.832161 | task_loss:0.2101 cont_loss:8.9457 adv_loss:0.0017
+2025-10-18 23:04:23 | INFO | EM.print | epoch: 20/ iteration: 101/ loss_train: 1.8154235 | task_loss:0.1644 cont_loss:8.9095 adv_loss:0.0011
+2025-10-18 23:04:24 | INFO | EM.print | epoch: 0020 loss_train: 1.7877 task_loss: 0.0518 cont_loss: 8.8835 adv_loss: 0.0010 auroc_train: 0.9835 auprc_train: 0.9796 precision_train: 0.9267 recall_train: 0.9617 f1_train: 0.9439 cm_train: (tn=1983, fp=163, fn=82, tp=2060)
+2025-10-18 23:04:24 | INFO | EM.print | -------- Epoch 21 --------
+2025-10-18 23:04:24 | INFO | EM.print | epoch: 21/ iteration: 1/ loss_train: 1.8077093 | task_loss:0.1557 cont_loss:8.8813 adv_loss:0.0005
+2025-10-18 23:04:26 | INFO | EM.print | epoch: 21/ iteration: 101/ loss_train: 1.8114083 | task_loss:0.1498 cont_loss:8.9040 adv_loss:0.0011
+2025-10-18 23:04:27 | INFO | EM.print | epoch: 0021 loss_train: 1.8096 task_loss: 0.1315 cont_loss: 8.9141 adv_loss: 0.0008 auroc_train: 0.9844 auprc_train: 0.9807 precision_train: 0.9282 recall_train: 0.9637 f1_train: 0.9456 cm_train: (tn=1982, fp=160, fn=78, tp=2068)
+2025-10-18 23:04:27 | INFO | EM.print | -------- Epoch 22 --------
+2025-10-18 23:04:27 | INFO | EM.print | epoch: 22/ iteration: 1/ loss_train: 1.8104291 | task_loss:0.1442 cont_loss:8.9061 adv_loss:0.0006
+2025-10-18 23:04:30 | INFO | EM.print | epoch: 22/ iteration: 101/ loss_train: 1.8091754 | task_loss:0.1762 cont_loss:8.8682 adv_loss:0.0005
+2025-10-18 23:04:31 | INFO | EM.print | epoch: 0022 loss_train: 1.7815 task_loss: 0.0593 cont_loss: 8.8472 adv_loss: 0.0003 auroc_train: 0.9861 auprc_train: 0.9832 precision_train: 0.9353 recall_train: 0.9702 f1_train: 0.9524 cm_train: (tn=1999, fp=144, fn=64, tp=2081)
+2025-10-18 23:04:31 | INFO | EM.print | -------- Epoch 23 --------
+2025-10-18 23:04:31 | INFO | EM.print | epoch: 23/ iteration: 1/ loss_train: 1.8065567 | task_loss:0.1806 cont_loss:8.8478 adv_loss:0.0015
+2025-10-18 23:04:34 | INFO | EM.print | epoch: 23/ iteration: 101/ loss_train: 1.8066207 | task_loss:0.2067 cont_loss:8.8227 adv_loss:0.0012
+2025-10-18 23:04:35 | INFO | EM.print | epoch: 0023 loss_train: 1.7875 task_loss: 0.1265 cont_loss: 8.8065 adv_loss: 0.0015 auroc_train: 0.9860 auprc_train: 0.9823 precision_train: 0.9340 recall_train: 0.9692 f1_train: 0.9513 cm_train: (tn=1996, fp=147, fn=66, tp=2079)
+2025-10-18 23:04:35 | INFO | EM.print | -------- Epoch 24 --------
+2025-10-18 23:04:35 | INFO | EM.print | epoch: 24/ iteration: 1/ loss_train: 1.7763463 | task_loss:0.0670 cont_loss:8.8111 adv_loss:0.0012
+2025-10-18 23:04:38 | INFO | EM.print | epoch: 24/ iteration: 101/ loss_train: 1.7914895 | task_loss:0.1600 cont_loss:8.7955 adv_loss:0.0007
+2025-10-18 23:04:39 | INFO | EM.print | epoch: 0024 loss_train: 1.7726 task_loss: 0.0705 cont_loss: 8.7902 adv_loss: 0.0007 auroc_train: 0.9854 auprc_train: 0.9818 precision_train: 0.9348 recall_train: 0.9692 f1_train: 0.9517 cm_train: (tn=1998, fp=145, fn=66, tp=2079)
+2025-10-18 23:04:39 | INFO | EM.print | -------- Epoch 25 --------
+2025-10-18 23:04:39 | INFO | EM.print | epoch: 25/ iteration: 1/ loss_train: 1.7673107 | task_loss:0.0583 cont_loss:8.7757 adv_loss:0.0009
+2025-10-18 23:04:42 | INFO | EM.print | epoch: 25/ iteration: 101/ loss_train: 1.6107429 | task_loss:0.1858 cont_loss:7.8633 adv_loss:0.0015
+2025-10-18 23:04:43 | INFO | EM.print | epoch: 0025 loss_train: 1.7797 task_loss: 0.1184 cont_loss: 8.7634 adv_loss: 0.0056 auroc_train: 0.9849 auprc_train: 0.9814 precision_train: 0.9285 recall_train: 0.9636 f1_train: 0.9457 cm_train: (tn=1986, fp=159, fn=78, tp=2065)
+2025-10-18 23:04:43 | INFO | EM.print | -------- Epoch 26 --------
+2025-10-18 23:04:43 | INFO | EM.print | epoch: 26/ iteration: 1/ loss_train: 1.7849824 | task_loss:0.1373 cont_loss:8.7806 adv_loss:0.0024
+2025-10-18 23:04:45 | INFO | EM.print | epoch: 26/ iteration: 101/ loss_train: 1.869886 | task_loss:0.3890 cont_loss:8.9601 adv_loss:0.0001
+2025-10-18 23:04:46 | INFO | EM.print | epoch: 0026 loss_train: 1.8164 task_loss: 0.1126 cont_loss: 8.9662 adv_loss: 0.0011 auroc_train: 0.9819 auprc_train: 0.9789 precision_train: 0.9237 recall_train: 0.9543 f1_train: 0.9388 cm_train: (tn=1974, fp=169, fn=98, tp=2047)
+2025-10-18 23:04:46 | INFO | EM.print | -------- Epoch 27 --------
+2025-10-18 23:04:46 | INFO | EM.print | epoch: 27/ iteration: 1/ loss_train: 1.8155807 | task_loss:0.1057 cont_loss:8.9700 adv_loss:0.0007
+2025-10-18 23:04:49 | INFO | EM.print | epoch: 27/ iteration: 101/ loss_train: 1.8073661 | task_loss:0.0625 cont_loss:8.9716 adv_loss:0.0009
+2025-10-18 23:04:50 | INFO | EM.print | epoch: 0027 loss_train: 1.8347 task_loss: 0.2008 cont_loss: 8.9708 adv_loss: 0.0006 auroc_train: 0.9871 auprc_train: 0.9851 precision_train: 0.9315 recall_train: 0.9646 f1_train: 0.9478 cm_train: (tn=1992, fp=152, fn=76, tp=2068)
+2025-10-18 23:04:50 | INFO | EM.print | -------- Epoch 28 --------
+2025-10-18 23:04:50 | INFO | EM.print | epoch: 28/ iteration: 1/ loss_train: 1.8018056 | task_loss:0.0301 cont_loss:8.9723 adv_loss:0.0022
+2025-10-18 23:04:53 | INFO | EM.print | epoch: 28/ iteration: 101/ loss_train: 1.8083956 | task_loss:0.0803 cont_loss:8.9588 adv_loss:0.0010
+2025-10-18 23:04:54 | INFO | EM.print | epoch: 0028 loss_train: 1.8082 task_loss: 0.0884 cont_loss: 8.9519 adv_loss: 0.0002 auroc_train: 0.9863 auprc_train: 0.9838 precision_train: 0.9358 recall_train: 0.9716 f1_train: 0.9533 cm_train: (tn=2000, fp=143, fn=61, tp=2084)
+2025-10-18 23:04:54 | INFO | EM.print | -------- Epoch 29 --------
+2025-10-18 23:04:54 | INFO | EM.print | epoch: 29/ iteration: 1/ loss_train: 1.8194406 | task_loss:0.1229 cont_loss:8.9537 adv_loss:0.0069
+2025-10-18 23:04:57 | INFO | EM.print | epoch: 29/ iteration: 101/ loss_train: 1.796009 | task_loss:0.0622 cont_loss:8.9156 adv_loss:0.0007
+2025-10-18 23:04:58 | INFO | EM.print | epoch: 0029 loss_train: 1.8003 task_loss: 0.1008 cont_loss: 8.8988 adv_loss: 0.0007 auroc_train: 0.9894 auprc_train: 0.9879 precision_train: 0.9391 recall_train: 0.9706 f1_train: 0.9546 cm_train: (tn=2010, fp=135, fn=63, tp=2080)
+2025-10-18 23:04:58 | INFO | EM.print | -------- Epoch 30 --------
+2025-10-18 23:04:58 | INFO | EM.print | epoch: 30/ iteration: 1/ loss_train: 1.7824923 | task_loss:0.0132 cont_loss:8.8967 adv_loss:0.0009
+2025-10-18 23:05:00 | INFO | EM.print | epoch: 30/ iteration: 101/ loss_train: 1.7943046 | task_loss:0.0945 cont_loss:8.8749 adv_loss:0.0007
+2025-10-18 23:05:01 | INFO | EM.print | epoch: 0030 loss_train: 1.7818 task_loss: 0.0290 cont_loss: 8.8773 adv_loss: 0.0009 auroc_train: 0.9886 auprc_train: 0.9865 precision_train: 0.9430 recall_train: 0.9720 f1_train: 0.9573 cm_train: (tn=2019, fp=126, fn=60, tp=2083)
+2025-10-18 23:05:01 | INFO | EM.print | -------- Epoch 31 --------
+2025-10-18 23:05:01 | INFO | EM.print | epoch: 31/ iteration: 1/ loss_train: 1.7840142 | task_loss:0.0442 cont_loss:8.8749 adv_loss:0.0003
+2025-10-18 23:05:04 | INFO | EM.print | epoch: 31/ iteration: 101/ loss_train: 1.8127283 | task_loss:0.1685 cont_loss:8.8909 adv_loss:0.0014
+2025-10-18 23:05:05 | INFO | EM.print | epoch: 0031 loss_train: 1.7911 task_loss: 0.0750 cont_loss: 8.8757 adv_loss: 0.0017 auroc_train: 0.9896 auprc_train: 0.9880 precision_train: 0.9427 recall_train: 0.9748 f1_train: 0.9585 cm_train: (tn=2016, fp=127, fn=54, tp=2091)
+2025-10-18 23:05:05 | INFO | EM.print | -------- Epoch 32 --------
+2025-10-18 23:05:05 | INFO | EM.print | epoch: 32/ iteration: 1/ loss_train: 1.7969466 | task_loss:0.1142 cont_loss:8.8698 adv_loss:0.0002
+2025-10-18 23:05:08 | INFO | EM.print | epoch: 32/ iteration: 101/ loss_train: 1.7413797 | task_loss:0.0075 cont_loss:8.6992 adv_loss:0.0001
+2025-10-18 23:05:09 | INFO | EM.print | epoch: 0032 loss_train: 1.7193 task_loss: 0.0226 cont_loss: 8.5731 adv_loss: 0.0003 auroc_train: 0.9897 auprc_train: 0.9874 precision_train: 0.9462 recall_train: 0.9758 f1_train: 0.9608 cm_train: (tn=2024, fp=119, fn=52, tp=2093)
+2025-10-18 23:05:09 | INFO | EM.print | -------- Epoch 33 --------
+2025-10-18 23:05:09 | INFO | EM.print | epoch: 33/ iteration: 1/ loss_train: 1.7226286 | task_loss:0.0314 cont_loss:8.5801 adv_loss:0.0005
+2025-10-18 23:05:12 | INFO | EM.print | epoch: 33/ iteration: 101/ loss_train: 1.74149 | task_loss:0.0108 cont_loss:8.6931 adv_loss:0.0012
+2025-10-18 23:05:13 | INFO | EM.print | epoch: 0033 loss_train: 1.7526 task_loss: 0.0459 cont_loss: 8.7157 adv_loss: 0.0004 auroc_train: 0.9893 auprc_train: 0.9873 precision_train: 0.9453 recall_train: 0.9748 f1_train: 0.9599 cm_train: (tn=2021, fp=121, fn=54, tp=2092)
+2025-10-18 23:05:13 | INFO | EM.print | -------- Epoch 34 --------
+2025-10-18 23:05:13 | INFO | EM.print | epoch: 34/ iteration: 1/ loss_train: 1.7640171 | task_loss:0.1051 cont_loss:8.7105 adv_loss:0.0015
+2025-10-18 23:05:16 | INFO | EM.print | epoch: 34/ iteration: 101/ loss_train: 1.743277 | task_loss:0.0467 cont_loss:8.6663 adv_loss:0.0012
+2025-10-18 23:05:17 | INFO | EM.print | epoch: 0034 loss_train: 1.7328 task_loss: 0.0300 cont_loss: 8.6311 adv_loss: 0.0009 auroc_train: 0.9894 auprc_train: 0.9876 precision_train: 0.9445 recall_train: 0.9692 f1_train: 0.9567 cm_train: (tn=2022, fp=122, fn=66, tp=2078)
+2025-10-18 23:05:17 | INFO | EM.print | -------- Epoch 35 --------
+2025-10-18 23:05:17 | INFO | EM.print | epoch: 35/ iteration: 1/ loss_train: 1.7523592 | task_loss:0.1162 cont_loss:8.6404 adv_loss:0.0017
+2025-10-18 23:05:19 | INFO | EM.print | epoch: 35/ iteration: 101/ loss_train: 1.7510716 | task_loss:0.0930 cont_loss:8.6609 adv_loss:0.0005
+2025-10-18 23:05:20 | INFO | EM.print | epoch: 0035 loss_train: 1.8314 task_loss: 0.4219 cont_loss: 8.7314 adv_loss: 0.0012 auroc_train: 0.9904 auprc_train: 0.9889 precision_train: 0.9453 recall_train: 0.9744 f1_train: 0.9596 cm_train: (tn=2022, fp=121, fn=55, tp=2090)
+2025-10-18 23:05:20 | INFO | EM.print | -------- Epoch 36 --------
+2025-10-18 23:05:20 | INFO | EM.print | epoch: 36/ iteration: 1/ loss_train: 1.7692306 | task_loss:0.1141 cont_loss:8.7291 adv_loss:0.0010
+2025-10-18 23:05:23 | INFO | EM.print | epoch: 36/ iteration: 101/ loss_train: 1.7445143 | task_loss:0.3231 cont_loss:8.3987 adv_loss:0.0003
+2025-10-18 23:05:24 | INFO | EM.print | epoch: 0036 loss_train: 1.7621 task_loss: 0.0772 cont_loss: 8.7319 adv_loss: 0.0004 auroc_train: 0.9909 auprc_train: 0.9887 precision_train: 0.9457 recall_train: 0.9753 f1_train: 0.9602 cm_train: (tn=2026, fp=120, fn=53, tp=2089)
+2025-10-18 23:05:24 | INFO | EM.print | -------- Epoch 37 --------
+2025-10-18 23:05:24 | INFO | EM.print | epoch: 37/ iteration: 1/ loss_train: 1.7895046 | task_loss:0.2040 cont_loss:8.7377 adv_loss:0.0020
+2025-10-18 23:05:27 | INFO | EM.print | epoch: 37/ iteration: 101/ loss_train: 1.8139824 | task_loss:0.1799 cont_loss:8.8824 adv_loss:0.0025
+2025-10-18 23:05:28 | INFO | EM.print | epoch: 0037 loss_train: 1.8119 task_loss: 0.2421 cont_loss: 8.8148 adv_loss: 0.0008 auroc_train: 0.9860 auprc_train: 0.9836 precision_train: 0.9292 recall_train: 0.9678 f1_train: 0.9481 cm_train: (tn=1987, fp=158, fn=69, tp=2074)
+2025-10-18 23:05:28 | INFO | EM.print | -------- Epoch 38 --------
+2025-10-18 23:05:28 | INFO | EM.print | epoch: 38/ iteration: 1/ loss_train: 1.8040156 | task_loss:0.2188 cont_loss:8.7972 adv_loss:0.0014
+2025-10-18 23:05:31 | INFO | EM.print | epoch: 38/ iteration: 101/ loss_train: 1.8501015 | task_loss:0.2435 cont_loss:9.0025 adv_loss:0.0015
+2025-10-18 23:05:32 | INFO | EM.print | epoch: 0038 loss_train: 1.8094 task_loss: 0.0383 cont_loss: 9.0039 adv_loss: 0.0017 auroc_train: 0.9853 auprc_train: 0.9809 precision_train: 0.9365 recall_train: 0.9632 f1_train: 0.9497 cm_train: (tn=2003, fp=140, fn=79, tp=2066)
+2025-10-18 23:05:32 | INFO | EM.print | -------- Epoch 39 --------
+2025-10-18 23:05:32 | INFO | EM.print | epoch: 39/ iteration: 1/ loss_train: 1.8238322 | task_loss:0.1102 cont_loss:9.0049 adv_loss:0.0013
+2025-10-18 23:05:35 | INFO | EM.print | epoch: 39/ iteration: 101/ loss_train: 1.8246026 | task_loss:0.1141 cont_loss:9.0072 adv_loss:0.0006
+2025-10-18 23:05:36 | INFO | EM.print | epoch: 0039 loss_train: 1.8400 task_loss: 0.1877 cont_loss: 9.0088 adv_loss: 0.0012 auroc_train: 0.9902 auprc_train: 0.9891 precision_train: 0.9446 recall_train: 0.9711 f1_train: 0.9577 cm_train: (tn=2022, fp=122, fn=62, tp=2082)
+2025-10-18 23:05:36 | INFO | EM.print | -------- Epoch 40 --------
+2025-10-18 23:05:36 | INFO | EM.print | epoch: 40/ iteration: 1/ loss_train: 1.8190513 | task_loss:0.0833 cont_loss:9.0086 adv_loss:0.0011
+2025-10-18 23:05:38 | INFO | EM.print | epoch: 40/ iteration: 101/ loss_train: 1.8405157 | task_loss:0.1934 cont_loss:9.0078 adv_loss:0.0005
+2025-10-18 23:05:39 | INFO | EM.print | epoch: 0040 loss_train: 1.8222 task_loss: 0.1016 cont_loss: 9.0076 adv_loss: 0.0006 auroc_train: 0.9903 auprc_train: 0.9889 precision_train: 0.9439 recall_train: 0.9725 f1_train: 0.9580 cm_train: (tn=2018, fp=124, fn=59, tp=2087)
+2025-10-18 23:05:39 | INFO | EM.print | -------- Epoch 41 --------
+2025-10-18 23:05:39 | INFO | EM.print | epoch: 41/ iteration: 1/ loss_train: 1.8095804 | task_loss:0.0370 cont_loss:9.0087 adv_loss:0.0007
+2025-10-18 23:05:42 | INFO | EM.print | epoch: 41/ iteration: 101/ loss_train: 1.8444744 | task_loss:0.2138 cont_loss:9.0069 adv_loss:0.0006
+2025-10-18 23:05:43 | INFO | EM.print | epoch: 0041 loss_train: 1.8303 task_loss: 0.1409 cont_loss: 9.0077 adv_loss: 0.0010 auroc_train: 0.9905 auprc_train: 0.9883 precision_train: 0.9498 recall_train: 0.9772 f1_train: 0.9633 cm_train: (tn=2030, fp=111, fn=49, tp=2098)
+2025-10-18 23:05:43 | INFO | EM.print | -------- Epoch 42 --------
+2025-10-18 23:05:43 | INFO | EM.print | epoch: 42/ iteration: 1/ loss_train: 1.822999 | task_loss:0.1055 cont_loss:9.0068 adv_loss:0.0009
+2025-10-18 23:05:46 | INFO | EM.print | epoch: 42/ iteration: 101/ loss_train: 1.8227049 | task_loss:0.1051 cont_loss:9.0059 adv_loss:0.0008
+2025-10-18 23:05:47 | INFO | EM.print | epoch: 0042 loss_train: 1.8366 task_loss: 0.1728 cont_loss: 9.0067 adv_loss: 0.0012 auroc_train: 0.9912 auprc_train: 0.9897 precision_train: 0.9474 recall_train: 0.9743 f1_train: 0.9607 cm_train: (tn=2029, fp=116, fn=55, tp=2088)
+2025-10-18 23:05:47 | INFO | EM.print | -------- Epoch 43 --------
+2025-10-18 23:05:47 | INFO | EM.print | epoch: 43/ iteration: 1/ loss_train: 1.8058656 | task_loss:0.0212 cont_loss:9.0060 adv_loss:0.0007
+2025-10-18 23:05:50 | INFO | EM.print | epoch: 43/ iteration: 101/ loss_train: 1.889981 | task_loss:0.4446 cont_loss:9.0029 adv_loss:0.0008
+2025-10-18 23:05:51 | INFO | EM.print | epoch: 0043 loss_train: 1.8208 task_loss: 0.0996 cont_loss: 9.0023 adv_loss: 0.0007 auroc_train: 0.9921 auprc_train: 0.9906 precision_train: 0.9531 recall_train: 0.9744 f1_train: 0.9636 cm_train: (tn=2039, fp=103, fn=55, tp=2091)
+2025-10-18 23:05:51 | INFO | EM.print | -------- Epoch 44 --------
+2025-10-18 23:05:51 | INFO | EM.print | epoch: 44/ iteration: 1/ loss_train: 1.8386515 | task_loss:0.1833 cont_loss:9.0041 adv_loss:0.0020
+2025-10-18 23:05:53 | INFO | EM.print | epoch: 44/ iteration: 101/ loss_train: 1.816084 | task_loss:0.0740 cont_loss:9.0043 adv_loss:0.0007
+2025-10-18 23:05:54 | INFO | EM.print | epoch: 0044 loss_train: 1.8217 task_loss: 0.1023 cont_loss: 9.0015 adv_loss: 0.0016 auroc_train: 0.9924 auprc_train: 0.9914 precision_train: 0.9527 recall_train: 0.9753 f1_train: 0.9638 cm_train: (tn=2038, fp=104, fn=53, tp=2093)
+2025-10-18 23:05:54 | INFO | EM.print | -------- Epoch 45 --------
+2025-10-18 23:05:54 | INFO | EM.print | epoch: 45/ iteration: 1/ loss_train: 1.8294914 | task_loss:0.1421 cont_loss:9.0032 adv_loss:0.0007
+2025-10-18 23:05:57 | INFO | EM.print | epoch: 45/ iteration: 101/ loss_train: 1.8097074 | task_loss:0.0481 cont_loss:8.9993 adv_loss:0.0004
+2025-10-18 23:05:58 | INFO | EM.print | epoch: 0045 loss_train: 1.8045 task_loss: 0.0200 cont_loss: 9.0022 adv_loss: 0.0001 auroc_train: 0.9928 auprc_train: 0.9914 precision_train: 0.9551 recall_train: 0.9832 f1_train: 0.9689 cm_train: (tn=2047, fp=99, fn=36, tp=2106)
+2025-10-18 23:05:58 | INFO | EM.print | -------- Epoch 46 --------
+2025-10-18 23:05:58 | INFO | EM.print | epoch: 46/ iteration: 1/ loss_train: 1.8041263 | task_loss:0.0179 cont_loss:9.0001 adv_loss:0.0009
+2025-10-18 23:06:01 | INFO | EM.print | epoch: 46/ iteration: 101/ loss_train: 1.8135351 | task_loss:0.0681 cont_loss:8.9974 adv_loss:0.0007
+2025-10-18 23:06:02 | INFO | EM.print | epoch: 0046 loss_train: 1.8048 task_loss: 0.0272 cont_loss: 8.9954 adv_loss: 0.0004 auroc_train: 0.9923 auprc_train: 0.9912 precision_train: 0.9522 recall_train: 0.9757 f1_train: 0.9638 cm_train: (tn=2039, fp=105, fn=52, tp=2092)
+2025-10-18 23:06:02 | INFO | EM.print | -------- Epoch 47 --------
+2025-10-18 23:06:02 | INFO | EM.print | epoch: 47/ iteration: 1/ loss_train: 1.8198665 | task_loss:0.1046 cont_loss:8.9932 adv_loss:0.0005
+2025-10-18 23:06:05 | INFO | EM.print | epoch: 47/ iteration: 101/ loss_train: 1.8125598 | task_loss:0.0606 cont_loss:8.9973 adv_loss:0.0016
+2025-10-18 23:06:06 | INFO | EM.print | epoch: 0047 loss_train: 1.8062 task_loss: 0.0398 cont_loss: 8.9894 adv_loss: 0.0006 auroc_train: 0.9929 auprc_train: 0.9916 precision_train: 0.9549 recall_train: 0.9776 f1_train: 0.9661 cm_train: (tn=2046, fp=99, fn=48, tp=2095)
+2025-10-18 23:06:06 | INFO | EM.print | -------- Epoch 48 --------
+2025-10-18 23:06:06 | INFO | EM.print | epoch: 48/ iteration: 1/ loss_train: 1.8276364 | task_loss:0.1401 cont_loss:8.9960 adv_loss:0.0007
+2025-10-18 23:06:09 | INFO | EM.print | epoch: 48/ iteration: 101/ loss_train: 1.8106341 | task_loss:0.0602 cont_loss:8.9904 adv_loss:0.0009
+2025-10-18 23:06:10 | INFO | EM.print | epoch: 0048 loss_train: 1.8019 task_loss: 0.0286 cont_loss: 8.9798 adv_loss: 0.0003 auroc_train: 0.9931 auprc_train: 0.9921 precision_train: 0.9536 recall_train: 0.9781 f1_train: 0.9657 cm_train: (tn=2041, fp=102, fn=47, tp=2098)
+2025-10-18 23:06:10 | INFO | EM.print | -------- Epoch 49 --------
+2025-10-18 23:06:10 | INFO | EM.print | epoch: 49/ iteration: 1/ loss_train: 1.8095558 | task_loss:0.0617 cont_loss:8.9848 adv_loss:0.0004
+2025-10-18 23:06:12 | INFO | EM.print | epoch: 49/ iteration: 101/ loss_train: 1.8032116 | task_loss:0.0485 cont_loss:8.9651 adv_loss:0.0008
+2025-10-18 23:06:13 | INFO | EM.print | epoch: 0049 loss_train: 1.7952 task_loss: 0.0259 cont_loss: 8.9484 adv_loss: 0.0005 auroc_train: 0.9932 auprc_train: 0.9921 precision_train: 0.9537 recall_train: 0.9809 f1_train: 0.9671 cm_train: (tn=2043, fp=102, fn=41, tp=2102)
+2025-10-18 23:06:13 | INFO | EM.print | -------- Epoch 50 --------
+2025-10-18 23:06:13 | INFO | EM.print | epoch: 50/ iteration: 1/ loss_train: 1.8087956 | task_loss:0.0844 cont_loss:8.9582 adv_loss:0.0004
+2025-10-18 23:06:16 | INFO | EM.print | epoch: 50/ iteration: 101/ loss_train: 1.8040597 | task_loss:0.0942 cont_loss:8.9224 adv_loss:0.0012
+2025-10-18 23:06:17 | INFO | EM.print | epoch: 0050 loss_train: 1.8072 task_loss: 0.1173 cont_loss: 8.9158 adv_loss: 0.0010 auroc_train: 0.9933 auprc_train: 0.9919 precision_train: 0.9565 recall_train: 0.9837 f1_train: 0.9699 cm_train: (tn=2047, fp=96, fn=35, tp=2110)
+2025-10-18 23:06:17 | INFO | EM.print | Optimization Finished!
+2025-10-18 23:06:17 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/train_epoch_metrics_fold_4_20251018_225252.csv.txt
+2025-10-18 23:06:17 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_4_20251018_225252.csv
+2025-10-18 23:06:18 | INFO | EM.print | loss_test: 2.0000 auroc_test: 0.9496 auprc_test: 0.9399 precision_test: 0.8750 recall_test: 0.8933 f1_test: 0.8841 cm_test: (tn=464, fp=67, fn=56, tp=469)
+2025-10-18 23:06:18 | INFO | EM | Fold 4 completed.
+2025-10-18 23:06:18 | INFO | EM | === Fold 5/5 ===
+2025-10-18 23:06:18 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/adv_config_fold_5_20251018_225252.json.txt
+2025-10-18 23:06:18 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_5_20251018_225252.json
+2025-10-18 23:06:18 | INFO | EM.print | Start Training...
+2025-10-18 23:06:18 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-18 23:06:19 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.809479 | task_loss:0.7026 cont_loss:1.1754 adv_loss:0.7231
+2025-10-18 23:06:22 | INFO | EM.print | epoch: 1/ iteration: 101/ loss_train: 1.7962068 | task_loss:0.3440 cont_loss:8.6348 adv_loss:0.0007
+2025-10-18 23:06:23 | INFO | EM.print | epoch: 0001 loss_train: 1.7666 task_loss: 0.3977 cont_loss: 8.4308 adv_loss: 0.0014 auroc_train: 0.8711 auprc_train: 0.8601 precision_train: 0.7668 recall_train: 0.8237 f1_train: 0.7942 cm_train: (tn=1607, fp=537, fn=378, tp=1766)
+2025-10-18 23:06:23 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-18 23:06:23 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 1.7807852 | task_loss:0.4783 cont_loss:8.4203 adv_loss:0.0018
+2025-10-18 23:06:25 | INFO | EM.print | epoch: 2/ iteration: 101/ loss_train: 1.762903 | task_loss:0.2957 cont_loss:8.5183 adv_loss:0.0002
+2025-10-18 23:06:26 | INFO | EM.print | epoch: 0002 loss_train: 1.7244 task_loss: 0.2808 cont_loss: 8.3407 adv_loss: 0.0002 auroc_train: 0.9263 auprc_train: 0.9166 precision_train: 0.8445 recall_train: 0.8779 f1_train: 0.8609 cm_train: (tn=1795, fp=347, fn=262, tp=1884)
+2025-10-18 23:06:26 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-18 23:06:27 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 1.7031249 | task_loss:0.1817 cont_loss:8.3334 adv_loss:0.0002
+2025-10-18 23:06:29 | INFO | EM.print | epoch: 3/ iteration: 101/ loss_train: 1.7117149 | task_loss:0.1897 cont_loss:8.3679 adv_loss:0.0003
+2025-10-18 23:06:30 | INFO | EM.print | epoch: 0003 loss_train: 1.6614 task_loss: 0.1967 cont_loss: 8.1087 adv_loss: 0.0005 auroc_train: 0.9429 auprc_train: 0.9348 precision_train: 0.8550 recall_train: 0.8973 f1_train: 0.8757 cm_train: (tn=1819, fp=326, fn=220, tp=1923)
+2025-10-18 23:06:30 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-18 23:06:30 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 1.650717 | task_loss:0.1506 cont_loss:8.0993 adv_loss:0.0012
+2025-10-18 23:06:33 | INFO | EM.print | epoch: 4/ iteration: 101/ loss_train: 1.7597841 | task_loss:0.3479 cont_loss:8.4481 adv_loss:0.0010
+2025-10-18 23:06:34 | INFO | EM.print | epoch: 0004 loss_train: 1.7572 task_loss: 0.3117 cont_loss: 8.4737 adv_loss: 0.0003 auroc_train: 0.9483 auprc_train: 0.9439 precision_train: 0.8616 recall_train: 0.8937 f1_train: 0.8773 cm_train: (tn=1835, fp=308, fn=228, tp=1917)
+2025-10-18 23:06:34 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-18 23:06:34 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 1.7431536 | task_loss:0.2467 cont_loss:8.4682 adv_loss:0.0003
+2025-10-18 23:06:37 | INFO | EM.print | epoch: 5/ iteration: 101/ loss_train: 1.7170483 | task_loss:0.1427 cont_loss:8.4420 adv_loss:0.0002
+2025-10-18 23:06:38 | INFO | EM.print | epoch: 0005 loss_train: 1.7646 task_loss: 0.3612 cont_loss: 8.4614 adv_loss: 0.0002 auroc_train: 0.9519 auprc_train: 0.9468 precision_train: 0.8708 recall_train: 0.9021 f1_train: 0.8861 cm_train: (tn=1857, fp=287, fn=210, tp=1934)
+2025-10-18 23:06:38 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-18 23:06:38 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 1.7657467 | task_loss:0.3653 cont_loss:8.4630 adv_loss:0.0002
+2025-10-18 23:06:41 | INFO | EM.print | epoch: 6/ iteration: 101/ loss_train: 1.7395808 | task_loss:0.2395 cont_loss:8.4576 adv_loss:0.0003
+2025-10-18 23:06:42 | INFO | EM.print | epoch: 0006 loss_train: 1.7605 task_loss: 0.2182 cont_loss: 8.5834 adv_loss: 0.0003 auroc_train: 0.9572 auprc_train: 0.9537 precision_train: 0.8682 recall_train: 0.9099 f1_train: 0.8886 cm_train: (tn=1849, fp=296, fn=193, tp=1950)
+2025-10-18 23:06:42 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-18 23:06:42 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 1.7747056 | task_loss:0.2807 cont_loss:8.5921 adv_loss:0.0002
+2025-10-18 23:06:45 | INFO | EM.print | epoch: 7/ iteration: 101/ loss_train: 1.8347344 | task_loss:0.3978 cont_loss:8.7683 adv_loss:0.0025
+2025-10-18 23:06:46 | INFO | EM.print | epoch: 0007 loss_train: 1.8085 task_loss: 0.2856 cont_loss: 8.7564 adv_loss: 0.0001 auroc_train: 0.9538 auprc_train: 0.9484 precision_train: 0.8636 recall_train: 0.9132 f1_train: 0.8877 cm_train: (tn=1836, fp=309, fn=186, tp=1957)
+2025-10-18 23:06:46 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-18 23:06:46 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 1.8095185 | task_loss:0.2921 cont_loss:8.7512 adv_loss:0.0014
+2025-10-18 23:06:48 | INFO | EM.print | epoch: 8/ iteration: 101/ loss_train: 1.8172747 | task_loss:0.2893 cont_loss:8.7968 adv_loss:0.0001
+2025-10-18 23:06:49 | INFO | EM.print | epoch: 0008 loss_train: 1.6764 task_loss: 0.0934 cont_loss: 8.2881 adv_loss: 0.0002 auroc_train: 0.9601 auprc_train: 0.9562 precision_train: 0.8777 recall_train: 0.9161 f1_train: 0.8965 cm_train: (tn=1868, fp=274, fn=180, tp=1966)
+2025-10-18 23:06:49 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-18 23:06:49 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 1.72464 | task_loss:0.3335 cont_loss:8.2890 adv_loss:0.0002
+2025-10-18 23:06:52 | INFO | EM.print | epoch: 9/ iteration: 101/ loss_train: 1.813394 | task_loss:0.1917 cont_loss:8.8749 adv_loss:0.0001
+2025-10-18 23:06:53 | INFO | EM.print | epoch: 0009 loss_train: 1.8317 task_loss: 0.2475 cont_loss: 8.9107 adv_loss: 0.0001 auroc_train: 0.9628 auprc_train: 0.9604 precision_train: 0.8797 recall_train: 0.9146 f1_train: 0.8968 cm_train: (tn=1878, fp=268, fn=183, tp=1959)
+2025-10-18 23:06:53 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-18 23:06:53 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 1.8338512 | task_loss:0.2544 cont_loss:8.9146 adv_loss:0.0001
+2025-10-18 23:06:55 | INFO | EM.print | epoch: 10/ iteration: 101/ loss_train: 1.866648 | task_loss:0.3713 cont_loss:8.9617 adv_loss:0.0001
+2025-10-18 23:06:56 | INFO | EM.print | epoch: 0010 loss_train: 1.7763 task_loss: 0.0700 cont_loss: 8.8110 adv_loss: 0.0002 auroc_train: 0.9690 auprc_train: 0.9648 precision_train: 0.8904 recall_train: 0.9315 f1_train: 0.9105 cm_train: (tn=1897, fp=246, fn=147, tp=1998)
+2025-10-18 23:06:56 | INFO | EM.print | -------- Epoch 11 --------
+2025-10-18 23:06:56 | INFO | EM.print | epoch: 11/ iteration: 1/ loss_train: 1.8262364 | task_loss:0.3294 cont_loss:8.8013 adv_loss:0.0001
+2025-10-18 23:06:59 | INFO | EM.print | epoch: 11/ iteration: 101/ loss_train: 1.8326083 | task_loss:0.1712 cont_loss:8.9912 adv_loss:0.0002
+2025-10-18 23:07:00 | INFO | EM.print | epoch: 0011 loss_train: 1.8191 task_loss: 0.1300 cont_loss: 8.9655 adv_loss: 0.0000 auroc_train: 0.9721 auprc_train: 0.9681 precision_train: 0.8988 recall_train: 0.9390 f1_train: 0.9184 cm_train: (tn=1915, fp=227, fn=131, tp=2015)
+2025-10-18 23:07:00 | INFO | EM.print | -------- Epoch 12 --------
+2025-10-18 23:07:00 | INFO | EM.print | epoch: 12/ iteration: 1/ loss_train: 1.8377571 | task_loss:0.2236 cont_loss:8.9652 adv_loss:0.0000
+2025-10-18 23:07:03 | INFO | EM.print | epoch: 12/ iteration: 101/ loss_train: 1.8109612 | task_loss:0.0984 cont_loss:8.9563 adv_loss:0.0000
+2025-10-18 23:07:04 | INFO | EM.print | epoch: 0012 loss_train: 1.8098 task_loss: 0.0713 cont_loss: 8.9776 adv_loss: 0.0000 auroc_train: 0.9745 auprc_train: 0.9703 precision_train: 0.9012 recall_train: 0.9478 f1_train: 0.9239 cm_train: (tn=1920, fp=223, fn=112, tp=2033)
+2025-10-18 23:07:04 | INFO | EM.print | -------- Epoch 13 --------
+2025-10-18 23:07:04 | INFO | EM.print | epoch: 13/ iteration: 1/ loss_train: 1.8248602 | task_loss:0.1484 cont_loss:8.9758 adv_loss:0.0000
+2025-10-18 23:07:07 | INFO | EM.print | epoch: 13/ iteration: 101/ loss_train: 1.7959707 | task_loss:0.1392 cont_loss:8.8406 adv_loss:0.0000
+2025-10-18 23:07:08 | INFO | EM.print | epoch: 0013 loss_train: 1.8149 task_loss: 0.2373 cont_loss: 8.8364 adv_loss: 0.0003 auroc_train: 0.9768 auprc_train: 0.9742 precision_train: 0.9074 recall_train: 0.9543 f1_train: 0.9303 cm_train: (tn=1933, fp=209, fn=98, tp=2048)
+2025-10-18 23:07:08 | INFO | EM.print | -------- Epoch 14 --------
+2025-10-18 23:07:08 | INFO | EM.print | epoch: 14/ iteration: 1/ loss_train: 1.7902311 | task_loss:0.1189 cont_loss:8.8322 adv_loss:0.0000
+2025-10-18 23:07:11 | INFO | EM.print | epoch: 14/ iteration: 101/ loss_train: 1.7823963 | task_loss:0.2637 cont_loss:8.6477 adv_loss:0.0002
+2025-10-18 23:07:12 | INFO | EM.print | epoch: 0014 loss_train: 1.9191 task_loss: 0.2723 cont_loss: 9.3202 adv_loss: 0.0009 auroc_train: 0.9765 auprc_train: 0.9719 precision_train: 0.9066 recall_train: 0.9561 f1_train: 0.9307 cm_train: (tn=1934, fp=211, fn=94, tp=2049)
+2025-10-18 23:07:12 | INFO | EM.print | -------- Epoch 15 --------
+2025-10-18 23:07:12 | INFO | EM.print | epoch: 15/ iteration: 1/ loss_train: 1.9030408 | task_loss:0.2034 cont_loss:9.3112 adv_loss:0.0002
+2025-10-18 23:07:15 | INFO | EM.print | epoch: 15/ iteration: 101/ loss_train: 1.8179605 | task_loss:0.1370 cont_loss:8.9528 adv_loss:0.0000
+2025-10-18 23:07:16 | INFO | EM.print | epoch: 0015 loss_train: 1.8568 task_loss: 0.3123 cont_loss: 8.9717 adv_loss: 0.0000 auroc_train: 0.9726 auprc_train: 0.9678 precision_train: 0.8992 recall_train: 0.9478 f1_train: 0.9228 cm_train: (tn=1915, fp=228, fn=112, tp=2033)
+2025-10-18 23:07:16 | INFO | EM.print | -------- Epoch 16 --------
+2025-10-18 23:07:16 | INFO | EM.print | epoch: 16/ iteration: 1/ loss_train: 1.8432854 | task_loss:0.2492 cont_loss:8.9672 adv_loss:0.0000
+2025-10-18 23:07:19 | INFO | EM.print | epoch: 16/ iteration: 101/ loss_train: 1.821658 | task_loss:0.1364 cont_loss:8.9711 adv_loss:0.0003
+2025-10-18 23:07:20 | INFO | EM.print | epoch: 0016 loss_train: 1.8110 task_loss: 0.1504 cont_loss: 8.9043 adv_loss: 0.0001 auroc_train: 0.9774 auprc_train: 0.9747 precision_train: 0.9070 recall_train: 0.9594 f1_train: 0.9325 cm_train: (tn=1932, fp=211, fn=87, tp=2058)
+2025-10-18 23:07:20 | INFO | EM.print | -------- Epoch 17 --------
+2025-10-18 23:07:20 | INFO | EM.print | epoch: 17/ iteration: 1/ loss_train: 1.7906579 | task_loss:0.0546 cont_loss:8.8984 adv_loss:0.0001
+2025-10-18 23:07:22 | INFO | EM.print | epoch: 17/ iteration: 101/ loss_train: 1.8638676 | task_loss:0.3245 cont_loss:8.9942 adv_loss:0.0002
+2025-10-18 23:07:23 | INFO | EM.print | epoch: 0017 loss_train: 1.8148 task_loss: 0.1156 cont_loss: 8.9582 adv_loss: 0.0000 auroc_train: 0.9788 auprc_train: 0.9754 precision_train: 0.9120 recall_train: 0.9622 f1_train: 0.9365 cm_train: (tn=1945, fp=199, fn=81, tp=2063)
+2025-10-18 23:07:23 | INFO | EM.print | -------- Epoch 18 --------
+2025-10-18 23:07:24 | INFO | EM.print | epoch: 18/ iteration: 1/ loss_train: 1.8493367 | task_loss:0.2875 cont_loss:8.9584 adv_loss:0.0002
+2025-10-18 23:07:26 | INFO | EM.print | epoch: 18/ iteration: 101/ loss_train: 1.832561 | task_loss:0.1979 cont_loss:8.9648 adv_loss:0.0000
+2025-10-18 23:07:27 | INFO | EM.print | epoch: 0018 loss_train: 1.8314 task_loss: 0.2271 cont_loss: 8.9295 adv_loss: 0.0002 auroc_train: 0.9807 auprc_train: 0.9773 precision_train: 0.9146 recall_train: 0.9641 f1_train: 0.9387 cm_train: (tn=1950, fp=193, fn=77, tp=2068)
+2025-10-18 23:07:27 | INFO | EM.print | -------- Epoch 19 --------
+2025-10-18 23:07:27 | INFO | EM.print | epoch: 19/ iteration: 1/ loss_train: 1.7919908 | task_loss:0.0365 cont_loss:8.9233 adv_loss:0.0001
+2025-10-18 23:07:30 | INFO | EM.print | epoch: 19/ iteration: 101/ loss_train: 1.7746872 | task_loss:0.1173 cont_loss:8.7544 adv_loss:0.0006
+2025-10-18 23:07:31 | INFO | EM.print | epoch: 0019 loss_train: 1.8310 task_loss: 0.2327 cont_loss: 8.9220 adv_loss: 0.0000 auroc_train: 0.9802 auprc_train: 0.9769 precision_train: 0.9164 recall_train: 0.9669 f1_train: 0.9409 cm_train: (tn=1957, fp=189, fn=71, tp=2071)
+2025-10-18 23:07:31 | INFO | EM.print | -------- Epoch 20 --------
+2025-10-18 23:07:31 | INFO | EM.print | epoch: 20/ iteration: 1/ loss_train: 1.82772 | task_loss:0.2266 cont_loss:8.9119 adv_loss:0.0001
+2025-10-18 23:07:34 | INFO | EM.print | epoch: 20/ iteration: 101/ loss_train: 1.8436694 | task_loss:0.3140 cont_loss:8.9043 adv_loss:0.0000
+2025-10-18 23:07:35 | INFO | EM.print | epoch: 0020 loss_train: 1.8169 task_loss: 0.0746 cont_loss: 9.0093 adv_loss: 0.0002 auroc_train: 0.9777 auprc_train: 0.9723 precision_train: 0.9096 recall_train: 0.9627 f1_train: 0.9354 cm_train: (tn=1941, fp=205, fn=80, tp=2062)
+2025-10-18 23:07:35 | INFO | EM.print | -------- Epoch 21 --------
+2025-10-18 23:07:35 | INFO | EM.print | epoch: 21/ iteration: 1/ loss_train: 1.8508452 | task_loss:0.2507 cont_loss:9.0023 adv_loss:0.0004
+2025-10-18 23:07:38 | INFO | EM.print | epoch: 21/ iteration: 101/ loss_train: 1.7983593 | task_loss:0.1943 cont_loss:8.7973 adv_loss:0.0001
+2025-10-18 23:07:39 | INFO | EM.print | epoch: 0021 loss_train: 1.7980 task_loss: 0.1250 cont_loss: 8.8651 adv_loss: 0.0000 auroc_train: 0.9804 auprc_train: 0.9773 precision_train: 0.9156 recall_train: 0.9669 f1_train: 0.9406 cm_train: (tn=1953, fp=191, fn=71, tp=2073)
+2025-10-18 23:07:39 | INFO | EM.print | -------- Epoch 22 --------
+2025-10-18 23:07:39 | INFO | EM.print | epoch: 22/ iteration: 1/ loss_train: 1.8198564 | task_loss:0.2381 cont_loss:8.8610 adv_loss:0.0000
+2025-10-18 23:07:41 | INFO | EM.print | epoch: 22/ iteration: 101/ loss_train: 1.8068199 | task_loss:0.0901 cont_loss:8.9436 adv_loss:0.0001
+2025-10-18 23:07:42 | INFO | EM.print | epoch: 0022 loss_train: 1.8073 task_loss: 0.1698 cont_loss: 8.8665 adv_loss: 0.0001 auroc_train: 0.9797 auprc_train: 0.9756 precision_train: 0.9176 recall_train: 0.9659 f1_train: 0.9411 cm_train: (tn=1959, fp=186, fn=73, tp=2070)
+2025-10-18 23:07:42 | INFO | EM.print | -------- Epoch 23 --------
+2025-10-18 23:07:42 | INFO | EM.print | epoch: 23/ iteration: 1/ loss_train: 1.7834164 | task_loss:0.0571 cont_loss:8.8599 adv_loss:0.0000
+2025-10-18 23:07:45 | INFO | EM.print | epoch: 23/ iteration: 101/ loss_train: 1.8059142 | task_loss:0.0607 cont_loss:8.9687 adv_loss:0.0000
+2025-10-18 23:07:46 | INFO | EM.print | epoch: 0023 loss_train: 1.8121 task_loss: 0.1526 cont_loss: 8.9075 adv_loss: 0.0001 auroc_train: 0.9813 auprc_train: 0.9779 precision_train: 0.9228 recall_train: 0.9692 f1_train: 0.9454 cm_train: (tn=1969, fp=174, fn=66, tp=2079)
+2025-10-18 23:07:46 | INFO | EM.print | -------- Epoch 24 --------
+2025-10-18 23:07:46 | INFO | EM.print | epoch: 24/ iteration: 1/ loss_train: 1.802049 | task_loss:0.1000 cont_loss:8.9055 adv_loss:0.0016
+2025-10-18 23:07:49 | INFO | EM.print | epoch: 24/ iteration: 101/ loss_train: 1.7633042 | task_loss:0.1212 cont_loss:8.6947 adv_loss:0.0002
+2025-10-18 23:07:50 | INFO | EM.print | epoch: 0024 loss_train: 1.7593 task_loss: 0.1122 cont_loss: 8.6841 adv_loss: 0.0000 auroc_train: 0.9821 auprc_train: 0.9787 precision_train: 0.9237 recall_train: 0.9650 f1_train: 0.9439 cm_train: (tn=1973, fp=171, fn=75, tp=2069)
+2025-10-18 23:07:50 | INFO | EM.print | -------- Epoch 25 --------
+2025-10-18 23:07:50 | INFO | EM.print | epoch: 25/ iteration: 1/ loss_train: 1.7728728 | task_loss:0.1470 cont_loss:8.7172 adv_loss:0.0000
+2025-10-18 23:07:53 | INFO | EM.print | epoch: 25/ iteration: 101/ loss_train: 1.7907774 | task_loss:0.1208 cont_loss:8.8324 adv_loss:0.0002
+2025-10-18 23:07:54 | INFO | EM.print | epoch: 0025 loss_train: 1.7897 task_loss: 0.2835 cont_loss: 8.6646 adv_loss: 0.0001 auroc_train: 0.9833 auprc_train: 0.9802 precision_train: 0.9251 recall_train: 0.9730 f1_train: 0.9484 cm_train: (tn=1973, fp=169, fn=58, tp=2088)
+2025-10-18 23:07:54 | INFO | EM.print | -------- Epoch 26 --------
+2025-10-18 23:07:54 | INFO | EM.print | epoch: 26/ iteration: 1/ loss_train: 1.7335377 | task_loss:0.0213 cont_loss:8.6461 adv_loss:0.0001
+2025-10-18 23:07:56 | INFO | EM.print | epoch: 26/ iteration: 101/ loss_train: 1.7470356 | task_loss:0.0636 cont_loss:8.6699 adv_loss:0.0006
+2025-10-18 23:07:57 | INFO | EM.print | epoch: 0026 loss_train: 1.8197 task_loss: 0.2103 cont_loss: 8.8871 adv_loss: 0.0003 auroc_train: 0.9809 auprc_train: 0.9775 precision_train: 0.9192 recall_train: 0.9669 f1_train: 0.9424 cm_train: (tn=1964, fp=182, fn=71, tp=2071)
+2025-10-18 23:07:57 | INFO | EM.print | -------- Epoch 27 --------
+2025-10-18 23:07:57 | INFO | EM.print | epoch: 27/ iteration: 1/ loss_train: 1.8139186 | task_loss:0.1802 cont_loss:8.8885 adv_loss:0.0003
+2025-10-18 23:08:00 | INFO | EM.print | epoch: 27/ iteration: 101/ loss_train: 1.793559 | task_loss:0.2264 cont_loss:8.7412 adv_loss:0.0001
+2025-10-18 23:08:01 | INFO | EM.print | epoch: 0027 loss_train: 1.7854 task_loss: 0.2533 cont_loss: 8.6734 adv_loss: 0.0001 auroc_train: 0.9824 auprc_train: 0.9780 precision_train: 0.9258 recall_train: 0.9660 f1_train: 0.9455 cm_train: (tn=1977, fp=166, fn=73, tp=2072)
+2025-10-18 23:08:01 | INFO | EM.print | -------- Epoch 28 --------
+2025-10-18 23:08:01 | INFO | EM.print | epoch: 28/ iteration: 1/ loss_train: 1.8276123 | task_loss:0.4698 cont_loss:8.6681 adv_loss:0.0001
+2025-10-18 23:08:04 | INFO | EM.print | epoch: 28/ iteration: 101/ loss_train: 1.7457409 | task_loss:0.1264 cont_loss:8.6022 adv_loss:0.0000
+2025-10-18 23:08:05 | INFO | EM.print | epoch: 0028 loss_train: 1.7014 task_loss: 0.0870 cont_loss: 8.4172 adv_loss: 0.0010 auroc_train: 0.9837 auprc_train: 0.9810 precision_train: 0.9295 recall_train: 0.9725 f1_train: 0.9505 cm_train: (tn=1987, fp=158, fn=59, tp=2084)
+2025-10-18 23:08:05 | INFO | EM.print | -------- Epoch 29 --------
+2025-10-18 23:08:05 | INFO | EM.print | epoch: 29/ iteration: 1/ loss_train: 1.708131 | task_loss:0.1065 cont_loss:8.4341 adv_loss:0.0000
+2025-10-18 23:08:08 | INFO | EM.print | epoch: 29/ iteration: 101/ loss_train: 1.789305 | task_loss:0.0884 cont_loss:8.8579 adv_loss:0.0001
+2025-10-18 23:08:09 | INFO | EM.print | epoch: 0029 loss_train: 1.7889 task_loss: 0.1123 cont_loss: 8.8319 adv_loss: 0.0000 auroc_train: 0.9774 auprc_train: 0.9714 precision_train: 0.9151 recall_train: 0.9608 f1_train: 0.9374 cm_train: (tn=1954, fp=191, fn=84, tp=2059)
+2025-10-18 23:08:09 | INFO | EM.print | -------- Epoch 30 --------
+2025-10-18 23:08:09 | INFO | EM.print | epoch: 30/ iteration: 1/ loss_train: 1.800606 | task_loss:0.1781 cont_loss:8.8249 adv_loss:0.0000
+2025-10-18 23:08:12 | INFO | EM.print | epoch: 30/ iteration: 101/ loss_train: 1.7877601 | task_loss:0.2611 cont_loss:8.6776 adv_loss:0.0000
+2025-10-18 23:08:13 | INFO | EM.print | epoch: 0030 loss_train: 1.7051 task_loss: 0.0968 cont_loss: 8.4282 adv_loss: 0.0002 auroc_train: 0.9817 auprc_train: 0.9777 precision_train: 0.9254 recall_train: 0.9725 f1_train: 0.9484 cm_train: (tn=1977, fp=168, fn=59, tp=2084)
+2025-10-18 23:08:13 | INFO | EM.print | -------- Epoch 31 --------
+2025-10-18 23:08:13 | INFO | EM.print | epoch: 31/ iteration: 1/ loss_train: 1.7090372 | task_loss:0.1211 cont_loss:8.4240 adv_loss:0.0000
+2025-10-18 23:08:16 | INFO | EM.print | epoch: 31/ iteration: 101/ loss_train: 1.7994329 | task_loss:0.1083 cont_loss:8.8867 adv_loss:0.0007
+2025-10-18 23:08:16 | INFO | EM.print | epoch: 0031 loss_train: 1.8213 task_loss: 0.2403 cont_loss: 8.8659 adv_loss: 0.0001 auroc_train: 0.9809 auprc_train: 0.9773 precision_train: 0.9176 recall_train: 0.9669 f1_train: 0.9416 cm_train: (tn=1959, fp=186, fn=71, tp=2072)
+2025-10-18 23:08:17 | INFO | EM.print | -------- Epoch 32 --------
+2025-10-18 23:08:17 | INFO | EM.print | epoch: 32/ iteration: 1/ loss_train: 1.8049581 | task_loss:0.1604 cont_loss:8.8643 adv_loss:0.0000
+2025-10-18 23:08:19 | INFO | EM.print | epoch: 32/ iteration: 101/ loss_train: 1.7385446 | task_loss:0.0750 cont_loss:8.6176 adv_loss:0.0000
+2025-10-18 23:08:20 | INFO | EM.print | epoch: 0032 loss_train: 1.7893 task_loss: 0.3670 cont_loss: 8.5793 adv_loss: 0.0000 auroc_train: 0.9848 auprc_train: 0.9818 precision_train: 0.9310 recall_train: 0.9697 f1_train: 0.9499 cm_train: (tn=1991, fp=154, fn=65, tp=2078)
+2025-10-18 23:08:20 | INFO | EM.print | -------- Epoch 33 --------
+2025-10-18 23:08:20 | INFO | EM.print | epoch: 33/ iteration: 1/ loss_train: 1.7502788 | task_loss:0.1522 cont_loss:8.5990 adv_loss:0.0001
+2025-10-18 23:08:23 | INFO | EM.print | epoch: 33/ iteration: 101/ loss_train: 1.7089993 | task_loss:0.0751 cont_loss:8.4693 adv_loss:0.0002
+2025-10-18 23:08:24 | INFO | EM.print | epoch: 0033 loss_train: 1.7744 task_loss: 0.2711 cont_loss: 8.6010 adv_loss: 0.0001 auroc_train: 0.9850 auprc_train: 0.9824 precision_train: 0.9274 recall_train: 0.9697 f1_train: 0.9481 cm_train: (tn=1979, fp=163, fn=65, tp=2081)
+2025-10-18 23:08:24 | INFO | EM.print | -------- Epoch 34 --------
+2025-10-18 23:08:24 | INFO | EM.print | epoch: 34/ iteration: 1/ loss_train: 1.7590208 | task_loss:0.1920 cont_loss:8.6029 adv_loss:0.0001
+2025-10-18 23:08:27 | INFO | EM.print | epoch: 34/ iteration: 101/ loss_train: 1.6925452 | task_loss:0.0964 cont_loss:8.3662 adv_loss:0.0000
+2025-10-18 23:08:28 | INFO | EM.print | epoch: 0034 loss_train: 1.7607 task_loss: 0.5048 cont_loss: 8.2984 adv_loss: 0.0001 auroc_train: 0.9855 auprc_train: 0.9833 precision_train: 0.9288 recall_train: 0.9734 f1_train: 0.9506 cm_train: (tn=1985, fp=160, fn=57, tp=2086)
+2025-10-18 23:08:28 | INFO | EM.print | -------- Epoch 35 --------
+2025-10-18 23:08:28 | INFO | EM.print | epoch: 35/ iteration: 1/ loss_train: 1.6902949 | task_loss:0.1660 cont_loss:8.2854 adv_loss:0.0000
+2025-10-18 23:08:31 | INFO | EM.print | epoch: 35/ iteration: 101/ loss_train: 1.678182 | task_loss:0.1640 cont_loss:8.2268 adv_loss:0.0000
+2025-10-18 23:08:32 | INFO | EM.print | epoch: 0035 loss_train: 1.6577 task_loss: 0.0759 cont_loss: 8.2125 adv_loss: 0.0000 auroc_train: 0.9866 auprc_train: 0.9844 precision_train: 0.9308 recall_train: 0.9734 f1_train: 0.9516 cm_train: (tn=1990, fp=155, fn=57, tp=2086)
+2025-10-18 23:08:32 | INFO | EM.print | -------- Epoch 36 --------
+2025-10-18 23:08:32 | INFO | EM.print | epoch: 36/ iteration: 1/ loss_train: 1.6719605 | task_loss:0.1593 cont_loss:8.2004 adv_loss:0.0000
+2025-10-18 23:08:35 | INFO | EM.print | epoch: 36/ iteration: 101/ loss_train: 1.6550941 | task_loss:0.0938 cont_loss:8.1815 adv_loss:0.0000
+2025-10-18 23:08:36 | INFO | EM.print | epoch: 0036 loss_train: 1.6702 task_loss: 0.1584 cont_loss: 8.1921 adv_loss: 0.0001 auroc_train: 0.9874 auprc_train: 0.9852 precision_train: 0.9384 recall_train: 0.9813 f1_train: 0.9594 cm_train: (tn=2006, fp=138, fn=40, tp=2104)
+2025-10-18 23:08:36 | INFO | EM.print | -------- Epoch 37 --------
+2025-10-18 23:08:36 | INFO | EM.print | epoch: 37/ iteration: 1/ loss_train: 1.66753 | task_loss:0.1485 cont_loss:8.1890 adv_loss:0.0000
+2025-10-18 23:08:39 | INFO | EM.print | epoch: 37/ iteration: 101/ loss_train: 1.7443275 | task_loss:0.0691 cont_loss:8.6523 adv_loss:0.0001
+2025-10-18 23:08:40 | INFO | EM.print | epoch: 0037 loss_train: 1.7516 task_loss: 0.2506 cont_loss: 8.5074 adv_loss: 0.0000 auroc_train: 0.9864 auprc_train: 0.9838 precision_train: 0.9330 recall_train: 0.9762 f1_train: 0.9541 cm_train: (tn=1997, fp=150, fn=51, tp=2090)
+2025-10-18 23:08:40 | INFO | EM.print | -------- Epoch 38 --------
+2025-10-18 23:08:40 | INFO | EM.print | epoch: 38/ iteration: 1/ loss_train: 1.7162886 | task_loss:0.0953 cont_loss:8.4858 adv_loss:0.0001
+2025-10-18 23:08:42 | INFO | EM.print | epoch: 38/ iteration: 101/ loss_train: 1.715331 | task_loss:0.2073 cont_loss:8.3676 adv_loss:0.0006
+2025-10-18 23:08:43 | INFO | EM.print | epoch: 0038 loss_train: 1.7875 task_loss: 0.1166 cont_loss: 8.8208 adv_loss: 0.0000 auroc_train: 0.9882 auprc_train: 0.9862 precision_train: 0.9311 recall_train: 0.9767 f1_train: 0.9533 cm_train: (tn=1989, fp=155, fn=50, tp=2094)
+2025-10-18 23:08:43 | INFO | EM.print | -------- Epoch 39 --------
+2025-10-18 23:08:44 | INFO | EM.print | epoch: 39/ iteration: 1/ loss_train: 1.8056866 | task_loss:0.2084 cont_loss:8.8199 adv_loss:0.0000
+2025-10-18 23:08:46 | INFO | EM.print | epoch: 39/ iteration: 101/ loss_train: 1.7560546 | task_loss:0.0649 cont_loss:8.7153 adv_loss:0.0000
+2025-10-18 23:08:47 | INFO | EM.print | epoch: 0039 loss_train: 1.7552 task_loss: 0.0719 cont_loss: 8.7038 adv_loss: 0.0001 auroc_train: 0.9881 auprc_train: 0.9863 precision_train: 0.9352 recall_train: 0.9766 f1_train: 0.9554 cm_train: (tn=2002, fp=145, fn=50, tp=2091)
+2025-10-18 23:08:47 | INFO | EM.print | -------- Epoch 40 --------
+2025-10-18 23:08:47 | INFO | EM.print | epoch: 40/ iteration: 1/ loss_train: 1.7979218 | task_loss:0.2950 cont_loss:8.6945 adv_loss:0.0000
+2025-10-18 23:08:50 | INFO | EM.print | epoch: 40/ iteration: 101/ loss_train: 1.7453145 | task_loss:0.0860 cont_loss:8.6406 adv_loss:0.0000
+2025-10-18 23:08:51 | INFO | EM.print | epoch: 0040 loss_train: 1.7447 task_loss: 0.1110 cont_loss: 8.6123 adv_loss: 0.0001 auroc_train: 0.9883 auprc_train: 0.9866 precision_train: 0.9326 recall_train: 0.9757 f1_train: 0.9537 cm_train: (tn=1995, fp=151, fn=52, tp=2090)
+2025-10-18 23:08:51 | INFO | EM.print | -------- Epoch 41 --------
+2025-10-18 23:08:51 | INFO | EM.print | epoch: 41/ iteration: 1/ loss_train: 1.7316443 | task_loss:0.0415 cont_loss:8.6165 adv_loss:0.0001
+2025-10-18 23:08:54 | INFO | EM.print | epoch: 41/ iteration: 101/ loss_train: 1.6955283 | task_loss:0.1254 cont_loss:8.3515 adv_loss:0.0003
+2025-10-18 23:08:55 | INFO | EM.print | epoch: 0041 loss_train: 1.6370 task_loss: 0.0432 cont_loss: 8.1416 adv_loss: 0.0001 auroc_train: 0.9889 auprc_train: 0.9874 precision_train: 0.9399 recall_train: 0.9767 f1_train: 0.9579 cm_train: (tn=2009, fp=134, fn=50, tp=2095)
+2025-10-18 23:08:55 | INFO | EM.print | -------- Epoch 42 --------
+2025-10-18 23:08:55 | INFO | EM.print | epoch: 42/ iteration: 1/ loss_train: 1.6491022 | task_loss:0.1051 cont_loss:8.1403 adv_loss:0.0000
+2025-10-18 23:08:58 | INFO | EM.print | epoch: 42/ iteration: 101/ loss_train: 1.7179165 | task_loss:0.0904 cont_loss:8.4991 adv_loss:0.0000
+2025-10-18 23:08:59 | INFO | EM.print | epoch: 0042 loss_train: 1.7125 task_loss: 0.0998 cont_loss: 8.4628 adv_loss: 0.0000 auroc_train: 0.9896 auprc_train: 0.9883 precision_train: 0.9362 recall_train: 0.9795 f1_train: 0.9573 cm_train: (tn=2003, fp=143, fn=44, tp=2098)
+2025-10-18 23:08:59 | INFO | EM.print | -------- Epoch 43 --------
+2025-10-18 23:08:59 | INFO | EM.print | epoch: 43/ iteration: 1/ loss_train: 1.7390914 | task_loss:0.2308 cont_loss:8.4646 adv_loss:0.0000
+2025-10-18 23:09:01 | INFO | EM.print | epoch: 43/ iteration: 101/ loss_train: 1.6922244 | task_loss:0.1009 cont_loss:8.3602 adv_loss:0.0000
+2025-10-18 23:09:02 | INFO | EM.print | epoch: 0043 loss_train: 1.7524 task_loss: 0.0780 cont_loss: 8.6837 adv_loss: 0.0001 auroc_train: 0.9897 auprc_train: 0.9881 precision_train: 0.9403 recall_train: 0.9771 f1_train: 0.9584 cm_train: (tn=2012, fp=133, fn=49, tp=2094)
+2025-10-18 23:09:02 | INFO | EM.print | -------- Epoch 44 --------
+2025-10-18 23:09:02 | INFO | EM.print | epoch: 44/ iteration: 1/ loss_train: 1.756193 | task_loss:0.0920 cont_loss:8.6883 adv_loss:0.0002
+2025-10-18 23:09:05 | INFO | EM.print | epoch: 44/ iteration: 101/ loss_train: 1.7340529 | task_loss:0.1485 cont_loss:8.5152 adv_loss:0.0022
+2025-10-18 23:09:06 | INFO | EM.print | epoch: 0044 loss_train: 1.7319 task_loss: 0.1720 cont_loss: 8.4876 adv_loss: 0.0000 auroc_train: 0.9890 auprc_train: 0.9873 precision_train: 0.9378 recall_train: 0.9772 f1_train: 0.9571 cm_train: (tn=2004, fp=139, fn=49, tp=2096)
+2025-10-18 23:09:06 | INFO | EM.print | -------- Epoch 45 --------
+2025-10-18 23:09:06 | INFO | EM.print | epoch: 45/ iteration: 1/ loss_train: 1.7556565 | task_loss:0.2775 cont_loss:8.5007 adv_loss:0.0000
+2025-10-18 23:09:09 | INFO | EM.print | epoch: 45/ iteration: 101/ loss_train: 1.7400756 | task_loss:0.2658 cont_loss:8.4345 adv_loss:0.0000
+2025-10-18 23:09:10 | INFO | EM.print | epoch: 0045 loss_train: 1.6919 task_loss: 0.0889 cont_loss: 8.3706 adv_loss: 0.0000 auroc_train: 0.9890 auprc_train: 0.9867 precision_train: 0.9382 recall_train: 0.9828 f1_train: 0.9599 cm_train: (tn=2003, fp=139, fn=37, tp=2109)
+2025-10-18 23:09:10 | INFO | EM.print | -------- Epoch 46 --------
+2025-10-18 23:09:10 | INFO | EM.print | epoch: 46/ iteration: 1/ loss_train: 1.6832837 | task_loss:0.0349 cont_loss:8.3815 adv_loss:0.0000
+2025-10-18 23:09:13 | INFO | EM.print | epoch: 46/ iteration: 101/ loss_train: 1.7512821 | task_loss:0.0715 cont_loss:8.6849 adv_loss:0.0000
+2025-10-18 23:09:14 | INFO | EM.print | epoch: 0046 loss_train: 1.7402 task_loss: 0.1915 cont_loss: 8.5085 adv_loss: 0.0003 auroc_train: 0.9915 auprc_train: 0.9905 precision_train: 0.9434 recall_train: 0.9818 f1_train: 0.9622 cm_train: (tn=2022, fp=126, fn=39, tp=2101)
+2025-10-18 23:09:14 | INFO | EM.print | -------- Epoch 47 --------
+2025-10-18 23:09:14 | INFO | EM.print | epoch: 47/ iteration: 1/ loss_train: 1.755114 | task_loss:0.2573 cont_loss:8.5183 adv_loss:0.0000
+2025-10-18 23:09:16 | INFO | EM.print | epoch: 47/ iteration: 101/ loss_train: 1.7125068 | task_loss:0.1034 cont_loss:8.4590 adv_loss:0.0000
+2025-10-18 23:09:17 | INFO | EM.print | epoch: 0047 loss_train: 1.7127 task_loss: 0.0567 cont_loss: 8.5067 adv_loss: 0.0000 auroc_train: 0.9907 auprc_train: 0.9891 precision_train: 0.9410 recall_train: 0.9804 f1_train: 0.9603 cm_train: (tn=2010, fp=132, fn=42, tp=2104)
+2025-10-18 23:09:17 | INFO | EM.print | -------- Epoch 48 --------
+2025-10-18 23:09:17 | INFO | EM.print | epoch: 48/ iteration: 1/ loss_train: 1.705877 | task_loss:0.0251 cont_loss:8.5043 adv_loss:0.0000
+2025-10-18 23:09:20 | INFO | EM.print | epoch: 48/ iteration: 101/ loss_train: 1.7116954 | task_loss:0.0418 cont_loss:8.5167 adv_loss:0.0000
+2025-10-18 23:09:21 | INFO | EM.print | epoch: 0048 loss_train: 1.7180 task_loss: 0.0167 cont_loss: 8.5732 adv_loss: 0.0000 auroc_train: 0.9918 auprc_train: 0.9906 precision_train: 0.9414 recall_train: 0.9832 f1_train: 0.9619 cm_train: (tn=2015, fp=131, fn=36, tp=2106)
+2025-10-18 23:09:21 | INFO | EM.print | -------- Epoch 49 --------
+2025-10-18 23:09:21 | INFO | EM.print | epoch: 49/ iteration: 1/ loss_train: 1.7134851 | task_loss:0.0177 cont_loss:8.5494 adv_loss:0.0001
+2025-10-18 23:09:24 | INFO | EM.print | epoch: 49/ iteration: 101/ loss_train: 1.7431207 | task_loss:0.1345 cont_loss:8.5811 adv_loss:0.0000
+2025-10-18 23:09:25 | INFO | EM.print | epoch: 0049 loss_train: 1.7316 task_loss: 0.1512 cont_loss: 8.5066 adv_loss: 0.0000 auroc_train: 0.9920 auprc_train: 0.9908 precision_train: 0.9452 recall_train: 0.9818 f1_train: 0.9631 cm_train: (tn=2024, fp=122, fn=39, tp=2103)
+2025-10-18 23:09:25 | INFO | EM.print | -------- Epoch 50 --------
+2025-10-18 23:09:25 | INFO | EM.print | epoch: 50/ iteration: 1/ loss_train: 1.7186148 | task_loss:0.1005 cont_loss:8.4925 adv_loss:0.0000
+2025-10-18 23:09:28 | INFO | EM.print | epoch: 50/ iteration: 101/ loss_train: 1.7279882 | task_loss:0.1729 cont_loss:8.4670 adv_loss:0.0000
+2025-10-18 23:09:29 | INFO | EM.print | epoch: 0050 loss_train: 1.7346 task_loss: 0.0548 cont_loss: 8.6183 adv_loss: 0.0000 auroc_train: 0.9918 auprc_train: 0.9903 precision_train: 0.9444 recall_train: 0.9823 f1_train: 0.9629 cm_train: (tn=2021, fp=124, fn=38, tp=2105)
+2025-10-18 23:09:29 | INFO | EM.print | Optimization Finished!
+2025-10-18 23:09:29 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/train_epoch_metrics_fold_5_20251018_225252.csv.txt
+2025-10-18 23:09:29 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_5_20251018_225252.csv
+2025-10-18 23:09:30 | INFO | EM.print | loss_test: 1.7493 auroc_test: 0.9491 auprc_test: 0.9471 precision_test: 0.8885 recall_test: 0.8750 f1_test: 0.8817 cm_test: (tn=470, fp=58, fn=66, tp=462)
+2025-10-18 23:09:30 | INFO | EM | Fold 5 completed.
+2025-10-18 23:09:30 | INFO | EM | === 5-Fold Cross Validation Results ===
+2025-10-18 23:09:30 | INFO | EM | AUROC: 0.9510 ± 0.0044
+2025-10-18 23:09:30 | INFO | EM | AUPRC: 0.9445 ± 0.0075
+2025-10-18 23:09:30 | INFO | EM | F1-Score: 0.8852 ± 0.0097
+2025-10-18 23:09:30 | INFO | EM | Loss: 1.8198 ± 0.1088
+2025-10-18 23:09:30 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/result_summary_20251018_225252.txt
+2025-10-18 23:09:30 | INFO | EM | Detailed Results:
+2025-10-18 23:09:30 | INFO | EM | Fold 1: AUROC=0.9556, AUPRC=0.9475, F1=0.8964
+2025-10-18 23:09:30 | INFO | EM | Fold 2: AUROC=0.9444, AUPRC=0.9330, F1=0.8696
+2025-10-18 23:09:30 | INFO | EM | Fold 3: AUROC=0.9561, AUPRC=0.9549, F1=0.8944
+2025-10-18 23:09:30 | INFO | EM | Fold 4: AUROC=0.9496, AUPRC=0.9399, F1=0.8841
+2025-10-18 23:09:30 | INFO | EM | Fold 5: AUROC=0.9491, AUPRC=0.9471, F1=0.8817
+2025-10-18 23:09:30 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/per_fold_20251018_225252.txt
+2025-10-18 23:09:30 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_B_014_data_20251018_225252/metrics/result_extra_20251018_225252.txt
+2025-10-18 23:09:30 | INFO | EM | Precision: 0.8868 ± 0.0067
+2025-10-18 23:09:30 | INFO | EM | Recall: 0.8838 ± 0.0175
+2025-10-18 23:09:30 | INFO | EM | Confusion Matrix (sum): tn=2350, fp=297, fn=306, tp=2327
+2025-10-18 23:09:30 | INFO | EM | All folds completed!
+2025-10-18 23:09:30 | INFO | EM | ================================================================================
+2025-10-18 23:09:30 | INFO | EM | RUN END   | run_id=20251018_225252 | run_name=LDA_B_014
+2025-10-18 23:09:30 | INFO | EM | RESULT DIR: /root/OUTPUT/result/LDA_B_014_data_20251018_225252
+2025-10-18 23:09:30 | INFO | EM | ================================================================================

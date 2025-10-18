@@ -1,0 +1,32 @@
+{
+  "task": "LDA",
+  "run_name": "LDA_B_011",
+  "config": {
+    "dimensions": 64,
+    "lr": 0.0005,
+    "weight_decay": 1e-05,
+    "similarity_threshold": 0.5,
+    "loss_ratio1": 0.7,
+    "loss_ratio2": 0.5,
+    "loss_ratio3": 0.3,
+    "hidden1": 128,
+    "hidden2": 16,
+    "dropout": 0.2,
+    "batch": 16,
+    "moco_queue": 8192,
+    "moco_momentum": 0.99,
+    "moco_t": 0.2,
+    "proj_dim": 32,
+    "augment": [
+      "random_permute_features",
+      "attribute_mask",
+      "noise_then_mask"
+    ],
+    "augment_mode": "online",
+    "noise_std": 0.005,
+    "mask_rate": 0.05,
+    "epochs": 100
+  },
+  "command": "/root/miniconda3/bin/python /root/hyperparameter-tuning/main.py --task_type=LDA --epochs=100 --seed=0 --run_name=LDA_B_011 --dimensions=64 --hidden1=128 --hidden2=16 --lr=0.0005 --weight_decay=1e-05 --dropout=0.2 --batch=16 --moco_queue=8192 --moco_momentum=0.99 --moco_t=0.2 --loss_ratio1=0.7 --loss_ratio2=0.5 --loss_ratio3=0.3 --feature_type=one_hot --augment=random_permute_features,attribute_mask,noise_then_mask --augment_mode=online --proj_dim=32 --similarity_threshold=0.5 --noise_std=0.005 --mask_rate=0.05",
+  "output_result_dir": "/root/OUTPUT/result/LDA_B_011_data_20251018_210838"
+}

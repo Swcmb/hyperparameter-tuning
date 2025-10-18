@@ -419,7 +419,7 @@ def build_refine_grid(top_cfg: Dict[str, Any]) -> List[Dict[str, Any]]:
         seen.add(key)
         uniq.append(c)
     # 限制数量，避免过大（例如最多 60）
-    return uniq[:60]
+    return uniq[:10]
 
 
 def _cfg_to_args(task: str, cfg: Dict[str, Any], epochs: int, seed: int, run_name: str) -> List[str]:
@@ -585,7 +585,8 @@ def run_random_search(task: str, N: int, epochs: int, base_seed: int = 0, epochs
 def run_refine(task: str, top10: List[Dict[str, Any]], epochs: int, base_seed: int = 0) -> List[Dict[str, Any]]:
     print(f"========== Stage C | Refine | Task={task} | epochs={epochs} ==========")
     refine_rows: List[Dict[str, Any]] = []
-    for rank, top in enumerate(top10, start=1):
+    # 仅用阶段B的 top2 作为精调中心，控制总命令量
+    for rank, top in enumerate(top10[:2], start=1):
         cfg_center = top["config"]
         grid = build_refine_grid(cfg_center)
         for j, cfg in enumerate(grid, start=1):
@@ -690,7 +691,7 @@ def main_driver():
     p = argparse.ArgumentParser(description="A→B→C 自动化驱动（随机搜索+精调）")
     p.add_argument("--stage", type=str, default="auto", choices=["A", "B", "C", "auto"], help="执行阶段")
     p.add_argument("--tasks", type=str, default="LDA,MDA,LMI", help="任务列表，逗号分隔")
-    p.add_argument("--num_random", type=int, default=60, help="阶段B随机搜索配置数量")
+    p.add_argument("--num_random", type=int, default=20, help="阶段B随机搜索配置数量")
     p.add_argument("--epochs_b", type=int, default=3, help="阶段B每trial训练轮数")
     p.add_argument("--epochs_c", type=int, default=10, help="阶段C每trial训练轮数")
     p.add_argument("--full_epochs", type=int, default=50, help="最终复现的训练轮数")
@@ -737,7 +738,8 @@ def main_driver():
                     valid.sort(key=lambda x: x["auprc_mean"], reverse=True)
                     top10 = valid[:10]
             refine_rows = run_refine(task, top10, args.epochs_c, base_seed=args.base_seed)
-            finals = run_reproduce_top3(task, refine_rows if refine_rows else top10, seeds, args.full_epochs)
+            # 跳过最终复现以控制总命令量
+            finals = {}
             write_summary_md(task, baseline_row or {}, history, refine_rows, finals)
 
     print("========== HPO Driver End ==========")
