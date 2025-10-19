@@ -1,0 +1,5 @@
+Threshold Scan & Temperature Scaling
+scan_range=[0.35,0.65] step=0.01 temp_grid=[0.5,3.0] num=26
+best_threshold=0.520 F1@best=0.8156
+best_temperature=1.100
+calibrated_best_threshold=0.540 F1_calib@best=0.8158
