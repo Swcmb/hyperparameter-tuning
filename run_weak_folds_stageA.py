@@ -29,8 +29,8 @@ else:
 PY = sys.executable or "python3"
 
 # ===================== PGD与扫描/校准 =====================
-EPS_LIST = [0.008, 0.012, 0.015]
-STEPS_LIST = [3, 5]
+EPS_LIST: list[float] = [0.008, 0.012, 0.015]
+STEPS_LIST: list[int] = [3, 5]
 DYNAMIC_ALPHA = True
 ADV_MODE = "mgraph"
 ADV_NORM = "linf"
@@ -67,7 +67,7 @@ SCAN_CALIB = {
     "temp_grid_num": 26,
 }
 
-TASKS = [
+TASKS: list[tuple[str, str]] = [
     ("LDA", "LDA_C_stageA"),
     ("LMI", "LMI_C_stageA"),
     ("MDA", "MDA_C_stageA"),
@@ -93,7 +93,7 @@ def assign_gpu(job_idx):
     return GPUS[job_idx % len(GPUS)]
 
 # ===================== 构建通用参数 =====================
-def build_common_args(task_type, run_suffix):
+def build_common_args(task_type: str, run_suffix: str) -> list[str]:
     args = [
         "--task_type", task_type,
         "--run_name", run_suffix,
@@ -185,15 +185,19 @@ def main():
         # 启动间隔
         time.sleep(START_INTERVAL)
         # 启动任务
+        cmd: list[str] = [
+            PY,
+            str(WORKDIR / "main.py"),
+            *build_common_args(params[0], f"{params[0]}_stageA_eps{params[1]:.3f}_steps{params[2]}"),
+            "--adv_eps", str(params[1]),
+            "--adv_alpha", str(params[1] / params[2] if DYNAMIC_ALPHA else params[1] / 3.0),
+            "--adv_steps", str(params[2]),
+        ]
+        env: dict[str, str] = {**os.environ, "CUDA_VISIBLE_DEVICES": str(assign_gpu(job_idx))}
         p = subprocess.Popen(
-            [
-                PY, str(WORKDIR / "main.py"),
-                *build_common_args(params[0], f"{params[0]}_stageA_eps{params[1]:.3f}_steps{params[2]}")
-            ] + ["--adv_eps", str(params[1]),
-                 "--adv_alpha", str(params[1]/params[2] if DYNAMIC_ALPHA else params[1]/3.0),
-                 "--adv_steps", str(params[2])],
-            cwd=WORKDIR,
-            env={**os.environ, "CUDA_VISIBLE_DEVICES": str(assign_gpu(job_idx))},
+            cmd,
+            cwd=str(WORKDIR),
+            env=env,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             bufsize=1,
