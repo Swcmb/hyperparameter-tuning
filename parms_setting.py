@@ -169,6 +169,28 @@ def settings():
                         help='扰动后的最小裁剪值，默认 -inf。')
     parser.add_argument('--adv_clip_max', type=float, default=float("inf"),
                         help='扰动后的最大裁剪值，默认 +inf。')
+    # 阶段A新增：对抗启用的后期开关（仅在该 epoch 及以后启用 PGD）
+    parser.add_argument('--adv_warmup_end', type=int, default=3,
+                        help='PGD启用的起始epoch（训练中后期激活），默认 3。')
+
+    # 阶段A新增：阈值扫描与温度校准配置
+    parser.add_argument('--enable_threshold_scan', type=lambda x: str(x).lower()=='true', default=True,
+                        help='是否启用逐折阈值扫描（true/false），默认 true。')
+    parser.add_argument('--threshold_min', type=float, default=0.35,
+                        help='阈值扫描下界，默认 0.35。')
+    parser.add_argument('--threshold_max', type=float, default=0.65,
+                        help='阈值扫描上界，默认 0.65。')
+    parser.add_argument('--threshold_step', type=float, default=0.01,
+                        help='阈值扫描步长，默认 0.01。')
+    parser.add_argument('--enable_temp_scaling', type=lambda x: str(x).lower()=='true', default=True,
+                        help='是否启用温度校准（true/false），默认 true。')
+    parser.add_argument('--temp_grid_min', type=float, default=0.5,
+                        help='温度校准网格下界 T_min，默认 0.5。')
+    parser.add_argument('--temp_grid_max', type=float, default=3.0,
+                        help='温度校准网格上界 T_max，默认 3.0。')
+    parser.add_argument('--temp_grid_num', type=int, default=26,
+                        help='温度校准网格点数（包含端点），默认 26。')
+
     # K 折重算与缓存
     parser.add_argument('--kfold_recompute', type=lambda x: str(x).lower() == 'true', default=True,
                         help='按折仅用训练集重算预处理/相似度/EM（true/false），默认 true。')
