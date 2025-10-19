@@ -1,0 +1,258 @@
+2025-10-19 02:34:39 | INFO | EM | ================================================================================
+2025-10-19 02:34:39 | INFO | EM | RUN START | run_id=20251019_023439 | run_name=LDA_C_r1_005
+2025-10-19 02:34:39 | INFO | EM | COMMAND: /root/miniconda3/bin/python /root/hyperparameter-tuning/main.py --task_type=LDA --epochs=10 --seed=0 --run_name=LDA_C_r1_005 --dimensions=128 --hidden1=128 --hidden2=64 --lr=0.0005 --weight_decay=1e-05 --dropout=0.0 --batch=64 --moco_queue=8192 --moco_momentum=0.99 --moco_t=0.2 --loss_ratio1=0.4 --loss_ratio2=0.4 --loss_ratio3=0.2 --feature_type=one_hot --augment=random_permute_features,attribute_mask,noise_then_mask --augment_mode=static --proj_dim=64 --similarity_threshold=0.6 --noise_std=0.02 --mask_rate=0.2
+2025-10-19 02:34:39 | INFO | EM | ================================================================================
+2025-10-19 02:34:39 | INFO | EM.result | Result directory: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439
+2025-10-19 02:34:39 | INFO | EM | Initialized logging and result directory.
+2025-10-19 02:34:39 | INFO | EM | Using CUDA: True
+2025-10-19 02:34:39 | INFO | EM | CUDA device count: 1
+2025-10-19 02:34:39 | INFO | EM | Current CUDA device: 0
+2025-10-19 02:34:39 | INFO | EM | CUDA device name: NVIDIA GeForce RTX 4090
+2025-10-19 02:34:39 | INFO | EM | === Augmentation Config ===
+2025-10-19 02:34:39 | INFO | EM | [AUG CONFIG] Multiple augmentations detected: random_permute_features, attribute_mask, noise_then_mask
+2025-10-19 02:34:39 | INFO | EM | augment=random_permute_features,attribute_mask,noise_then_mask | mode=static | noise_std=0.02 | mask_rate=0.2 | augment_seed=None (None means seed+fold for static)
+2025-10-19 02:34:39 | INFO | EM | ===========================
+2025-10-19 02:34:39 | INFO | EM | Loading dataset1/LDA.edgelist seed0 dataset...
+2025-10-19 02:34:39 | INFO | EM | Selected cross_validation type: 5_cv1
+2025-10-19 02:34:39 | INFO | EM | Selected task_type: LDA
+2025-10-19 02:34:39 | INFO | EM | Selected feature_type: one_hot
+2025-10-19 02:34:39 | INFO | EM | Selected embed_dim: N/A
+2025-10-19 02:34:39 | INFO | EM | Selected learning_rate: N/A
+2025-10-19 02:34:39 | INFO | EM | Selected epochs: 10
+2025-10-19 02:34:39 | INFO | EM | Selected task type...
+2025-10-19 02:34:48 | INFO | EM.print | [AUG][static][fold=1] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=0
+2025-10-19 02:34:48 | INFO | EM.print | [AUG][static][fold=1] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 02:34:48 | INFO | EM.augment | [AUGMENT][fold=1] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=0 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 02:34:57 | INFO | EM.print | [AUG][static][fold=2] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=1
+2025-10-19 02:34:57 | INFO | EM.print | [AUG][static][fold=2] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 02:34:57 | INFO | EM.augment | [AUGMENT][fold=2] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=1 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 02:35:05 | INFO | EM.print | [AUG][static][fold=3] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=2
+2025-10-19 02:35:05 | INFO | EM.print | [AUG][static][fold=3] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 02:35:05 | INFO | EM.augment | [AUGMENT][fold=3] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=2 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 02:35:14 | INFO | EM.print | [AUG][static][fold=4] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=3
+2025-10-19 02:35:14 | INFO | EM.print | [AUG][static][fold=4] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 02:35:14 | INFO | EM.augment | [AUGMENT][fold=4] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=3 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 02:35:22 | INFO | EM.print | [AUG][static][fold=5] start name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=4
+2025-10-19 02:35:22 | INFO | EM.print | [AUG][static][fold=5] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 02:35:22 | INFO | EM.augment | [AUGMENT][fold=5] name=random_permute_features noise_std=0.02 mask_rate=0.2 seed=4 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 02:35:22 | INFO | EM | [DATALOADER] os=linux workers=8 prefetch_factor=4
+2025-10-19 02:35:22 | INFO | EM.fold_stats | Saved fold stats to /root/OUTPUT/result/metrics/fold_stats.json
+2025-10-19 02:35:22 | INFO | EM | Loading finished!
+2025-10-19 02:35:22 | INFO | EM | Starting 5-fold cross validation...
+2025-10-19 02:35:22 | INFO | EM | === Fold 1/5 ===
+2025-10-19 02:35:23 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/adv_config_fold_1_20251019_023439.json.txt
+2025-10-19 02:35:23 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_1_20251019_023439.json
+2025-10-19 02:35:23 | INFO | EM.print | Start Training...
+2025-10-19 02:35:23 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 02:35:23 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 2.639659 | task_loss:0.7295 cont_loss:5.5197 adv_loss:0.6997
+2025-10-19 02:35:25 | INFO | EM.print | epoch: 0001 loss_train: 3.7048 task_loss: 0.3023 cont_loss: 8.9441 adv_loss: 0.0311 auroc_train: 0.8964 auprc_train: 0.8912 precision_train: 0.7996 recall_train: 0.8153 f1_train: 0.8074 cm_train: (tn=1706, fp=438, fn=396, tp=1748)
+2025-10-19 02:35:25 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 02:35:25 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 3.7170208 | task_loss:0.3352 cont_loss:8.9426 adv_loss:0.0295
+2025-10-19 02:35:27 | INFO | EM.print | epoch: 0002 loss_train: 3.6078 task_loss: 0.2573 cont_loss: 8.7597 adv_loss: 0.0050 auroc_train: 0.9501 auprc_train: 0.9461 precision_train: 0.8663 recall_train: 0.8829 f1_train: 0.8745 cm_train: (tn=1853, fp=292, fn=251, tp=1892)
+2025-10-19 02:35:27 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 02:35:27 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 3.6023111 | task_loss:0.2532 cont_loss:8.7502 adv_loss:0.0049
+2025-10-19 02:35:29 | INFO | EM.print | epoch: 0003 loss_train: 3.5952 task_loss: 0.2631 cont_loss: 8.7219 adv_loss: 0.0060 auroc_train: 0.9582 auprc_train: 0.9558 precision_train: 0.8827 recall_train: 0.8946 f1_train: 0.8886 cm_train: (tn=1888, fp=255, fn=226, tp=1919)
+2025-10-19 02:35:29 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 02:35:29 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 3.5394363 | task_loss:0.1260 cont_loss:8.7196 adv_loss:0.0060
+2025-10-19 02:35:30 | INFO | EM.print | epoch: 0004 loss_train: 3.8011 task_loss: 0.6177 cont_loss: 8.8835 adv_loss: 0.0029 auroc_train: 0.9551 auprc_train: 0.9488 precision_train: 0.8789 recall_train: 0.9039 f1_train: 0.8912 cm_train: (tn=1877, fp=267, fn=206, tp=1938)
+2025-10-19 02:35:30 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 02:35:30 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 3.660708 | task_loss:0.2656 cont_loss:8.8847 adv_loss:0.0029
+2025-10-19 02:35:32 | INFO | EM.print | epoch: 0005 loss_train: 3.6680 task_loss: 0.3526 cont_loss: 8.8169 adv_loss: 0.0012 auroc_train: 0.9591 auprc_train: 0.9543 precision_train: 0.8728 recall_train: 0.9147 f1_train: 0.8932 cm_train: (tn=1857, fp=286, fn=183, tp=1962)
+2025-10-19 02:35:32 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 02:35:32 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 3.6686864 | task_loss:0.3509 cont_loss:8.8202 adv_loss:0.0012
+2025-10-19 02:35:34 | INFO | EM.print | epoch: 0006 loss_train: 3.6309 task_loss: 0.2687 cont_loss: 8.8080 adv_loss: 0.0010 auroc_train: 0.9660 auprc_train: 0.9621 precision_train: 0.8842 recall_train: 0.9234 f1_train: 0.9034 cm_train: (tn=1887, fp=259, fn=164, tp=1978)
+2025-10-19 02:35:34 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 02:35:34 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 3.6029418 | task_loss:0.1928 cont_loss:8.8142 adv_loss:0.0009
+2025-10-19 02:35:35 | INFO | EM.print | epoch: 0007 loss_train: 3.6588 task_loss: 0.2522 cont_loss: 8.8944 adv_loss: 0.0008 auroc_train: 0.9699 auprc_train: 0.9670 precision_train: 0.8950 recall_train: 0.9234 f1_train: 0.9090 cm_train: (tn=1914, fp=232, fn=164, tp=1978)
+2025-10-19 02:35:35 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 02:35:35 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 3.641021 | task_loss:0.2041 cont_loss:8.8980 adv_loss:0.0008
+2025-10-19 02:35:37 | INFO | EM.print | epoch: 0008 loss_train: 3.6162 task_loss: 0.1016 cont_loss: 8.9385 adv_loss: 0.0007 auroc_train: 0.9745 auprc_train: 0.9714 precision_train: 0.9014 recall_train: 0.9320 f1_train: 0.9164 cm_train: (tn=1922, fp=219, fn=146, tp=2001)
+2025-10-19 02:35:37 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 02:35:37 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 3.633769 | task_loss:0.1443 cont_loss:8.9398 adv_loss:0.0007
+2025-10-19 02:35:39 | INFO | EM.print | epoch: 0009 loss_train: 3.6926 task_loss: 0.3046 cont_loss: 8.9265 adv_loss: 0.0007 auroc_train: 0.9782 auprc_train: 0.9747 precision_train: 0.9152 recall_train: 0.9455 f1_train: 0.9301 cm_train: (tn=1955, fp=188, fn=117, tp=2028)
+2025-10-19 02:35:39 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 02:35:39 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 3.6102827 | task_loss:0.0991 cont_loss:8.9262 adv_loss:0.0007
+2025-10-19 02:35:40 | INFO | EM.print | epoch: 0010 loss_train: 3.6303 task_loss: 0.2010 cont_loss: 8.8742 adv_loss: 0.0008 auroc_train: 0.9825 auprc_train: 0.9791 precision_train: 0.9215 recall_train: 0.9585 f1_train: 0.9396 cm_train: (tn=1969, fp=175, fn=89, tp=2055)
+2025-10-19 02:35:40 | INFO | EM.print | Optimization Finished!
+2025-10-19 02:35:40 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/train_epoch_metrics_fold_1_20251019_023439.csv.txt
+2025-10-19 02:35:40 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_1_20251019_023439.csv
+2025-10-19 02:35:41 | INFO | EM.print | loss_test: 3.7169 auroc_test: 0.9523 auprc_test: 0.9491 precision_test: 0.8651 recall_test: 0.9141 f1_test: 0.8889 cm_test: (tn=439, fp=73, fn=44, tp=468)
+2025-10-19 02:35:41 | INFO | EM | Fold 1 completed.
+2025-10-19 02:35:41 | INFO | EM | === Fold 2/5 ===
+2025-10-19 02:35:41 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/adv_config_fold_2_20251019_023439.json.txt
+2025-10-19 02:35:41 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_2_20251019_023439.json
+2025-10-19 02:35:41 | INFO | EM.print | Start Training...
+2025-10-19 02:35:41 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 02:35:42 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 2.390515 | task_loss:0.6988 cont_loss:4.9294 adv_loss:0.6962
+2025-10-19 02:35:43 | INFO | EM.print | epoch: 0001 loss_train: 3.7197 task_loss: 0.3374 cont_loss: 8.9490 adv_loss: 0.0258 auroc_train: 0.8811 auprc_train: 0.8778 precision_train: 0.7742 recall_train: 0.8099 f1_train: 0.7916 cm_train: (tn=1635, fp=507, fn=408, tp=1738)
+2025-10-19 02:35:43 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 02:35:43 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 3.706131 | task_loss:0.3068 cont_loss:8.9464 adv_loss:0.0242
+2025-10-19 02:35:45 | INFO | EM.print | epoch: 0002 loss_train: 3.5861 task_loss: 0.3364 cont_loss: 8.6271 adv_loss: 0.0038 auroc_train: 0.9485 auprc_train: 0.9452 precision_train: 0.8657 recall_train: 0.8936 f1_train: 0.8794 cm_train: (tn=1848, fp=297, fn=228, tp=1915)
+2025-10-19 02:35:45 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 02:35:45 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 3.5364132 | task_loss:0.2203 cont_loss:8.6189 adv_loss:0.0037
+2025-10-19 02:35:46 | INFO | EM.print | epoch: 0003 loss_train: 3.5887 task_loss: 0.2475 cont_loss: 8.7235 adv_loss: 0.0016 auroc_train: 0.9559 auprc_train: 0.9524 precision_train: 0.8780 recall_train: 0.8940 f1_train: 0.8859 cm_train: (tn=1881, fp=266, fn=227, tp=1914)
+2025-10-19 02:35:46 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 02:35:47 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 3.564117 | task_loss:0.1854 cont_loss:8.7242 adv_loss:0.0016
+2025-10-19 02:35:48 | INFO | EM.print | epoch: 0004 loss_train: 3.5603 task_loss: 0.3000 cont_loss: 8.6001 adv_loss: 0.0012 auroc_train: 0.9636 auprc_train: 0.9618 precision_train: 0.8847 recall_train: 0.9095 f1_train: 0.8969 cm_train: (tn=1891, fp=254, fn=194, tp=1949)
+2025-10-19 02:35:48 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 02:35:48 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 3.5534396 | task_loss:0.2883 cont_loss:8.5946 adv_loss:0.0012
+2025-10-19 02:35:50 | INFO | EM.print | epoch: 0005 loss_train: 3.6033 task_loss: 0.1729 cont_loss: 8.8344 adv_loss: 0.0020 auroc_train: 0.9650 auprc_train: 0.9618 precision_train: 0.8832 recall_train: 0.9141 f1_train: 0.8984 cm_train: (tn=1886, fp=259, fn=184, tp=1959)
+2025-10-19 02:35:50 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 02:35:50 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 3.6079037 | task_loss:0.1966 cont_loss:8.8221 adv_loss:0.0021
+2025-10-19 02:35:52 | INFO | EM.print | epoch: 0006 loss_train: 3.5120 task_loss: 0.3020 cont_loss: 8.4721 adv_loss: 0.0117 auroc_train: 0.9673 auprc_train: 0.9645 precision_train: 0.8801 recall_train: 0.9273 f1_train: 0.9031 cm_train: (tn=1872, fp=271, fn=156, tp=1989)
+2025-10-19 02:35:52 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 02:35:52 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 3.478346 | task_loss:0.2050 cont_loss:8.4866 adv_loss:0.0086
+2025-10-19 02:35:53 | INFO | EM.print | epoch: 0007 loss_train: 3.6038 task_loss: 0.1934 cont_loss: 8.8157 adv_loss: 0.0008 auroc_train: 0.9669 auprc_train: 0.9638 precision_train: 0.8808 recall_train: 0.9235 f1_train: 0.9017 cm_train: (tn=1875, fp=268, fn=164, tp=1981)
+2025-10-19 02:35:53 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 02:35:53 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 3.5936723 | task_loss:0.1628 cont_loss:8.8210 adv_loss:0.0007
+2025-10-19 02:35:55 | INFO | EM.print | epoch: 0008 loss_train: 3.6762 task_loss: 0.2575 cont_loss: 8.9325 adv_loss: 0.0012 auroc_train: 0.9722 auprc_train: 0.9709 precision_train: 0.8858 recall_train: 0.9267 f1_train: 0.9058 cm_train: (tn=1889, fp=256, fn=157, tp=1986)
+2025-10-19 02:35:55 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 02:35:55 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 3.6501 | task_loss:0.1910 cont_loss:8.9336 adv_loss:0.0012
+2025-10-19 02:35:57 | INFO | EM.print | epoch: 0009 loss_train: 3.6112 task_loss: 0.2007 cont_loss: 8.8265 adv_loss: 0.0015 auroc_train: 0.9775 auprc_train: 0.9759 precision_train: 0.9046 recall_train: 0.9328 f1_train: 0.9185 cm_train: (tn=1933, fp=211, fn=144, tp=2000)
+2025-10-19 02:35:57 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 02:35:57 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 3.6248653 | task_loss:0.2356 cont_loss:8.8258 adv_loss:0.0015
+2025-10-19 02:35:59 | INFO | EM.print | epoch: 0010 loss_train: 3.6722 task_loss: 0.2872 cont_loss: 8.8926 adv_loss: 0.0013 auroc_train: 0.9806 auprc_train: 0.9790 precision_train: 0.9177 recall_train: 0.9515 f1_train: 0.9343 cm_train: (tn=1961, fp=183, fn=104, tp=2040)
+2025-10-19 02:35:59 | INFO | EM.print | Optimization Finished!
+2025-10-19 02:35:59 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/train_epoch_metrics_fold_2_20251019_023439.csv.txt
+2025-10-19 02:35:59 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_2_20251019_023439.csv
+2025-10-19 02:35:59 | INFO | EM.print | loss_test: 3.7214 auroc_test: 0.9383 auprc_test: 0.9340 precision_test: 0.8542 recall_test: 0.8861 f1_test: 0.8698 cm_test: (tn=438, fp=77, fn=58, tp=451)
+2025-10-19 02:35:59 | INFO | EM | Fold 2 completed.
+2025-10-19 02:35:59 | INFO | EM | === Fold 3/5 ===
+2025-10-19 02:35:59 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/adv_config_fold_3_20251019_023439.json.txt
+2025-10-19 02:35:59 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_3_20251019_023439.json
+2025-10-19 02:35:59 | INFO | EM.print | Start Training...
+2025-10-19 02:35:59 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 02:36:00 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 2.3378005 | task_loss:0.7178 cont_loss:4.7502 adv_loss:0.7529
+2025-10-19 02:36:01 | INFO | EM.print | epoch: 0001 loss_train: 3.7060 task_loss: 0.2939 cont_loss: 8.9436 adv_loss: 0.0549 auroc_train: 0.8746 auprc_train: 0.8699 precision_train: 0.7719 recall_train: 0.7953 f1_train: 0.7835 cm_train: (tn=1639, fp=504, fn=439, tp=1706)
+2025-10-19 02:36:01 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 02:36:01 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 3.675406 | task_loss:0.2241 cont_loss:8.9392 adv_loss:0.0504
+2025-10-19 02:36:03 | INFO | EM.print | epoch: 0002 loss_train: 3.5446 task_loss: 0.2306 cont_loss: 8.6284 adv_loss: 0.0050 auroc_train: 0.9476 auprc_train: 0.9448 precision_train: 0.8570 recall_train: 0.8917 f1_train: 0.8740 cm_train: (tn=1826, fp=319, fn=232, tp=1911)
+2025-10-19 02:36:03 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 02:36:03 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 3.577177 | task_loss:0.3111 cont_loss:8.6293 adv_loss:0.0049
+2025-10-19 02:36:05 | INFO | EM.print | epoch: 0003 loss_train: 3.5549 task_loss: 0.2279 cont_loss: 8.6581 adv_loss: 0.0028 auroc_train: 0.9572 auprc_train: 0.9536 precision_train: 0.8759 recall_train: 0.9082 f1_train: 0.8917 cm_train: (tn=1867, fp=276, fn=197, tp=1948)
+2025-10-19 02:36:05 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 02:36:05 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 3.595214 | task_loss:0.3269 cont_loss:8.6598 adv_loss:0.0027
+2025-10-19 02:36:07 | INFO | EM.print | epoch: 0004 loss_train: 3.5190 task_loss: 0.1909 cont_loss: 8.6041 adv_loss: 0.0050 auroc_train: 0.9570 auprc_train: 0.9544 precision_train: 0.8713 recall_train: 0.9071 f1_train: 0.8888 cm_train: (tn=1859, fp=287, fn=199, tp=1943)
+2025-10-19 02:36:07 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 02:36:07 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 3.5392828 | task_loss:0.2469 cont_loss:8.5987 adv_loss:0.0052
+2025-10-19 02:36:08 | INFO | EM.print | epoch: 0005 loss_train: 3.6384 task_loss: 0.2691 cont_loss: 8.8262 adv_loss: 0.0015 auroc_train: 0.9636 auprc_train: 0.9604 precision_train: 0.8802 recall_train: 0.9225 f1_train: 0.9008 cm_train: (tn=1877, fp=269, fn=166, tp=1976)
+2025-10-19 02:36:08 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 02:36:08 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 3.6243298 | task_loss:0.2250 cont_loss:8.8351 adv_loss:0.0015
+2025-10-19 02:36:10 | INFO | EM.print | epoch: 0006 loss_train: 3.6685 task_loss: 0.1929 cont_loss: 8.9768 adv_loss: 0.0028 auroc_train: 0.9647 auprc_train: 0.9604 precision_train: 0.8827 recall_train: 0.9272 f1_train: 0.9044 cm_train: (tn=1881, fp=264, fn=156, tp=1987)
+2025-10-19 02:36:10 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 02:36:10 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 3.6696804 | task_loss:0.1474 cont_loss:9.0255 adv_loss:0.0024
+2025-10-19 02:36:12 | INFO | EM.print | epoch: 0007 loss_train: 3.6208 task_loss: 0.1952 cont_loss: 8.8563 adv_loss: 0.0007 auroc_train: 0.9629 auprc_train: 0.9583 precision_train: 0.8777 recall_train: 0.9310 f1_train: 0.9036 cm_train: (tn=1866, fp=278, fn=148, tp=1996)
+2025-10-19 02:36:12 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 02:36:12 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 3.6178827 | task_loss:0.1851 cont_loss:8.8593 adv_loss:0.0007
+2025-10-19 02:36:13 | INFO | EM.print | epoch: 0008 loss_train: 3.6598 task_loss: 0.2596 cont_loss: 8.8897 adv_loss: 0.0005 auroc_train: 0.9728 auprc_train: 0.9682 precision_train: 0.9035 recall_train: 0.9444 f1_train: 0.9235 cm_train: (tn=1930, fp=216, fn=119, tp=2023)
+2025-10-19 02:36:13 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 02:36:14 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 3.6439009 | task_loss:0.2193 cont_loss:8.8902 adv_loss:0.0005
+2025-10-19 02:36:15 | INFO | EM.print | epoch: 0009 loss_train: 3.6376 task_loss: 0.2546 cont_loss: 8.8392 adv_loss: 0.0005 auroc_train: 0.9756 auprc_train: 0.9721 precision_train: 0.9025 recall_train: 0.9497 f1_train: 0.9255 cm_train: (tn=1923, fp=220, fn=108, tp=2037)
+2025-10-19 02:36:15 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 02:36:15 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 3.6772568 | task_loss:0.3530 cont_loss:8.8398 adv_loss:0.0005
+2025-10-19 02:36:17 | INFO | EM.print | epoch: 0010 loss_train: 3.6059 task_loss: 0.2766 cont_loss: 8.7378 adv_loss: 0.0009 auroc_train: 0.9763 auprc_train: 0.9726 precision_train: 0.9067 recall_train: 0.9464 f1_train: 0.9261 cm_train: (tn=1933, fp=209, fn=115, tp=2031)
+2025-10-19 02:36:17 | INFO | EM.print | Optimization Finished!
+2025-10-19 02:36:17 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/train_epoch_metrics_fold_3_20251019_023439.csv.txt
+2025-10-19 02:36:17 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_3_20251019_023439.csv
+2025-10-19 02:36:17 | INFO | EM.print | loss_test: 3.6624 auroc_test: 0.9573 auprc_test: 0.9576 precision_test: 0.9076 recall_test: 0.8616 f1_test: 0.8840 cm_test: (tn=466, fp=45, fn=71, tp=442)
+2025-10-19 02:36:17 | INFO | EM | Fold 3 completed.
+2025-10-19 02:36:17 | INFO | EM | === Fold 4/5 ===
+2025-10-19 02:36:17 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/adv_config_fold_4_20251019_023439.json.txt
+2025-10-19 02:36:17 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_4_20251019_023439.json
+2025-10-19 02:36:17 | INFO | EM.print | Start Training...
+2025-10-19 02:36:17 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 02:36:18 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 2.3205712 | task_loss:0.6699 cont_loss:4.7765 adv_loss:0.7101
+2025-10-19 02:36:20 | INFO | EM.print | epoch: 0001 loss_train: 3.7427 task_loss: 0.3728 cont_loss: 8.9691 adv_loss: 0.0299 auroc_train: 0.8836 auprc_train: 0.8795 precision_train: 0.7826 recall_train: 0.7804 f1_train: 0.7815 cm_train: (tn=1678, fp=465, fn=471, tp=1674)
+2025-10-19 02:36:20 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 02:36:20 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 3.739873 | task_loss:0.3689 cont_loss:8.9669 adv_loss:0.0278
+2025-10-19 02:36:21 | INFO | EM.print | epoch: 0002 loss_train: 3.5637 task_loss: 0.2036 cont_loss: 8.7036 adv_loss: 0.0043 auroc_train: 0.9467 auprc_train: 0.9410 precision_train: 0.8629 recall_train: 0.8838 f1_train: 0.8732 cm_train: (tn=1844, fp=301, fn=249, tp=1894)
+2025-10-19 02:36:21 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 02:36:21 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 3.5728807 | task_loss:0.2158 cont_loss:8.7143 adv_loss:0.0042
+2025-10-19 02:36:23 | INFO | EM.print | epoch: 0003 loss_train: 3.5775 task_loss: 0.2450 cont_loss: 8.6973 adv_loss: 0.0030 auroc_train: 0.9577 auprc_train: 0.9536 precision_train: 0.8743 recall_train: 0.9057 f1_train: 0.8898 cm_train: (tn=1866, fp=279, fn=202, tp=1941)
+2025-10-19 02:36:23 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 02:36:23 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 3.5642238 | task_loss:0.2169 cont_loss:8.6921 adv_loss:0.0030
+2025-10-19 02:36:25 | INFO | EM.print | epoch: 0004 loss_train: 3.5682 task_loss: 0.2891 cont_loss: 8.6293 adv_loss: 0.0044 auroc_train: 0.9594 auprc_train: 0.9540 precision_train: 0.8668 recall_train: 0.9132 f1_train: 0.8894 cm_train: (tn=1843, fp=301, fn=186, tp=1958)
+2025-10-19 02:36:25 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 02:36:25 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 3.4998446 | task_loss:0.1185 cont_loss:8.6289 adv_loss:0.0044
+2025-10-19 02:36:27 | INFO | EM.print | epoch: 0005 loss_train: 3.5949 task_loss: 0.3584 cont_loss: 8.6275 adv_loss: 0.0028 auroc_train: 0.9669 auprc_train: 0.9627 precision_train: 0.8803 recall_train: 0.9245 f1_train: 0.9019 cm_train: (tn=1871, fp=270, fn=162, tp=1985)
+2025-10-19 02:36:27 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 02:36:27 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 3.5754356 | task_loss:0.3084 cont_loss:8.6288 adv_loss:0.0028
+2025-10-19 02:36:28 | INFO | EM.print | epoch: 0006 loss_train: 3.5871 task_loss: 0.1633 cont_loss: 8.8016 adv_loss: 0.0057 auroc_train: 0.9678 auprc_train: 0.9623 precision_train: 0.8888 recall_train: 0.9290 f1_train: 0.9085 cm_train: (tn=1897, fp=249, fn=152, tp=1990)
+2025-10-19 02:36:28 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 02:36:28 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 3.602938 | task_loss:0.2057 cont_loss:8.7988 adv_loss:0.0057
+2025-10-19 02:36:30 | INFO | EM.print | epoch: 0007 loss_train: 3.5711 task_loss: 0.1815 cont_loss: 8.7454 adv_loss: 0.0019 auroc_train: 0.9728 auprc_train: 0.9698 precision_train: 0.8979 recall_train: 0.9393 f1_train: 0.9181 cm_train: (tn=1916, fp=229, fn=130, tp=2013)
+2025-10-19 02:36:30 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 02:36:30 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 3.5705135 | task_loss:0.1807 cont_loss:8.7446 adv_loss:0.0020
+2025-10-19 02:36:32 | INFO | EM.print | epoch: 0008 loss_train: 3.5743 task_loss: 0.2070 cont_loss: 8.7278 adv_loss: 0.0019 auroc_train: 0.9750 auprc_train: 0.9684 precision_train: 0.9070 recall_train: 0.9514 f1_train: 0.9287 cm_train: (tn=1937, fp=209, fn=104, tp=2038)
+2025-10-19 02:36:32 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 02:36:32 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 3.5527468 | task_loss:0.1539 cont_loss:8.7270 adv_loss:0.0019
+2025-10-19 02:36:33 | INFO | EM.print | epoch: 0009 loss_train: 3.5354 task_loss: 0.0941 cont_loss: 8.7435 adv_loss: 0.0022 auroc_train: 0.9802 auprc_train: 0.9757 precision_train: 0.9138 recall_train: 0.9501 f1_train: 0.9316 cm_train: (tn=1953, fp=192, fn=107, tp=2036)
+2025-10-19 02:36:33 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 02:36:34 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 3.5437021 | task_loss:0.1177 cont_loss:8.7405 adv_loss:0.0021
+2025-10-19 02:36:35 | INFO | EM.print | epoch: 0010 loss_train: 3.5612 task_loss: 0.1843 cont_loss: 8.7181 adv_loss: 0.0014 auroc_train: 0.9823 auprc_train: 0.9796 precision_train: 0.9217 recall_train: 0.9539 f1_train: 0.9375 cm_train: (tn=1968, fp=174, fn=99, tp=2047)
+2025-10-19 02:36:35 | INFO | EM.print | Optimization Finished!
+2025-10-19 02:36:35 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/train_epoch_metrics_fold_4_20251019_023439.csv.txt
+2025-10-19 02:36:35 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_4_20251019_023439.csv
+2025-10-19 02:36:36 | INFO | EM.print | loss_test: 3.6259 auroc_test: 0.9540 auprc_test: 0.9532 precision_test: 0.8637 recall_test: 0.8911 f1_test: 0.8772 cm_test: (tn=448, fp=71, fn=55, tp=450)
+2025-10-19 02:36:36 | INFO | EM | Fold 4 completed.
+2025-10-19 02:36:36 | INFO | EM | === Fold 5/5 ===
+2025-10-19 02:36:36 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/adv_config_fold_5_20251019_023439.json.txt
+2025-10-19 02:36:36 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_5_20251019_023439.json
+2025-10-19 02:36:36 | INFO | EM.print | Start Training...
+2025-10-19 02:36:36 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 02:36:36 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 2.473077 | task_loss:0.6925 cont_loss:5.1165 adv_loss:0.7474
+2025-10-19 02:36:38 | INFO | EM.print | epoch: 0001 loss_train: 3.7346 task_loss: 0.3707 cont_loss: 8.9420 adv_loss: 0.0475 auroc_train: 0.8856 auprc_train: 0.8791 precision_train: 0.7907 recall_train: 0.7988 f1_train: 0.7947 cm_train: (tn=1687, fp=454, fn=432, tp=1715)
+2025-10-19 02:36:38 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 02:36:38 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 3.729731 | task_loss:0.3634 cont_loss:8.9393 adv_loss:0.0432
+2025-10-19 02:36:40 | INFO | EM.print | epoch: 0002 loss_train: 3.6458 task_loss: 0.2928 cont_loss: 8.8201 adv_loss: 0.0030 auroc_train: 0.9492 auprc_train: 0.9449 precision_train: 0.8766 recall_train: 0.8881 f1_train: 0.8823 cm_train: (tn=1876, fp=268, fn=240, tp=1904)
+2025-10-19 02:36:40 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 02:36:40 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 3.6179223 | task_loss:0.2231 cont_loss:8.8202 adv_loss:0.0030
+2025-10-19 02:36:41 | INFO | EM.print | epoch: 0003 loss_train: 3.5807 task_loss: 0.2283 cont_loss: 8.7214 adv_loss: 0.0040 auroc_train: 0.9594 auprc_train: 0.9569 precision_train: 0.8824 recall_train: 0.9063 f1_train: 0.8942 cm_train: (tn=1884, fp=259, fn=201, tp=1944)
+2025-10-19 02:36:41 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 02:36:41 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 3.5388212 | task_loss:0.1350 cont_loss:8.7102 adv_loss:0.0039
+2025-10-19 02:36:43 | INFO | EM.print | epoch: 0004 loss_train: 3.6611 task_loss: 0.2978 cont_loss: 8.8532 adv_loss: 0.0035 auroc_train: 0.9582 auprc_train: 0.9540 precision_train: 0.8744 recall_train: 0.9082 f1_train: 0.8910 cm_train: (tn=1862, fp=280, fn=197, tp=1949)
+2025-10-19 02:36:43 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 02:36:43 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 3.688175 | task_loss:0.3677 cont_loss:8.8509 adv_loss:0.0036
+2025-10-19 02:36:45 | INFO | EM.print | epoch: 0005 loss_train: 3.6590 task_loss: 0.1901 cont_loss: 8.9568 adv_loss: 0.0009 auroc_train: 0.9554 auprc_train: 0.9519 precision_train: 0.8739 recall_train: 0.9085 f1_train: 0.8909 cm_train: (tn=1864, fp=281, fn=196, tp=1947)
+2025-10-19 02:36:45 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 02:36:45 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 3.6597233 | task_loss:0.1915 cont_loss:8.9574 adv_loss:0.0009
+2025-10-19 02:36:46 | INFO | EM.print | epoch: 0006 loss_train: 3.7093 task_loss: 0.3124 cont_loss: 8.9606 adv_loss: 0.0005 auroc_train: 0.9624 auprc_train: 0.9598 precision_train: 0.8810 recall_train: 0.9147 f1_train: 0.8975 cm_train: (tn=1878, fp=265, fn=183, tp=1962)
+2025-10-19 02:36:46 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 02:36:47 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 3.7377253 | task_loss:0.3835 cont_loss:8.9606 adv_loss:0.0005
+2025-10-19 02:36:48 | INFO | EM.print | epoch: 0007 loss_train: 3.6751 task_loss: 0.2664 cont_loss: 8.9211 adv_loss: 0.0004 auroc_train: 0.9668 auprc_train: 0.9625 precision_train: 0.8866 recall_train: 0.9258 f1_train: 0.9058 cm_train: (tn=1890, fp=254, fn=159, tp=1985)
+2025-10-19 02:36:48 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 02:36:48 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 3.6909342 | task_loss:0.3066 cont_loss:8.9205 adv_loss:0.0004
+2025-10-19 02:36:50 | INFO | EM.print | epoch: 0008 loss_train: 3.6350 task_loss: 0.2353 cont_loss: 8.8521 adv_loss: 0.0003 auroc_train: 0.9718 auprc_train: 0.9686 precision_train: 0.8932 recall_train: 0.9366 f1_train: 0.9144 cm_train: (tn=1904, fp=240, fn=136, tp=2008)
+2025-10-19 02:36:50 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 02:36:50 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 3.6335115 | task_loss:0.2343 cont_loss:8.8494 adv_loss:0.0003
+2025-10-19 02:36:52 | INFO | EM.print | epoch: 0009 loss_train: 3.6269 task_loss: 0.2050 cont_loss: 8.8620 adv_loss: 0.0004 auroc_train: 0.9744 auprc_train: 0.9713 precision_train: 0.9038 recall_train: 0.9413 f1_train: 0.9222 cm_train: (tn=1927, fp=215, fn=126, tp=2020)
+2025-10-19 02:36:52 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 02:36:52 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 3.631802 | task_loss:0.2089 cont_loss:8.8705 adv_loss:0.0004
+2025-10-19 02:36:53 | INFO | EM.print | epoch: 0010 loss_train: 3.6358 task_loss: 0.1805 cont_loss: 8.9081 adv_loss: 0.0015 auroc_train: 0.9772 auprc_train: 0.9736 precision_train: 0.9133 recall_train: 0.9533 f1_train: 0.9329 cm_train: (tn=1951, fp=194, fn=100, tp=2043)
+2025-10-19 02:36:53 | INFO | EM.print | Optimization Finished!
+2025-10-19 02:36:53 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/train_epoch_metrics_fold_5_20251019_023439.csv.txt
+2025-10-19 02:36:53 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_5_20251019_023439.csv
+2025-10-19 02:36:54 | INFO | EM.print | loss_test: 3.6564 auroc_test: 0.9519 auprc_test: 0.9511 precision_test: 0.8727 recall_test: 0.9084 f1_test: 0.8902 cm_test: (tn=443, fp=68, fn=47, tp=466)
+2025-10-19 02:36:54 | INFO | EM | Fold 5 completed.
+2025-10-19 02:36:54 | INFO | EM | === 5-Fold Cross Validation Results ===
+2025-10-19 02:36:54 | INFO | EM | AUROC: 0.9508 ± 0.0065
+2025-10-19 02:36:54 | INFO | EM | AUPRC: 0.9490 ± 0.0080
+2025-10-19 02:36:54 | INFO | EM | F1-Score: 0.8820 ± 0.0076
+2025-10-19 02:36:54 | INFO | EM | Loss: 3.6766 ± 0.0369
+2025-10-19 02:36:54 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/result_summary_20251019_023439.txt
+2025-10-19 02:36:54 | INFO | EM | Detailed Results:
+2025-10-19 02:36:54 | INFO | EM | Fold 1: AUROC=0.9523, AUPRC=0.9491, F1=0.8889
+2025-10-19 02:36:54 | INFO | EM | Fold 2: AUROC=0.9383, AUPRC=0.9340, F1=0.8698
+2025-10-19 02:36:54 | INFO | EM | Fold 3: AUROC=0.9573, AUPRC=0.9576, F1=0.8840
+2025-10-19 02:36:54 | INFO | EM | Fold 4: AUROC=0.9540, AUPRC=0.9532, F1=0.8772
+2025-10-19 02:36:54 | INFO | EM | Fold 5: AUROC=0.9519, AUPRC=0.9511, F1=0.8902
+2025-10-19 02:36:54 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/per_fold_20251019_023439.txt
+2025-10-19 02:36:54 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439/metrics/result_extra_20251019_023439.txt
+2025-10-19 02:36:54 | INFO | EM | Precision: 0.8726 ± 0.0184
+2025-10-19 02:36:54 | INFO | EM | Recall: 0.8922 ± 0.0185
+2025-10-19 02:36:54 | INFO | EM | Confusion Matrix (sum): tn=2234, fp=334, fn=275, tp=2277
+2025-10-19 02:36:54 | INFO | EM | All folds completed!
+2025-10-19 02:36:54 | INFO | EM | ================================================================================
+2025-10-19 02:36:54 | INFO | EM | RUN END   | run_id=20251019_023439 | run_name=LDA_C_r1_005
+2025-10-19 02:36:54 | INFO | EM | RESULT DIR: /root/OUTPUT/result/LDA_C_r1_005_data_20251019_023439
+2025-10-19 02:36:54 | INFO | EM | ================================================================================
