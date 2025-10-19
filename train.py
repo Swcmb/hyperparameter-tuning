@@ -479,8 +479,7 @@ def test(model, loader, data_o, data_a, args):  # 定义测试函数
                 lines.append(f"best_temperature={best_T:.3f}")
             if best_t_cal is not None:
                 lines.append(f"calibrated_best_threshold={best_t_cal:.3f} F1_calib@best={best_f1_cal:.4f}")
-            save_result_text("
-".join(lines), filename=fname, subdir="metrics")
+            save_result_text("\n".join(lines), filename=fname, subdir="metrics")
         except Exception as _e:
             print(f"[SCAN] save failed: {_e}")
     except Exception as _e:

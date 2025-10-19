@@ -18,7 +18,7 @@ import torch
 
 # === 基础路径与环境 ===
 ROOT = Path(__file__).resolve().parent
-WORKDIR = ROOT / "hyperparameter-tuning"
+WORKDIR = ROOT
 PY = sys.executable or "python3"
 
 # === 默认PGD参数 ===
