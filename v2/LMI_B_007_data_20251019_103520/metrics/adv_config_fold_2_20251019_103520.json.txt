@@ -1,0 +1,27 @@
+{
+  "mode": "none",
+  "norm": "linf",
+  "eps": 0.01,
+  "alpha": 0.005,
+  "steps": 0,
+  "rand_init": false,
+  "project": true,
+  "agg": "mean",
+  "budget": "shared",
+  "use_amp": false,
+  "on_moco": false,
+  "clip": [
+    -Infinity,
+    Infinity
+  ],
+  "seed": {
+    "base_seed": 0,
+    "base_adv_seed": 2852207378,
+    "derive_rule": "seed_batch = base_adv_seed + epoch*1000 + iter"
+  },
+  "views": {
+    "attack_o": true,
+    "attack_augmented": false,
+    "delta": "independent_per_view"
+  }
+}
