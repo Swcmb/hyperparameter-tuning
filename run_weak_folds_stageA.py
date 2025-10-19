@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-阶段A 弱折对照实验批量运行脚本（Linux版）
-功能增强：
-✅ 日志保存（每次运行单独文件）
-✅ 并行运行（自动轮询多GPU）
-✅ 运行状态实时打印
+阶段A 弱折对照实验压测版
+功能：
+- 日志文件 + 控制台实时打印
+- 单 GPU 并行 3 个任务
+- GPU 轮询
+- 动态 α
+- 阈值扫描 + 温度校准 + PGD 后期启用
 """
 
 import os
@@ -14,16 +16,22 @@ import subprocess
 import time
 from itertools import product
 from pathlib import Path
-import torch
 
-# === 基础路径与环境 ===
+# ===================== 项目路径 =====================
 ROOT = Path(__file__).resolve().parent
-WORKDIR = ROOT
+if (ROOT / "main.py").exists():
+    WORKDIR = ROOT
+elif (ROOT / "hyperparameter-tuning" / "main.py").exists():
+    WORKDIR = ROOT / "hyperparameter-tuning"
+else:
+    raise FileNotFoundError("未找到 main.py，请检查项目路径")
+
 PY = sys.executable or "python3"
 
-# === 默认PGD参数 ===
+# ===================== PGD与扫描/校准 =====================
 EPS_LIST = [0.008, 0.012, 0.015]
 STEPS_LIST = [3, 5]
+DYNAMIC_ALPHA = True
 ADV_MODE = "mgraph"
 ADV_NORM = "linf"
 ADV_RAND_INIT = "true"
@@ -31,7 +39,7 @@ ADV_PROJECT = "true"
 ADV_ON_MOCO = "true"
 ADV_WARMUP_END = 3
 
-# === 基线设置（与当前项目一致） ===
+# ===================== 基线参数 =====================
 BASELINE = {
     "feature_type": "one_hot",
     "batch": 64,
@@ -46,10 +54,8 @@ BASELINE = {
     "moco_queue": 4096,
     "moco_momentum": 0.99,
     "moco_t": 0.07,
-    "proj_dim": None,
 }
 
-# === 阈值扫描与温度校准 ===
 SCAN_CALIB = {
     "enable_threshold_scan": "true",
     "threshold_min": 0.35,
@@ -61,20 +67,33 @@ SCAN_CALIB = {
     "temp_grid_num": 26,
 }
 
-# === 任务列表 ===
 TASKS = [
     ("LDA", "LDA_C_stageA"),
     ("LMI", "LMI_C_stageA"),
     ("MDA", "MDA_C_stageA"),
 ]
 
-# === GPU设置 ===
-NUM_GPUS = torch.cuda.device_count() if torch.cuda.is_available() else 1
-MAX_PARALLEL = NUM_GPUS  # 每张GPU并行一个任务
+MAX_PARALLEL_PER_GPU = 3
+START_INTERVAL = 3  # 秒
 
+# ===================== GPU检测与轮询 =====================
+def detect_gpus():
+    try:
+        result = subprocess.run(["nvidia-smi", "--query-gpu=index", "--format=csv,noheader"],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        gpus = [int(x.strip()) for x in result.stdout.splitlines() if x.strip().isdigit()]
+        return gpus if gpus else [0]
+    except Exception:
+        return [0]
 
+GPUS = detect_gpus()
+print(f"检测到 {len(GPUS)} 张 GPU: {GPUS}")
+
+def assign_gpu(job_idx):
+    return GPUS[job_idx % len(GPUS)]
+
+# ===================== 构建通用参数 =====================
 def build_common_args(task_type, run_suffix):
-    """拼接通用参数"""
     args = [
         "--task_type", task_type,
         "--run_name", run_suffix,
@@ -108,13 +127,15 @@ def build_common_args(task_type, run_suffix):
     ]
     return args
 
-
-def run_once(task_type, eps, steps, gpu_id):
-    """启动单个任务"""
-    alpha = eps / 3.0
+# ===================== 单任务运行 =====================
+def run_task(params):
+    task_type, eps, steps, job_idx = params
+    gpu_id = assign_gpu(job_idx)
+    alpha = eps / steps if DYNAMIC_ALPHA else eps / 3.0
     run_name = f"{task_type}_stageA_eps{eps:.3f}_steps{steps}"
+
     log_dir = WORKDIR / "logs"
-    log_dir.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(exist_ok=True)
     log_path = log_dir / f"{run_name}.log"
 
     cmd = [
@@ -128,41 +149,78 @@ def run_once(task_type, eps, steps, gpu_id):
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
 
-    print(f"\n🚀 Launching {run_name} on GPU {gpu_id} (eps={eps}, steps={steps})")
-    print(f"➡️ Log file: {log_path}")
+    print(f"\n=== Launch {run_name} on GPU {gpu_id} ===")
+    print(" ".join(cmd))
+    print(f"→ Log: {log_path}")
+
     with open(log_path, "w") as f:
-        proc = subprocess.Popen(cmd, cwd=WORKDIR, env=env, stdout=f, stderr=f)
-    return proc, run_name
+        proc = subprocess.Popen(
+            cmd, cwd=WORKDIR, env=env,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1, text=True
+        )
+        # 控制台 + 文件同步打印
+        for line in proc.stdout:
+            line = line.rstrip("\n")
+            print(f"[{run_name}] {line}")
+            f.write(line + "\n")
+            f.flush()
+        proc.wait()
+        print(f"[{run_name}] 任务结束 (exit={proc.returncode})")
 
+    return (run_name, proc.returncode)
 
+# ===================== 主入口 =====================
 def main():
-    active_procs = []
-    all_runs = list(product(TASKS, EPS_LIST, STEPS_LIST))
+    jobs = []
+    idx = 0
+    for task_type, _ in TASKS:
+        for eps, steps in product(EPS_LIST, STEPS_LIST):
+            jobs.append((task_type, eps, steps, idx))
+            idx += 1
 
-    print(f"Detected {NUM_GPUS} GPU(s). Max parallel = {MAX_PARALLEL}")
-    print(f"Total runs to launch: {len(all_runs)}")
+    print(f"\n共 {len(jobs)} 个任务，将使用 {len(GPUS)} 张 GPU，每 GPU 同时最多 {MAX_PARALLEL_PER_GPU} 任务。\n")
 
-    for (task_type, _), eps, steps in all_runs:
-        # 若活跃进程数达到上限则等待
-        while len(active_procs) >= MAX_PARALLEL:
-            for p, name in active_procs[:]:
-                if p.poll() is not None:
-                    print(f"✅ Completed: {name}")
-                    active_procs.remove((p, name))
-            time.sleep(5)
+    running_procs = []
+    for job_idx, params in enumerate(jobs):
+        # 启动间隔
+        time.sleep(START_INTERVAL)
+        # 启动任务
+        p = subprocess.Popen(
+            [
+                PY, str(WORKDIR / "main.py"),
+                *build_common_args(params[0], f"{params[0]}_stageA_eps{params[1]:.3f}_steps{params[2]}")
+            ] + ["--adv_eps", str(params[1]),
+                 "--adv_alpha", str(params[1]/params[2] if DYNAMIC_ALPHA else params[1]/3.0),
+                 "--adv_steps", str(params[2])],
+            cwd=WORKDIR,
+            env={**os.environ, "CUDA_VISIBLE_DEVICES": str(assign_gpu(job_idx))},
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            bufsize=1,
+            text=True,
+        )
+        log_file = WORKDIR / "logs" / f"{params[0]}_eps{params[1]:.3f}_steps{params[2]}.log"
+        os.makedirs(log_file.parent, exist_ok=True)
+        # 打印到控制台 + 写入 log 文件
+        with open(log_file, "w") as f:
+            for line in p.stdout:
+                line = line.rstrip("\n")
+                print(f"[{params[0]}_eps{params[1]:.3f}_steps{params[2]}] {line}")
+                f.write(line + "\n")
+                f.flush()
+        running_procs.append(p)
 
-        gpu_id = len(active_procs) % NUM_GPUS
-        p, name = run_once(task_type, eps, steps, gpu_id)
-        active_procs.append((p, name))
-        time.sleep(3)  # 启动间隔，防止瞬间占满GPU
+        # 控制单GPU并行数量
+        if len(running_procs) >= MAX_PARALLEL_PER_GPU * len(GPUS):
+            for pp in running_procs:
+                pp.wait()
+            running_procs = []
 
-    # 等待所有剩余任务完成
-    for p, name in active_procs:
-        p.wait()
-        print(f"✅ Completed: {name}")
+    # 等待剩余进程完成
+    for pp in running_procs:
+        pp.wait()
 
-    print("\n🎉 All runs completed successfully!")
-
+    print("\n=== 全部任务完成 ===")
 
 if __name__ == "__main__":
     main()
