@@ -1,5 +1,0 @@
-5-Fold Cross Validation Summary
-AUROC: 0.8001 ± 0.0575
-AUPRC: 0.7664 ± 0.0966
-F1-Score: 0.4071 ± 0.3326
-Loss: 5.2278 ± 0.0032
