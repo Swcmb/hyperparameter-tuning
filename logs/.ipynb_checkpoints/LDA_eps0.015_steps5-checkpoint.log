@@ -1,0 +1,210 @@
+2025-10-19 18:24:04 | INFO | EM | ================================================================================
+2025-10-19 18:24:04 | INFO | EM | RUN START | run_id=20251019_182404 | run_name=LDA_stageA_eps0.015_steps5
+2025-10-19 18:24:04 | INFO | EM | COMMAND: /root/miniconda3/bin/python /root/hyperparameter-tuning/main.py --task_type LDA --run_name LDA_stageA_eps0.015_steps5 --feature_type one_hot --batch 64 --lr 0.0005 --weight_decay 0.0005 --dropout 0.05 --epochs 10 --augment_mode online --moco_queue 4096 --moco_momentum 0.99 --moco_t 0.07 --loss_ratio1 0.45 --loss_ratio2 0.55 --loss_ratio3 0.5 --enable_threshold_scan true --threshold_min 0.35 --threshold_max 0.65 --threshold_step 0.01 --enable_temp_scaling true --temp_grid_min 0.5 --temp_grid_max 3.0 --temp_grid_num 26 --adv_warmup_end 3 --adv_mode mgraph --adv_norm linf --adv_rand_init true --adv_project true --adv_on_moco true --adv_eps 0.015 --adv_alpha 0.003 --adv_steps 5
+2025-10-19 18:24:04 | INFO | EM | ================================================================================
+2025-10-19 18:24:04 | INFO | EM.result | Result directory: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404
+2025-10-19 18:24:04 | INFO | EM | Initialized logging and result directory.
+2025-10-19 18:24:04 | INFO | EM | Using CUDA: True
+2025-10-19 18:24:04 | INFO | EM | CUDA device count: 1
+2025-10-19 18:24:04 | INFO | EM | Current CUDA device: 0
+2025-10-19 18:24:04 | INFO | EM | CUDA device name: NVIDIA GeForce RTX 4090
+2025-10-19 18:24:04 | INFO | EM | === Augmentation Config ===
+2025-10-19 18:24:04 | INFO | EM | [AUG CONFIG] Multiple augmentations detected: random_permute_features, attribute_mask, noise_then_mask
+2025-10-19 18:24:04 | INFO | EM | augment=random_permute_features,attribute_mask,noise_then_mask | mode=online | noise_std=0.01 | mask_rate=0.1 | augment_seed=None (None means seed+fold for static)
+2025-10-19 18:24:04 | INFO | EM | ===========================
+2025-10-19 18:24:04 | INFO | EM | Loading dataset1/LDA.edgelist seed0 dataset...
+2025-10-19 18:24:04 | INFO | EM | Selected cross_validation type: 5_cv1
+2025-10-19 18:24:04 | INFO | EM | Selected task_type: LDA
+2025-10-19 18:24:04 | INFO | EM | Selected feature_type: one_hot
+2025-10-19 18:24:04 | INFO | EM | Selected embed_dim: N/A
+2025-10-19 18:24:04 | INFO | EM | Selected learning_rate: N/A
+2025-10-19 18:24:04 | INFO | EM | Selected epochs: 10
+2025-10-19 18:24:04 | INFO | EM | Selected task type...
+2025-10-19 18:24:13 | INFO | EM.print | [AUG][static][fold=1] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=0
+2025-10-19 18:24:13 | INFO | EM.print | [AUG][static][fold=1] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:13 | INFO | EM.augment | [AUGMENT][fold=1] name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=0 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 18:24:21 | INFO | EM.print | [AUG][static][fold=2] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=1
+2025-10-19 18:24:21 | INFO | EM.print | [AUG][static][fold=2] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:21 | INFO | EM.augment | [AUGMENT][fold=2] name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=1 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 18:24:30 | INFO | EM.print | [AUG][static][fold=3] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=2
+2025-10-19 18:24:30 | INFO | EM.print | [AUG][static][fold=3] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:30 | INFO | EM.augment | [AUGMENT][fold=3] name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=2 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 18:24:38 | INFO | EM.print | [AUG][static][fold=4] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=3
+2025-10-19 18:24:38 | INFO | EM.print | [AUG][static][fold=4] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:38 | INFO | EM.augment | [AUGMENT][fold=4] name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=3 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 18:24:46 | INFO | EM.print | [AUG][static][fold=5] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=4
+2025-10-19 18:24:46 | INFO | EM.print | [AUG][static][fold=5] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:46 | INFO | EM.augment | [AUGMENT][fold=5] name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=4 masked_cols=0 shape=(1140, 1140) mean=0.0009 std=0.0296
+2025-10-19 18:24:46 | INFO | EM | [DATALOADER] os=linux workers=8 prefetch_factor=4
+2025-10-19 18:24:46 | INFO | EM.fold_stats | Saved fold stats to /root/OUTPUT/result/metrics/fold_stats.json
+2025-10-19 18:24:46 | INFO | EM | Loading finished!
+2025-10-19 18:24:46 | INFO | EM | Starting 5-fold cross validation...
+2025-10-19 18:24:46 | INFO | EM | === Fold 1/5 ===
+2025-10-19 18:24:46 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/adv_config_fold_1_20251019_182404.json.txt
+2025-10-19 18:24:46 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_1_20251019_182404.json
+2025-10-19 18:24:46 | INFO | EM.print | Start Training...
+2025-10-19 18:24:46 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 18:24:47 | INFO | EM.print | [AUG][online][epoch=1][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=0
+2025-10-19 18:24:47 | INFO | EM.print | [AUG][online][epoch=1][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:47 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:24:47 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.79117584 | task_loss:0.6695 cont_loss:0.2574 adv_loss:0.6966
+2025-10-19 18:24:49 | INFO | EM.print | epoch: 0001 loss_train: 4.6763 task_loss: 0.3328 cont_loss: 8.1280 adv_loss: 0.1122 auroc_train: 0.8848 auprc_train: 0.8837 precision_train: 0.7877 recall_train: 0.8256 f1_train: 0.8062 cm_train: (tn=1667, fp=477, fn=374, tp=1770)
+2025-10-19 18:24:49 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 18:24:49 | INFO | EM.print | [AUG][online][epoch=2][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=1000
+2025-10-19 18:24:49 | INFO | EM.print | [AUG][online][epoch=2][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:49 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:24:49 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 4.666633 | task_loss:0.3100 cont_loss:8.1229 adv_loss:0.1190
+2025-10-19 18:24:50 | INFO | EM.print | epoch: 0002 loss_train: 4.5119 task_loss: 0.2438 cont_loss: 7.9745 adv_loss: 0.0324 auroc_train: 0.9419 auprc_train: 0.9373 precision_train: 0.8615 recall_train: 0.8759 f1_train: 0.8686 cm_train: (tn=1842, fp=302, fn=266, tp=1878)
+2025-10-19 18:24:50 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 18:24:50 | INFO | EM.print | [AUG][online][epoch=3][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=2000
+2025-10-19 18:24:50 | INFO | EM.print | [AUG][online][epoch=3][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:50 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:24:50 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 25.01829 | task_loss:1.2954 cont_loss:6.8564 adv_loss:41.3288
+2025-10-19 18:24:59 | INFO | EM.print | epoch: 0003 loss_train: 5.2135 task_loss: 0.6933 cont_loss: 8.2289 adv_loss: 0.7513 auroc_train: 0.4510 auprc_train: 0.4572 precision_train: 0.4762 recall_train: 0.4571 f1_train: 0.4664 cm_train: (tn=1066, fp=1078, fn=1164, tp=980)
+2025-10-19 18:24:59 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 18:24:59 | INFO | EM.print | [AUG][online][epoch=4][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=3000
+2025-10-19 18:24:59 | INFO | EM.print | [AUG][online][epoch=4][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:24:59 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:24:59 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 5.2196608 | task_loss:0.7067 cont_loss:8.2232 adv_loss:0.7577
+2025-10-19 18:25:08 | INFO | EM.print | epoch: 0004 loss_train: 5.2462 task_loss: 0.7014 cont_loss: 8.3159 adv_loss: 0.7137 auroc_train: 0.4913 auprc_train: 0.4915 precision_train: 0.4976 recall_train: 0.4804 f1_train: 0.4888 cm_train: (tn=1104, fp=1040, fn=1114, tp=1030)
+2025-10-19 18:25:08 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 18:25:08 | INFO | EM.print | [AUG][online][epoch=5][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=4000
+2025-10-19 18:25:08 | INFO | EM.print | [AUG][online][epoch=5][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:08 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:08 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 5.233261 | task_loss:0.6990 cont_loss:8.2770 adv_loss:0.7327
+2025-10-19 18:25:17 | INFO | EM.print | epoch: 0005 loss_train: 5.2406 task_loss: 0.6977 cont_loss: 8.3185 adv_loss: 0.7028 auroc_train: 0.4951 auprc_train: 0.4939 precision_train: 0.4935 recall_train: 0.5348 f1_train: 0.5133 cm_train: (tn=969, fp=1176, fn=997, tp=1146)
+2025-10-19 18:25:17 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 18:25:17 | INFO | EM.print | [AUG][online][epoch=6][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=5000
+2025-10-19 18:25:17 | INFO | EM.print | [AUG][online][epoch=6][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:17 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:17 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 5.239481 | task_loss:0.6934 cont_loss:8.3200 adv_loss:0.7029
+2025-10-19 18:25:26 | INFO | EM.print | epoch: 0006 loss_train: 5.2362 task_loss: 0.6934 cont_loss: 8.3123 adv_loss: 0.7049 auroc_train: 0.4884 auprc_train: 0.4895 precision_train: 0.4910 recall_train: 0.5732 f1_train: 0.5289 cm_train: (tn=867, fp=1275, fn=916, tp=1230)
+2025-10-19 18:25:26 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 18:25:26 | INFO | EM.print | [AUG][online][epoch=7][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=6000
+2025-10-19 18:25:26 | INFO | EM.print | [AUG][online][epoch=7][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:26 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:26 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 5.2393923 | task_loss:0.6917 cont_loss:8.3166 adv_loss:0.7079
+2025-10-19 18:25:35 | INFO | EM.print | epoch: 0007 loss_train: 5.2435 task_loss: 0.7083 cont_loss: 8.3187 adv_loss: 0.6989 auroc_train: 0.4921 auprc_train: 0.4922 precision_train: 0.4884 recall_train: 0.4240 f1_train: 0.4539 cm_train: (tn=1192, fp=952, fn=1235, tp=909)
+2025-10-19 18:25:35 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 18:25:35 | INFO | EM.print | [AUG][online][epoch=8][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=7000
+2025-10-19 18:25:35 | INFO | EM.print | [AUG][online][epoch=8][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:35 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:36 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 5.240843 | task_loss:0.6935 cont_loss:8.3212 adv_loss:0.7042
+2025-10-19 18:25:45 | INFO | EM.print | epoch: 0008 loss_train: 5.2391 task_loss: 0.6936 cont_loss: 8.3185 adv_loss: 0.7037 auroc_train: 0.4878 auprc_train: 0.4910 precision_train: 0.4921 recall_train: 0.5916 f1_train: 0.5373 cm_train: (tn=833, fp=1310, fn=876, tp=1269)
+2025-10-19 18:25:45 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 18:25:45 | INFO | EM.print | [AUG][online][epoch=9][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=8000
+2025-10-19 18:25:45 | INFO | EM.print | [AUG][online][epoch=9][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:45 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:45 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 5.2353053 | task_loss:0.6924 cont_loss:8.3131 adv_loss:0.7030
+2025-10-19 18:25:53 | INFO | EM.print | epoch: 0009 loss_train: 5.2340 task_loss: 0.6887 cont_loss: 8.3181 adv_loss: 0.6983 auroc_train: 0.4815 auprc_train: 0.4836 precision_train: 0.4942 recall_train: 0.5415 f1_train: 0.5168 cm_train: (tn=959, fp=1187, fn=982, tp=1160)
+2025-10-19 18:25:53 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 18:25:54 | INFO | EM.print | [AUG][online][epoch=10][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=9000
+2025-10-19 18:25:54 | INFO | EM.print | [AUG][online][epoch=10][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:25:54 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:25:54 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 5.236281 | task_loss:0.7002 cont_loss:8.3158 adv_loss:0.6951
+2025-10-19 18:26:02 | INFO | EM.print | epoch: 0010 loss_train: 5.2337 task_loss: 0.6957 cont_loss: 8.3189 adv_loss: 0.6906 auroc_train: 0.4743 auprc_train: 0.4836 precision_train: 0.4818 recall_train: 0.3759 f1_train: 0.4223 cm_train: (tn=1277, fp=867, fn=1338, tp=806)
+2025-10-19 18:26:02 | INFO | EM.print | Optimization Finished!
+2025-10-19 18:26:02 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/train_epoch_metrics_fold_1_20251019_182404.csv.txt
+2025-10-19 18:26:02 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_1_20251019_182404.csv
+2025-10-19 18:26:03 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/threshold_scan_fold_1_20251019_182404.txt
+2025-10-19 18:26:03 | ERROR | EM.print | /root/miniconda3/lib/python3.12/site-packages/sklearn/metrics/_classification.py:1731: UndefinedMetricWarning: Precision is ill-defined and being set to 0.0 due to no predicted samples. Use `zero_division` parameter to control this behavior.
+2025-10-19 18:26:03 | ERROR | EM.print |   _warn_prf(average, modifier, f"{metric.capitalize()} is", result.shape[0])
+2025-10-19 18:26:03 | INFO | EM.print | loss_test: 5.2260 auroc_test: 0.8183 auprc_test: 0.7949 precision_test: 0.0000 recall_test: 0.0000 f1_test: 0.0000 cm_test: (tn=510, fp=0, fn=514, tp=0)
+2025-10-19 18:26:03 | INFO | EM | Fold 1 completed.
+2025-10-19 18:26:03 | INFO | EM | === Fold 2/5 ===
+2025-10-19 18:26:03 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/adv_config_fold_2_20251019_182404.json.txt
+2025-10-19 18:26:03 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_2_20251019_182404.json
+2025-10-19 18:26:03 | INFO | EM.print | Start Training...
+2025-10-19 18:26:03 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 18:26:03 | INFO | EM.print | [AUG][online][epoch=1][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=0
+2025-10-19 18:26:03 | INFO | EM.print | [AUG][online][epoch=1][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:03 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:03 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.78683126 | task_loss:0.7272 cont_loss:0.0690 adv_loss:0.8433
+2025-10-19 18:26:05 | INFO | EM.print | epoch: 0001 loss_train: 4.7143 task_loss: 0.4383 cont_loss: 8.0756 adv_loss: 0.1509 auroc_train: 0.8186 auprc_train: 0.8140 precision_train: 0.7335 recall_train: 0.7322 f1_train: 0.7328 cm_train: (tn=1575, fp=570, fn=574, tp=1569)
+2025-10-19 18:26:05 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 18:26:05 | INFO | EM.print | [AUG][online][epoch=2][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=1000
+2025-10-19 18:26:05 | INFO | EM.print | [AUG][online][epoch=2][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:05 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:05 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 4.616327 | task_loss:0.2362 cont_loss:8.0669 adv_loss:0.1466
+2025-10-19 18:26:07 | INFO | EM.print | epoch: 0002 loss_train: 4.4944 task_loss: 0.2712 cont_loss: 7.9107 adv_loss: 0.0430 auroc_train: 0.9394 auprc_train: 0.9334 precision_train: 0.8568 recall_train: 0.8848 f1_train: 0.8706 cm_train: (tn=1827, fp=317, fn=247, tp=1897)
+2025-10-19 18:26:07 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 18:26:07 | INFO | EM.print | [AUG][online][epoch=3][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=2000
+2025-10-19 18:26:07 | INFO | EM.print | [AUG][online][epoch=3][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:07 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:07 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 28.314547 | task_loss:1.8841 cont_loss:7.6740 adv_loss:46.4920
+2025-10-19 18:26:16 | INFO | EM.print | epoch: 0003 loss_train: 5.2464 task_loss: 0.6978 cont_loss: 8.3046 adv_loss: 0.7298 auroc_train: 0.4322 auprc_train: 0.4388 precision_train: 0.4655 recall_train: 0.5531 f1_train: 0.5055 cm_train: (tn=779, fp=1363, fn=959, tp=1187)
+2025-10-19 18:26:16 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 18:26:16 | INFO | EM.print | [AUG][online][epoch=4][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=3000
+2025-10-19 18:26:16 | INFO | EM.print | [AUG][online][epoch=4][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:16 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:16 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 5.246128 | task_loss:0.6976 cont_loss:8.2925 adv_loss:0.7426
+2025-10-19 18:26:25 | INFO | EM.print | epoch: 0004 loss_train: 5.2532 task_loss: 0.7185 cont_loss: 8.3164 adv_loss: 0.7118 auroc_train: 0.4920 auprc_train: 0.4925 precision_train: 0.4986 recall_train: 0.4830 f1_train: 0.4906 cm_train: (tn=1104, fp=1041, fn=1108, tp=1035)
+2025-10-19 18:26:25 | INFO | EM.print | -------- Epoch 5 --------
+2025-10-19 18:26:25 | INFO | EM.print | [AUG][online][epoch=5][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=4000
+2025-10-19 18:26:25 | INFO | EM.print | [AUG][online][epoch=5][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:25 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:25 | INFO | EM.print | epoch: 5/ iteration: 1/ loss_train: 5.2456527 | task_loss:0.7118 cont_loss:8.3149 adv_loss:0.7043
+2025-10-19 18:26:34 | INFO | EM.print | epoch: 0005 loss_train: 5.2389 task_loss: 0.6957 cont_loss: 8.3173 adv_loss: 0.7028 auroc_train: 0.4960 auprc_train: 0.4982 precision_train: 0.4921 recall_train: 0.5098 f1_train: 0.5008 cm_train: (tn=1019, fp=1127, fn=1050, tp=1092)
+2025-10-19 18:26:34 | INFO | EM.print | -------- Epoch 6 --------
+2025-10-19 18:26:34 | INFO | EM.print | [AUG][online][epoch=6][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=5000
+2025-10-19 18:26:34 | INFO | EM.print | [AUG][online][epoch=6][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:34 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:34 | INFO | EM.print | epoch: 6/ iteration: 1/ loss_train: 5.249795 | task_loss:0.6964 cont_loss:8.3161 adv_loss:0.7251
+2025-10-19 18:26:43 | INFO | EM.print | epoch: 0006 loss_train: 5.2405 task_loss: 0.6934 cont_loss: 8.3185 adv_loss: 0.7066 auroc_train: 0.5014 auprc_train: 0.5008 precision_train: 0.5014 recall_train: 0.5828 f1_train: 0.5390 cm_train: (tn=900, fp=1243, fn=895, tp=1250)
+2025-10-19 18:26:43 | INFO | EM.print | -------- Epoch 7 --------
+2025-10-19 18:26:43 | INFO | EM.print | [AUG][online][epoch=7][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=6000
+2025-10-19 18:26:43 | INFO | EM.print | [AUG][online][epoch=7][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:43 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:44 | INFO | EM.print | epoch: 7/ iteration: 1/ loss_train: 5.240551 | task_loss:0.6927 cont_loss:8.3209 adv_loss:0.7047
+2025-10-19 18:26:53 | INFO | EM.print | epoch: 0007 loss_train: 5.2392 task_loss: 0.6978 cont_loss: 8.3199 adv_loss: 0.6985 auroc_train: 0.4969 auprc_train: 0.5016 precision_train: 0.5010 recall_train: 0.4865 f1_train: 0.4936 cm_train: (tn=1105, fp=1039, fn=1101, tp=1043)
+2025-10-19 18:26:53 | INFO | EM.print | -------- Epoch 8 --------
+2025-10-19 18:26:53 | INFO | EM.print | [AUG][online][epoch=8][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=7000
+2025-10-19 18:26:53 | INFO | EM.print | [AUG][online][epoch=8][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:26:53 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:26:53 | INFO | EM.print | epoch: 8/ iteration: 1/ loss_train: 5.2343755 | task_loss:0.6924 cont_loss:8.3176 adv_loss:0.6963
+2025-10-19 18:27:02 | INFO | EM.print | epoch: 0008 loss_train: 5.2365 task_loss: 0.6928 cont_loss: 8.3182 adv_loss: 0.6993 auroc_train: 0.4985 auprc_train: 0.4964 precision_train: 0.4929 recall_train: 0.4867 f1_train: 0.4898 cm_train: (tn=1075, fp=1072, fn=1099, tp=1042)
+2025-10-19 18:27:02 | INFO | EM.print | -------- Epoch 9 --------
+2025-10-19 18:27:02 | INFO | EM.print | [AUG][online][epoch=9][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=8000
+2025-10-19 18:27:02 | INFO | EM.print | [AUG][online][epoch=9][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:02 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:03 | INFO | EM.print | epoch: 9/ iteration: 1/ loss_train: 5.2359433 | task_loss:0.6927 cont_loss:8.3192 adv_loss:0.6973
+2025-10-19 18:27:11 | INFO | EM.print | epoch: 0009 loss_train: 5.2390 task_loss: 0.6943 cont_loss: 8.3182 adv_loss: 0.7030 auroc_train: 0.4817 auprc_train: 0.4857 precision_train: 0.4932 recall_train: 0.6441 f1_train: 0.5587 cm_train: (tn=725, fp=1419, fn=763, tp=1381)
+2025-10-19 18:27:11 | INFO | EM.print | -------- Epoch 10 --------
+2025-10-19 18:27:11 | INFO | EM.print | [AUG][online][epoch=10][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=9000
+2025-10-19 18:27:11 | INFO | EM.print | [AUG][online][epoch=10][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:11 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:12 | INFO | EM.print | epoch: 10/ iteration: 1/ loss_train: 5.236747 | task_loss:0.6928 cont_loss:8.3180 adv_loss:0.7002
+2025-10-19 18:27:21 | INFO | EM.print | epoch: 0010 loss_train: 5.2334 task_loss: 0.6926 cont_loss: 8.3139 adv_loss: 0.6982 auroc_train: 0.4893 auprc_train: 0.4905 precision_train: 0.4927 recall_train: 0.4215 f1_train: 0.4543 cm_train: (tn=1209, fp=932, fn=1242, tp=905)
+2025-10-19 18:27:21 | INFO | EM.print | Optimization Finished!
+2025-10-19 18:27:21 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/train_epoch_metrics_fold_2_20251019_182404.csv.txt
+2025-10-19 18:27:21 | INFO | EM.print | [SAVE] Per-epoch train metrics saved: train_epoch_metrics_fold_2_20251019_182404.csv
+2025-10-19 18:27:21 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/threshold_scan_fold_2_20251019_182404.txt
+2025-10-19 18:27:21 | INFO | EM.print | loss_test: 5.2303 auroc_test: 0.6770 auprc_test: 0.5998 precision_test: 0.4990 recall_test: 1.0000 f1_test: 0.6658 cm_test: (tn=0, fp=513, fn=0, tp=511)
+2025-10-19 18:27:21 | INFO | EM | Fold 2 completed.
+2025-10-19 18:27:21 | INFO | EM | === Fold 3/5 ===
+2025-10-19 18:27:21 | INFO | EM.result.save | Saved result text: /root/OUTPUT/result/LDA_stageA_eps0.015_steps5_data_20251019_182404/metrics/adv_config_fold_3_20251019_182404.json.txt
+2025-10-19 18:27:21 | INFO | EM.print | [SAVE] adv config saved: metrics/adv_config_fold_3_20251019_182404.json
+2025-10-19 18:27:21 | INFO | EM.print | Start Training...
+2025-10-19 18:27:21 | INFO | EM.print | -------- Epoch 1 --------
+2025-10-19 18:27:22 | INFO | EM.print | [AUG][online][epoch=1][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=0
+2025-10-19 18:27:22 | INFO | EM.print | [AUG][online][epoch=1][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:22 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:22 | INFO | EM.print | epoch: 1/ iteration: 1/ loss_train: 0.7130679 | task_loss:0.7015 cont_loss:0.0874 adv_loss:0.6987
+2025-10-19 18:27:23 | INFO | EM.print | epoch: 0001 loss_train: 4.6026 task_loss: 0.3952 cont_loss: 7.9860 adv_loss: 0.0649 auroc_train: 0.8891 auprc_train: 0.8834 precision_train: 0.7910 recall_train: 0.8017 f1_train: 0.7963 cm_train: (tn=1691, fp=454, fn=425, tp=1718)
+2025-10-19 18:27:23 | INFO | EM.print | -------- Epoch 2 --------
+2025-10-19 18:27:24 | INFO | EM.print | [AUG][online][epoch=2][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=1000
+2025-10-19 18:27:24 | INFO | EM.print | [AUG][online][epoch=2][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:24 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:24 | INFO | EM.print | epoch: 2/ iteration: 1/ loss_train: 4.5392103 | task_loss:0.2825 cont_loss:7.9677 adv_loss:0.0597
+2025-10-19 18:27:25 | INFO | EM.print | epoch: 0002 loss_train: 4.5402 task_loss: 0.3761 cont_loss: 7.9275 adv_loss: 0.0217 auroc_train: 0.9430 auprc_train: 0.9367 precision_train: 0.8627 recall_train: 0.8857 f1_train: 0.8741 cm_train: (tn=1843, fp=302, fn=245, tp=1898)
+2025-10-19 18:27:25 | INFO | EM.print | -------- Epoch 3 --------
+2025-10-19 18:27:25 | INFO | EM.print | [AUG][online][epoch=3][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=2000
+2025-10-19 18:27:25 | INFO | EM.print | [AUG][online][epoch=3][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:25 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:25 | INFO | EM.print | epoch: 3/ iteration: 1/ loss_train: 28.34844 | task_loss:0.8381 cont_loss:7.1071 adv_loss:48.1247
+2025-10-19 18:27:34 | INFO | EM.print | epoch: 0003 loss_train: 5.2486 task_loss: 0.7043 cont_loss: 8.3098 adv_loss: 0.7226 auroc_train: 0.4461 auprc_train: 0.4472 precision_train: 0.4627 recall_train: 0.4504 f1_train: 0.4565 cm_train: (tn=1018, fp=1123, fn=1180, tp=967)
+2025-10-19 18:27:34 | INFO | EM.print | -------- Epoch 4 --------
+2025-10-19 18:27:34 | INFO | EM.print | [AUG][online][epoch=4][iter=0] start name=random_permute_features noise_std=0.01 mask_rate=0.1 seed=3000
+2025-10-19 18:27:34 | INFO | EM.print | [AUG][online][epoch=4][iter=0] done name=random_permute_features shape=(1140, 1140)
+2025-10-19 18:27:34 | INFO | EM.print | [ONLINE-AUG] mode=online name=random_permute_features noise_std=0.01 mask_rate=0.1 base_seed=0
+2025-10-19 18:27:35 | INFO | EM.print | epoch: 4/ iteration: 1/ loss_train: 5.241289 | task_loss:0.6950 cont_loss:8.3053 adv_loss:0.7212
