@@ -1,0 +1,9 @@
+---
+description: 
+alwaysApply: false
+enabled: true
+updatedAt: 2025-12-15T07:46:31.968Z
+provider: 
+---
+
+本项目必须使用SpecCodingMcpServer这一mcp工具进行规格驱动开发

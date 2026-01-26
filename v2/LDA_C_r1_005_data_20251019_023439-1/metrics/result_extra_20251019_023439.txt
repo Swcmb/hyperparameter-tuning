@@ -1,4 +1,0 @@
-5-Fold Extra Metrics
-Precision: 0.8726 ± 0.0184
-Recall: 0.8922 ± 0.0185
-Confusion Matrix (sum): tn=2234, fp=334, fn=275, tp=2277
