@@ -1,0 +1,213 @@
+# TaskEvaluator 实现说明
+
+## 概述
+
+TaskEvaluator是贝叶斯超参数优化系统的核心组件，负责执行具体的模型训练和评估，返回性能指标。该实现支持LDA/MDA/LMI三种任务类型，并强制使用CUDA进行训练以确保性能。
+
+## 主要特性
+
+### 1. 多任务支持
+- 支持LDA（lncRNA-Disease Association）任务
+- 支持MDA（miRNA-Disease Association）任务  
+- 支持LMI（lncRNA-miRNA Interaction）任务
+- 自动根据任务类型调整数据路径和评估策略
+
+### 2. CUDA强制使用
+- 生产环境强制使用CUDA进行训练
+- 测试模式支持CPU回退
+- 自动GPU内存管理和清理
+
+### 3. 完整的交叉验证
+- 默认5折交叉验证
+- 支持自定义折数
+- 返回详细的性能指标统计
+
+### 4. 参数验证
+- 全面的参数有效性检查
+- 模型结构约束验证
+- 注意力头数整除约束
+- 学习率和权重衰减合理性检查
+
+### 5. 错误处理
+- 优雅的错误恢复机制
+- 惩罚性指标返回
+- 详细的错误日志记录
+
+## 核心类
+
+### TaskEvaluator
+基础任务评估器，提供模拟训练功能，适用于测试和开发。
+
+**主要方法：**
+- `evaluate_parameters()`: 评估参数组合性能
+- `run_cross_validation()`: 执行交叉验证
+- `validate_parameters()`: 验证参数有效性
+- `setup_experiment_args()`: 转换参数为实验配置
+
+### RealTaskEvaluator
+真实任务评估器，继承自TaskEvaluator，集成真实的训练流程。
+
+**特性：**
+- 动态导入训练模块
+- 真实数据加载和处理
+- 完整的模型训练流程
+- 自动回退到模拟模式
+
+## 使用方法
+
+### 基本使用
+
+```python
+from task_evaluator import create_task_evaluator
+
+# 创建评估器
+evaluator = create_task_evaluator(
+    task_type="LDA",
+    use_real_training=True
+)
+
+# 定义参数
+parameters = {
+    'dimensions': 256,
+    'hidden1': 128,
+    'hidden2': 64,
+    'lr': 0.001,
+    'batch': 32,
+    'epochs': 10,
+    # ... 其他参数
+}
+
+# 评估参数
+metrics = evaluator.evaluate_parameters(parameters)
+print(f"AUROC: {metrics['AUROC']:.4f}")
+
+# 清理资源
+evaluator.cleanup()
+```
+
+### 在贝叶斯优化中使用
+
+```python
+from task_evaluator import create_task_evaluator
+from autodl_core import create_default_parameter_space
+
+# 创建参数空间和评估器
+parameter_space = create_default_parameter_space("LDA")
+evaluator = create_task_evaluator("LDA")
+
+# 优化循环
+for iteration in range(n_iterations):
+    # 采样参数（实际中使用采集函数）
+    parameters = parameter_space.sample_random_parameters()
+    
+    # 验证参数
+    is_valid, errors = evaluator.validate_parameters(parameters)
+    if not is_valid:
+        continue
+    
+    # 评估参数
+    metrics = evaluator.evaluate_parameters(parameters)
+    
+    # 更新贝叶斯优化器...
+```
+
+## 返回指标
+
+TaskEvaluator返回以下性能指标：
+
+- **AUROC**: ROC曲线下面积（主要优化目标）
+- **AUPRC**: PR曲线下面积
+- **F1**: F1分数
+- **precision**: 精确率
+- **recall**: 召回率
+- **loss**: 平均损失
+- **AUROC_std**: AUROC标准差
+- **AUPRC_std**: AUPRC标准差
+- **F1_std**: F1标准差
+
+## 参数约束
+
+TaskEvaluator实施以下参数约束：
+
+1. **隐藏层递减**: dimensions ≥ hidden1 ≥ hidden2 > 0
+2. **注意力头数整除**: 隐藏维度必须能被对应的注意力头数整除
+3. **学习率范围**: 0 < lr ≤ 1
+4. **批大小范围**: 0 < batch ≤ 128
+5. **Dropout范围**: 0 ≤ dropout < 1
+6. **权重衰减合理性**: weight_decay ≤ lr × 10
+
+## 配置选项
+
+### 数据配置
+```python
+data_config = {
+    'pos_file': 'dataset1/LDA.edgelist',
+    'neg_file': 'dataset1/non_LDA.edgelist'
+}
+```
+
+### 任务类型映射
+- LDA: `dataset1/LDA.edgelist` / `dataset1/non_LDA.edgelist`
+- MDA: `dataset1/MDA.edgelist` / `dataset1/non_MDA.edgelist`  
+- LMI: `dataset1/LMI.edgelist` / `dataset1/non_LMI.edgelist`
+
+## 性能优化
+
+1. **GPU内存管理**: 自动清理GPU缓存
+2. **批处理限制**: 测试模式限制批次数量
+3. **早期停止**: 支持训练早期停止
+4. **并行处理**: 支持多折并行评估（未来版本）
+
+## 错误处理
+
+TaskEvaluator提供多层错误处理：
+
+1. **参数验证错误**: 返回详细错误信息
+2. **训练失败**: 返回惩罚性指标值
+3. **数据加载错误**: 自动回退到模拟模式
+4. **CUDA不可用**: 测试模式自动使用CPU
+
+## 日志记录
+
+TaskEvaluator使用Python logging模块记录详细信息：
+
+- INFO: 正常操作信息
+- WARNING: 警告信息（如参数问题）
+- ERROR: 错误信息（如训练失败）
+
+## 测试
+
+运行测试：
+```bash
+python task_evaluator.py
+python task_evaluator_example.py
+```
+
+测试覆盖：
+- 基本功能测试
+- 参数验证测试
+- 多任务评估测试
+- 贝叶斯优化集成测试
+
+## 依赖项
+
+- torch: PyTorch深度学习框架
+- numpy: 数值计算
+- scikit-learn: 机器学习指标
+- 现有模块: autodl_core, parms_setting, utils
+
+## 未来改进
+
+1. **并行评估**: 支持多折并行训练
+2. **缓存机制**: 缓存评估结果避免重复计算
+3. **增量训练**: 支持从检查点恢复训练
+4. **分布式训练**: 支持多GPU分布式训练
+5. **自适应批大小**: 根据GPU内存自动调整批大小
+
+## 注意事项
+
+1. **CUDA要求**: 生产环境必须有CUDA支持
+2. **内存管理**: 大模型训练需要足够的GPU内存
+3. **数据路径**: 确保数据文件路径正确
+4. **参数范围**: 遵循参数约束以获得最佳性能
+5. **资源清理**: 使用完毕后调用cleanup()方法

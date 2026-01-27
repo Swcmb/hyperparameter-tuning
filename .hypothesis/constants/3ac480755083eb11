@@ -1,0 +1,4 @@
+# file: D:\Paper-code\hyperparameter-tuning\gaussian_process.py
+# hypothesis_version: 6.148.7
+
+[0.0, 1e-10, 1e-09, 1e-06, 1e-05, 0.001, 0.01, 0.1, 1.0, 2.5, 2.576, 1000.0, 100000.0, 'EI', 'GaussianProcess', 'PI', 'UCB', 'X_train', 'X中包含NaN或无穷大值', '__main__', 'constant_value', 'gp', 'hyperparameters', 'ignore', 'init_params', 'is_fitted', 'kernel_type', 'last_fit_time', 'length_scale', 'length_scale_bounds', 'n_observations', 'n_restarts_optimizer', 'noise_level', 'noise_level_bounds', 'random_state', 'rb', 'test_gp_model.pkl', 'training_data_shape', 'wb', 'y_train', 'y中包含NaN或无穷大值', '模型尚未初始拟合，请先调用fit()方法', '模型尚未拟合，无法获取超参数', '模型尚未拟合，无法计算采集函数', '模型尚未拟合，请先调用fit()方法', '测试高斯过程模型...', '训练数据不能为空', '高斯过程模型测试完成!']

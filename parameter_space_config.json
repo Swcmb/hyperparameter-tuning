@@ -1,0 +1,216 @@
+{
+  "parameters": {
+    "dimensions": {
+      "name": "dimensions",
+      "param_type": "continuous",
+      "bounds": [
+        128,
+        512
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "hidden1": {
+      "name": "hidden1",
+      "param_type": "continuous",
+      "bounds": [
+        64,
+        256
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "hidden2": {
+      "name": "hidden2",
+      "param_type": "continuous",
+      "bounds": [
+        32,
+        128
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "decoder1": {
+      "name": "decoder1",
+      "param_type": "continuous",
+      "bounds": [
+        256,
+        1024
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "lr": {
+      "name": "lr",
+      "param_type": "continuous",
+      "bounds": [
+        1e-05,
+        0.01
+      ],
+      "values": null,
+      "log_scale": true,
+      "constraints": null
+    },
+    "dropout": {
+      "name": "dropout",
+      "param_type": "continuous",
+      "bounds": [
+        0.0,
+        0.5
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "weight_decay": {
+      "name": "weight_decay",
+      "param_type": "continuous",
+      "bounds": [
+        1e-06,
+        0.01
+      ],
+      "values": null,
+      "log_scale": true,
+      "constraints": null
+    },
+    "alpha": {
+      "name": "alpha",
+      "param_type": "continuous",
+      "bounds": [
+        0.1,
+        2.0
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "beta": {
+      "name": "beta",
+      "param_type": "continuous",
+      "bounds": [
+        0.1,
+        2.0
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "gamma": {
+      "name": "gamma",
+      "param_type": "continuous",
+      "bounds": [
+        0.1,
+        2.0
+      ],
+      "values": null,
+      "log_scale": false,
+      "constraints": null
+    },
+    "gat_heads": {
+      "name": "gat_heads",
+      "param_type": "discrete",
+      "bounds": null,
+      "values": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "gt_heads": {
+      "name": "gt_heads",
+      "param_type": "discrete",
+      "bounds": null,
+      "values": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "fusion_heads": {
+      "name": "fusion_heads",
+      "param_type": "discrete",
+      "bounds": null,
+      "values": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "batch": {
+      "name": "batch",
+      "param_type": "discrete",
+      "bounds": null,
+      "values": [
+        16,
+        25,
+        32,
+        64
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "moco_K": {
+      "name": "moco_K",
+      "param_type": "discrete",
+      "bounds": null,
+      "values": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "fusion_strategy": {
+      "name": "fusion_strategy",
+      "param_type": "categorical",
+      "bounds": null,
+      "values": [
+        "self_attention",
+        "co_attention",
+        "hybrid",
+        "transformer_multihead"
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "feature_type": {
+      "name": "feature_type",
+      "param_type": "categorical",
+      "bounds": null,
+      "values": [
+        "normal",
+        "uniform",
+        "one_hot"
+      ],
+      "log_scale": false,
+      "constraints": null
+    },
+    "moco_type": {
+      "name": "moco_type",
+      "param_type": "categorical",
+      "bounds": null,
+      "values": [
+        "basic",
+        "double_tau"
+      ],
+      "log_scale": false,
+      "constraints": null
+    }
+  },
+  "constraints": []
+}

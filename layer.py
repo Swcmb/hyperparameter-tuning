@@ -13,7 +13,6 @@ from utils import (
     clamp_features,
     step_update,
     project_to_ball,
-    # 轻量增强与读出等工具（从 utils 暴露到 layer 命名空间）
     reset_parameters,
     AvgReadout,
     random_permute_features,

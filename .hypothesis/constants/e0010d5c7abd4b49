@@ -1,0 +1,4 @@
+# file: D:\Paper-code\hyperparameter-tuning\acquisition_function.py
+# hypothesis_version: 6.148.7
+
+[-2.0, -0.5, 0.0, 1e-09, 1e-06, 0.01, 0.1, 0.5, 1.0, 2.0, 2.576, 100, 10000, '\n采集函数测试完成!', 'EI', 'ES', 'L-BFGS-B', 'PI', 'UCB', '__main__', 'creation_time', 'ftol', 'function_type', 'grid_search', 'kappa', 'kappa必须为正数', 'maxiter', 'n_samples', 'n_samples必须为正整数', 'parameters', 'temperature', 'temperature必须为正数', 'xi', 'xi必须非负', '参数边界不能为空', '测试采集函数实现...', '采集函数优化失败，所有重启都失败了']

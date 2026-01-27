@@ -1,0 +1,4 @@
+# file: D:\Paper-code\hyperparameter-tuning\task_evaluator.py
+# hypothesis_version: 6.148.7
+
+[-0.05, -0.03, -0.02, 0.0, 0.0001, 0.0005, 0.001, 0.01, 0.02, 0.05, 0.1, 0.3, 0.4, 0.5, 0.6, 0.65, 0.7, 0.8, 0.85, 0.9, 0.95, 1.0, 2.0, 128, 256, 512, '\n测试工厂函数...', '0', '5_cv1', 'AUPRC', 'AUPRC_std', 'AUROC', 'AUROC_std', 'CUDA_VISIBLE_DEVICES', 'F1', 'F1_std', 'LDA', 'LMI', 'MDA', 'TaskEvaluator功能测试通过', 'TaskEvaluator资源清理完成', '__main__', 'alpha', 'auprc', 'auroc', 'basic', 'batch', 'beta', 'cpu', 'cuda', 'decoder1', 'dimensions', 'dropout', 'epochs', 'error', 'evaluator', 'f1', 'feature_type', 'fusion_heads', 'fusion_strategy', 'gamma', 'gat_heads', 'gt_heads', 'hidden1', 'hidden2', 'inf', 'loss', 'lr', 'moco_type', 'neg_file', 'normal', 'pos_file', 'precision', 'primary', 'recall', 'seed', 'self_attention', 'train', 'train.py', 'train_model', 'weight_decay', '使用CPU模式，仅用于测试目的', '测试TaskEvaluator...', '测试参数评估功能...', '真实训练模块不可用，使用模拟模式', '真实训练模块导入成功']
