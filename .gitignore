@@ -1,0 +1,14 @@
+/__pycache__/
+/.codebuddy/
+/.hypothesis/
+/.pytest_cache/
+/.spec-coding/
+/.vscode/
+/checkpoints/
+/logs/
+/outputs/
+/results/
+/tests/__pycache__/
+/tests/.pytest_cache/
+/tests/checkpoints/
+/tests/test_visualizer_output/
