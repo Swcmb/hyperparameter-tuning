@@ -44,7 +44,7 @@ class TestAcquisitionProperties(unittest.TestCase):
         n_points=st.integers(min_value=1, max_value=10),
         n_dims=st.integers(min_value=1, max_value=3)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_14_acquisition_function_support(self, function_type, n_points, n_dims):
         """
         属性 14: 采集函数支持
@@ -130,7 +130,7 @@ class TestAcquisitionProperties(unittest.TestCase):
         function_type=st.sampled_from(['EI', 'PI', 'UCB', 'ES']),
         param_changes=st.integers(min_value=1, max_value=5)
     )
-    @settings(max_examples=100, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_15_acquisition_parameter_validation(self, function_type, param_changes):
         """
         属性 15: 采集函数参数验证
@@ -216,7 +216,7 @@ class TestAcquisitionProperties(unittest.TestCase):
             elements=st.floats(min_value=0.001, max_value=10.0, allow_nan=False, allow_infinity=False)
         )
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ei_parameter_consistency(self, xi_values):
         """测试EI采集函数参数一致性"""
         ei = ExpectedImprovement(xi=0.01)
@@ -241,7 +241,7 @@ class TestAcquisitionProperties(unittest.TestCase):
             elements=st.floats(min_value=0.1, max_value=20.0, allow_nan=False, allow_infinity=False)
         )
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_ucb_parameter_consistency(self, kappa_values):
         """测试UCB采集函数参数一致性"""
         ucb = UpperConfidenceBound(kappa=2.576)

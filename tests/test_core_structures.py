@@ -327,9 +327,14 @@ class TestParameterValidator(unittest.TestCase):
             'fusion_heads': 4,
             'batch': 32,
             'moco_K': 4096,
+            'moco_momentum': 0.999,
+            'moco_t': 0.2,
+            'moco_tau1': 0.2,
+            'moco_tau2': 0.3,
             'fusion_strategy': 'self_attention',
             'feature_type': 'normal',
-            'moco_type': 'basic'
+            'moco_type': 'basic',
+            'enable_view_0': 'true'
         }
         
         is_valid, errors = self.validator.validate_parameters(valid_params)

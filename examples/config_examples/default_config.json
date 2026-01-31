@@ -1,0 +1,11 @@
+{
+  "buffer_size": 1000,
+  "flush_interval": 1.0,
+  "max_file_size": 104857600,
+  "max_files_per_type": 10,
+  "compression_enabled": false,
+  "concurrent_workers": 4,
+  "queue_timeout": 5.0,
+  "memory_threshold_mb": 500.0,
+  "disk_usage_threshold": 85.0
+}

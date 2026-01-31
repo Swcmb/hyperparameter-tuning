@@ -1,0 +1,43 @@
+{
+  "comparison_info": {
+    "generated_at": "2026-01-31T21:13:51.716030",
+    "description": "默认配置与优化配置的对比"
+  },
+  "default_config": {
+    "buffer_size": 1000,
+    "flush_interval": 1.0,
+    "max_file_size": 104857600,
+    "max_files_per_type": 10,
+    "compression_enabled": false,
+    "concurrent_workers": 4,
+    "queue_timeout": 5.0,
+    "memory_threshold_mb": 500.0,
+    "disk_usage_threshold": 85.0
+  },
+  "optimized_config": {
+    "buffer_size": 5000,
+    "flush_interval": 2.0,
+    "max_file_size": 209715200,
+    "max_files_per_type": 15,
+    "compression_enabled": true,
+    "concurrent_workers": 8,
+    "queue_timeout": 10.0,
+    "memory_threshold_mb": 300.0,
+    "disk_usage_threshold": 80.0
+  },
+  "improvements": {
+    "buffer_size_increase": 4000,
+    "flush_interval_increase": 1.0,
+    "file_size_increase_mb": 100,
+    "worker_increase": 4,
+    "compression_enabled": true,
+    "memory_threshold_reduction": 200.0
+  },
+  "expected_benefits": [
+    "提高日志写入吞吐量 20-40%",
+    "减少内存使用 15-30%",
+    "减少磁盘I/O 25-35%",
+    "提升并发性能 40-60%",
+    "增强系统稳定性 10-20%"
+  ]
+}

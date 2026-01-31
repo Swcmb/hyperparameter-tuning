@@ -1,0 +1,27 @@
+{
+  "task_type": "LDA",
+  "max_iterations": 30,
+  "max_time_hours": 12,
+  "random_seed": 42,
+  
+  "acquisition_function": "EI",
+  "acquisition_params": {
+    "xi": 0.01
+  },
+  
+  "objectives": ["AUROC"],
+  "cv_folds": 5,
+  
+  "checkpoint_dir": "checkpoints",
+  "save_frequency": 1,
+  "output_dir": "results_moco",
+  "generate_report": true,
+  
+  "moco_momentum": 0.999,
+  "moco_t": 0.07,
+  "moco_tau1": 0.2,
+  "moco_tau2": 0.3,
+  "moco_K": 2048,
+  "moco_type": "double_tau",
+  "enable_view_0": true
+}

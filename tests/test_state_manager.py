@@ -254,7 +254,7 @@ class TestStateManager:
         # 验证参数空间信息
         assert 'parameter_space_info' in info
         param_info = info['parameter_space_info']
-        assert param_info['parameter_count'] == 18
+        assert param_info['parameter_count'] == 23  # 更新为包含新MoCo参数的数量
         assert 'dimensions' in param_info['parameter_names']
         
         # 验证高斯过程信息

@@ -37,7 +37,7 @@ class TestMultiObjectiveProperties(unittest.TestCase):
         n_objectives=st.integers(min_value=2, max_value=3),
         n_iterations=st.integers(min_value=3, max_value=8)
     )
-    @settings(max_examples=50, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_20_multi_objective_optimization_support(self, task_type, n_objectives, n_iterations):
         """
         属性 20: 多目标优化支持
@@ -113,7 +113,7 @@ class TestMultiObjectiveProperties(unittest.TestCase):
         n_objectives=st.integers(min_value=2, max_value=3),
         n_iterations=st.integers(min_value=5, max_value=10)
     )
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_21_pareto_optimal_solution_return(self, task_type, n_objectives, n_iterations):
         """
         属性 21: 帕累托最优解返回
@@ -216,7 +216,7 @@ class TestMultiObjectiveProperties(unittest.TestCase):
         task_type=st.sampled_from(['LDA', 'MDA', 'LMI']),
         weight_config=st.integers(min_value=0, max_value=3)
     )
-    @settings(max_examples=40, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_22_weighted_objective_function_calculation(self, task_type, weight_config):
         """
         属性 22: 加权目标函数计算

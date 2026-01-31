@@ -12,6 +12,7 @@ AutoDL是一个基于贝叶斯优化的超参数调优系统，专为LDA/MDA/LMI
 - 📊 **结果分析**: 自动生成详细的分析报告和可视化图表
 - ⚙️ **灵活配置**: 支持命令行参数和配置文件两种配置方式
 - 🔍 **实时监控**: 提供详细的日志记录和进度监控
+- 🚀 **MoCo支持**: 完整支持MoCo（Momentum Contrast）对比学习参数优化
 
 ## 快速开始
 
@@ -32,7 +33,14 @@ python autodl.py --config config_example.json
 python quick_start_example.py
 ```
 
-### 3. 多目标优化
+### 3. MoCo参数优化
+
+```bash
+# 使用配置文件进行MoCo参数优化
+python autodl.py --config moco_config.json
+```
+
+### 4. 多目标优化
 
 ```bash
 # 同时优化AUROC、AUPRC和F1分数
@@ -76,6 +84,16 @@ python autodl.py \
 - `--no_html`: 不生成HTML报告
 - `--no_charts`: 不生成图表
 
+#### MoCo参数
+MoCo参数只能通过配置文件设置，不支持命令行参数。请在JSON配置文件中设置以下参数：
+- `moco_momentum`: MoCo动量系数（0.9-0.9999）
+- `moco_t`: MoCo温度参数（0.01-1.0）
+- `moco_tau1`: MoCo第一个tau参数（0.01-1.0）
+- `moco_tau2`: MoCo第二个tau参数（0.01-1.0，必须≥tau1）
+- `moco_K`: MoCo队列大小（1024/2048/4096/8192）
+- `moco_type`: MoCo类型（basic/double_tau）
+- `enable_view_0`: 是否启用视图0（true/false）
+
 ### 配置文件格式
 
 创建JSON配置文件来管理复杂的配置：
@@ -103,7 +121,15 @@ python autodl.py \
   "checkpoint_dir": "checkpoints",
   "save_frequency": 1,
   "output_dir": "results",
-  "generate_report": true
+  "generate_report": true,
+  
+  "moco_momentum": 0.999,
+  "moco_t": 0.07,
+  "moco_tau1": 0.2,
+  "moco_tau2": 0.3,
+  "moco_K": 2048,
+  "moco_type": "double_tau",
+  "enable_view_0": true
 }
 ```
 
@@ -150,7 +176,26 @@ python autodl.py --task_type LDA --max_iterations 100
 python autodl.py --resume --checkpoint_name latest
 ```
 
-### 示例5：长时间运行
+### 示例5：MoCo参数优化
+
+```bash
+# 使用配置文件进行MoCo参数优化
+python autodl.py --config moco_config.json
+```
+
+其中moco_config.json内容示例：
+```json
+{
+  "task_type": "LDA",
+  "max_iterations": 30,
+  "moco_type": "double_tau",
+  "moco_tau1": 0.1,
+  "moco_tau2": 0.4,
+  "enable_view_0": true
+}
+```
+
+### 示例6：长时间运行
 
 ```bash
 python autodl.py \
@@ -231,6 +276,45 @@ python autodl.py --save_frequency 5  # 每5次迭代保存一次
 python autodl.py --resume --checkpoint_name iteration_20
 ```
 
+### MoCo参数优化
+
+系统完整支持MoCo（Momentum Contrast）对比学习参数：
+
+#### 支持的MoCo参数
+- **moco_momentum**: 动量系数，控制动量更新的强度（范围：0.9-0.9999）
+- **moco_t**: 温度参数，控制对比学习的锐度（范围：0.01-1.0）
+- **moco_tau1**: 第一个tau参数，用于双tau模式（范围：0.01-1.0）
+- **moco_tau2**: 第二个tau参数，必须≥tau1（范围：0.01-1.0）
+- **moco_K**: 队列大小，影响负样本数量（选项：1024/2048/4096/8192）
+- **moco_type**: MoCo类型（basic/double_tau）
+- **enable_view_0**: 是否启用第0个视图（true/false）
+
+#### MoCo参数约束
+系统自动验证和修复MoCo参数约束：
+- tau2必须大于等于tau1
+- 动量系数必须在0.9-0.9999范围内
+- 所有温度参数必须大于0
+
+```bash
+# MoCo参数优化示例（使用配置文件）
+python autodl.py --config moco_config.json
+```
+
+其中moco_config.json配置文件内容：
+```json
+{
+  "task_type": "LDA",
+  "moco_type": "double_tau",
+  "moco_momentum": 0.999,
+  "moco_t": 0.07,
+  "moco_tau1": 0.2,
+  "moco_tau2": 0.3,
+  "moco_K": 2048,
+  "enable_view_0": true,
+  "max_iterations": 50
+}
+```
+
 ## 故障排除
 
 ### 常见问题
@@ -249,6 +333,7 @@ python autodl.py --resume --checkpoint_name iteration_20
    - 检查参数空间定义
    - 使用参数修复功能
    - 查看详细的验证错误信息
+   - **MoCo约束**: 确保tau2 >= tau1，动量系数在0.9-0.9999范围内
 
 4. **状态恢复失败**
    - 检查检查点文件完整性

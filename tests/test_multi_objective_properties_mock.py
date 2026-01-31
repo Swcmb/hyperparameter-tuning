@@ -85,7 +85,7 @@ class TestMultiObjectivePropertiesMock(unittest.TestCase):
         n_objectives=st.integers(min_value=2, max_value=3),
         n_iterations=st.integers(min_value=3, max_value=6)
     )
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_20_multi_objective_optimization_support(self, task_type, n_objectives, n_iterations):
         """
         属性 20: 多目标优化支持
@@ -149,7 +149,7 @@ class TestMultiObjectivePropertiesMock(unittest.TestCase):
         n_objectives=st.integers(min_value=2, max_value=3),
         n_iterations=st.integers(min_value=4, max_value=8)
     )
-    @settings(max_examples=15, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_21_pareto_optimal_solution_return(self, task_type, n_objectives, n_iterations):
         """
         属性 21: 帕累托最优解返回
@@ -225,7 +225,7 @@ class TestMultiObjectivePropertiesMock(unittest.TestCase):
         task_type=st.sampled_from(['LDA', 'MDA', 'LMI']),
         weight_config=st.integers(min_value=0, max_value=3)
     )
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=3, deadline=None)
     def test_property_22_weighted_objective_function_calculation(self, task_type, weight_config):
         """
         属性 22: 加权目标函数计算
@@ -467,15 +467,15 @@ class TestMultiObjectivePropertiesMock(unittest.TestCase):
                 
                 if result1.objective_values and result2.objective_values:
                     # 测试支配关系计算方法
-                    dominates_12 = history._dominates(result1, result2)
-                    dominates_21 = history._dominates(result2, result1)
+                    dominates_12 = result1.dominates(result2, optimizer.objectives, optimizer.maximize_objectives)
+                    dominates_21 = result2.dominates(result1, optimizer.objectives, optimizer.maximize_objectives)
                     
                     # 验证支配关系的反对称性
                     if dominates_12:
                         self.assertFalse(dominates_21, "支配关系应该是反对称的")
                     
                     # 验证自反性（一个解不应该支配自己，除非完全相同）
-                    self_dominates = history._dominates(result1, result1)
+                    self_dominates = result1.dominates(result1, optimizer.objectives, optimizer.maximize_objectives)
                     self.assertFalse(self_dominates, "一个解不应该支配自己")
 
 

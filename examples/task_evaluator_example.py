@@ -170,7 +170,7 @@ def example_multi_task_evaluation():
         'hidden2': 64,
         'lr': 0.001,
         'batch': 32,
-        'epochs': 1,
+        'epochs': 50,
         'gat_heads': 4,
         'gt_heads': 4,
         'fusion_heads': 4
