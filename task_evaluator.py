@@ -951,12 +951,12 @@ class RealTaskEvaluator(TaskEvaluator):
                         self.logger.info(f"[BATCH] Epoch {epoch+1:02d} | Batch {batch_count:04d}/{len(train_loader):04d} ({progress_percent:5.1f}%)")
                         self.logger.info(f"[BATCH] 当前批次损失: 总计={batch_total_loss:.6f}, BCE={batch_bce_loss:.6f}, 对比={batch_contrast_loss:.6f}, 对抗={batch_adversarial_loss:.6f}")
                         self.logger.info(f"[BATCH] 累计平均损失: {avg_loss:.6f}")
-                        self.logger.info(f"[BATCH] 批次处理时间: {batch_time:.4f}秒")
+                        # self.logger.info(f"[BATCH] 批次处理时间: {batch_time:.4f}秒")  # 注释掉批次处理时间输出
                         
-                        # 内存使用情况
-                        if torch.cuda.is_available() and self.device == 'cuda':
-                            gpu_memory_allocated = torch.cuda.memory_allocated(0) / 1024**3
-                            self.logger.info(f"[BATCH] GPU内存使用: {gpu_memory_allocated:.3f} GB")
+                        # 内存使用情况 - 注释掉GPU内存使用输出
+                        # if torch.cuda.is_available() and self.device == 'cuda':
+                        #     gpu_memory_allocated = torch.cuda.memory_allocated(0) / 1024**3
+                        #     self.logger.info(f"[BATCH] GPU内存使用: {gpu_memory_allocated:.3f} GB")
                     
                 except Exception as e:
                     self.logger.error(f"[ERROR] Epoch {epoch+1}, Batch {batch_count+1} 训练失败: {str(e)}")
@@ -982,7 +982,7 @@ class RealTaskEvaluator(TaskEvaluator):
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] ========== 训练轮次完成 ==========")
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] 训练时间: {epoch_time:.2f}秒")
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] 处理批次数量: {batch_count}")
-                self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] 平均批次处理时间: {epoch_time/batch_count:.4f}秒")
+                # self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] 平均批次处理时间: {epoch_time/batch_count:.4f}秒")  # 注释掉平均批次处理时间
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}] 损失统计:")
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}]   总损失: {avg_epoch_loss:.6f} ± {std_total:.6f}")
                 self.logger.info(f"[EPOCH {epoch+1:02d}/{epochs}]   BCE损失: {avg_bce:.6f} ± {std_bce:.6f}")
@@ -997,7 +997,7 @@ class RealTaskEvaluator(TaskEvaluator):
                     
                     self.logger.info(f"[PROGRESS] 训练进度: {((epoch+1)/epochs)*100:.1f}% ({epoch+1}/{epochs})")
                     self.logger.info(f"[PROGRESS] 平均每轮时间: {avg_time_per_epoch:.2f}秒")
-                    self.logger.info(f"[PROGRESS] 预计剩余时间: {estimated_remaining_time:.1f}秒 ({estimated_remaining_time/60:.1f}分钟)")
+                    # self.logger.info(f"[PROGRESS] 预计剩余时间: {estimated_remaining_time:.1f}秒 ({estimated_remaining_time/60:.1f}分钟)")  # 注释掉预计剩余时间输出
                     
                     # 损失趋势分析
                     if len(all_epoch_losses) >= 2:
@@ -1082,7 +1082,7 @@ class RealTaskEvaluator(TaskEvaluator):
                         progress_percent = eval_batch_count / len(test_loader) * 100
                         self.logger.info(f"[EVALUATION] 评估进度: {eval_batch_count}/{len(test_loader)} ({progress_percent:.1f}%)")
                         self.logger.info(f"[EVALUATION] 当前批次样本数: {len(batch_true)}")
-                        self.logger.info(f"[EVALUATION] 批次处理时间: {batch_eval_time:.4f}秒")
+                        # self.logger.info(f"[EVALUATION] 批次处理时间: {batch_eval_time:.4f}秒")  # 注释掉评估批次处理时间
                         self.logger.info(f"[EVALUATION] 累计收集样本数: {len(y_true)}")
                     
                 except Exception as e:

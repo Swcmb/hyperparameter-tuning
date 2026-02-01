@@ -243,19 +243,23 @@ class OutputFormatter:
         # 时间信息
         if timing_info:
             if batch is not None and 'batch_time' in timing_info:
-                lines.append(f"[BATCH] 批次处理时间: {timing_info['batch_time']:.4f}秒")
+                pass  # 注释掉批次处理时间输出
+                # lines.append(f"[BATCH] 批次处理时间: {timing_info['batch_time']:.4f}秒")
             elif 'epoch_time' in timing_info:
                 lines.append(f"[EPOCH {epoch:02d}/{total_epochs}] 训练时间: {timing_info['epoch_time']:.2f}秒")
                 if 'avg_batch_time' in timing_info:
-                    lines.append(f"[EPOCH {epoch:02d}/{total_epochs}] 平均批次处理时间: {timing_info['avg_batch_time']:.4f}秒")
+                    pass  # 注释掉平均批次处理时间输出
+                    # lines.append(f"[EPOCH {epoch:02d}/{total_epochs}] 平均批次处理时间: {timing_info['avg_batch_time']:.4f}秒")
                 if 'estimated_remaining' in timing_info:
-                    lines.append(f"[PROGRESS] 预计剩余时间: {timing_info['estimated_remaining']:.1f}秒 ({timing_info['estimated_remaining']/60:.1f}分钟)")
+                    pass  # 注释掉预计剩余时间输出
+                    # lines.append(f"[PROGRESS] 预计剩余时间: {timing_info['estimated_remaining']:.1f}秒 ({timing_info['estimated_remaining']/60:.1f}分钟)")
         
         # 内存信息
         if memory_info:
             if 'gpu_allocated' in memory_info:
                 if batch is not None:
-                    lines.append(f"[BATCH] GPU内存使用: {memory_info['gpu_allocated']:.3f} GB")
+                    pass  # 注释掉GPU内存使用输出
+                    # lines.append(f"[BATCH] GPU内存使用: {memory_info['gpu_allocated']:.3f} GB")
                 else:
                     lines.append(f"[MEMORY] GPU内存清理后使用量: {memory_info['gpu_allocated']:.3f} GB")
         

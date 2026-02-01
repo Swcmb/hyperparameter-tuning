@@ -39,6 +39,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional, List
+import numpy as np
 
 # 添加当前目录到Python路径
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -111,76 +112,30 @@ class AutoDLOptimizer:
                                      "AutoDL优化器初始化完成", "AutoDLOptimizer")
     
     def _log_initialization_start(self, config: Dict[str, Any]):
-        """记录详细的初始化开始信息"""
+        """记录简化的初始化开始信息"""
         self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "========== AutoDL贝叶斯超参数优化系统启动 ==========", 
+                                     "AutoDL贝叶斯超参数优化系统启动", 
                                      "AutoDLOptimizer")
         
-        # 系统环境信息
-        import platform
+        # 简化的系统信息输出
         import sys
         import torch
         
-        system_info = {
-            "python_version": sys.version.split()[0],
-            "platform": platform.platform(),
-            "processor": platform.processor(),
-            "architecture": platform.architecture()[0],
-            "hostname": platform.node(),
-            "pytorch_version": torch.__version__,
-            "cuda_available": torch.cuda.is_available(),
-            "cuda_device_count": torch.cuda.device_count() if torch.cuda.is_available() else 0
-        }
-        
+        # 只输出关键的系统信息
         if torch.cuda.is_available():
-            system_info["cuda_version"] = torch.version.cuda
-            system_info["cudnn_version"] = torch.backends.cudnn.version()
-            for i in range(torch.cuda.device_count()):
-                gpu_props = torch.cuda.get_device_properties(i)
-                system_info[f"gpu_{i}_name"] = gpu_props.name
-                system_info[f"gpu_{i}_memory_gb"] = gpu_props.total_memory / 1024**3
+            gpu_name = torch.cuda.get_device_name(0)
+            self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                         f"GPU: {gpu_name}", 
+                                         "AutoDLOptimizer")
+        else:
+            self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                         "CPU模式", 
+                                         "AutoDLOptimizer")
         
-        self.log_manager.log_structured(logging.INFO, "SYSTEM_INFO", system_info, "AutoDLOptimizer")
-        
-        # 配置信息摘要
-        config_summary = {
-            "task_type": config.get('task_type', 'LDA'),
-            "max_iterations": config.get('max_iterations', 50),
-            "max_time_hours": config.get('max_time_hours', 24),
-            "acquisition_function": config.get('acquisition_function', 'EI'),
-            "n_initial_points": config.get('n_initial_points', 10),
-            "random_seed": config.get('random_seed', 42),
-            "objectives": config.get('objectives', ['AUROC']),
-            "is_multi_objective": len(config.get('objectives', ['AUROC'])) > 1,
-            "resume": config.get('resume', False),
-            "generate_report": config.get('generate_report', True),
-            "generate_charts": config.get('generate_charts', True)
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "CONFIG_SUMMARY", 
-                                       config_summary, "AutoDLOptimizer")
-        
-        # 数据配置
-        data_config = {
-            "pos_file": config.get('pos_file'),
-            "neg_file": config.get('neg_file'),
-            "data_path": config.get('data_path'),
-            "cv_folds": config.get('cv_folds', 5)
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "DATA_CONFIG", 
-                                       data_config, "AutoDLOptimizer")
-        
-        # 输出配置
-        output_config = {
-            "output_dir": config.get('output_dir', 'results'),
-            "log_dir": config.get('log_dir', 'logs'),
-            "checkpoint_dir": config.get('checkpoint_dir', 'checkpoints'),
-            "save_frequency": config.get('save_frequency', 1)
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "OUTPUT_CONFIG", 
-                                       output_config, "AutoDLOptimizer")
+        # 简化的配置信息
+        self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                     f"任务: {config.get('task_type', 'LDA')} | 迭代: {config.get('max_iterations', 50)}", 
+                                     "AutoDLOptimizer")
     
     def _setup_logging(self) -> logging.Logger:
         """设置日志系统"""
@@ -217,56 +172,16 @@ class AutoDLOptimizer:
     def initialize_components(self):
         """初始化所有组件"""
         self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "========== 开始初始化系统组件 ==========", 
+                                     "开始初始化系统组件", 
                                      "AutoDLOptimizer")
         
-        component_init_start = time.time()
-        
         # 1. 创建参数空间
-        self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "正在创建参数空间...", "AutoDLOptimizer")
-        
-        param_space_start = time.time()
         task_type = self.config.get('task_type', 'LDA')
         self.parameter_space = create_default_parameter_space(task_type)
-        param_space_time = time.time() - param_space_start
-        
-        param_space_info = {
-            "task_type": task_type,
-            "parameter_count": len(self.parameter_space.parameters),
-            "continuous_params": len(self.parameter_space.get_continuous_parameter_names()),
-            "discrete_params": len(self.parameter_space.get_discrete_parameter_names()),
-            "categorical_params": len(self.parameter_space.get_categorical_parameter_names()),
-            "creation_time": param_space_time
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "PARAM_SPACE_CREATED", 
-                                       param_space_info, "AutoDLOptimizer")
-        
-        # 详细的参数信息
-        param_details = {}
-        for name, config in self.parameter_space.parameters.items():
-            if config.param_type.value == 'continuous':
-                param_details[name] = {
-                    "type": config.param_type.value,
-                    "bounds": config.bounds,
-                    "log_scale": config.log_scale
-                }
-            else:
-                param_details[name] = {
-                    "type": config.param_type.value,
-                    "values": config.values[:5] if len(config.values) > 5 else config.values,  # 限制显示数量
-                    "total_values": len(config.values)
-                }
-        
-        self.log_manager.log_structured(logging.DEBUG, "PARAM_DETAILS", 
-                                       param_details, "AutoDLOptimizer")
+        self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                     f"参数空间已创建 ({len(self.parameter_space.parameters)}个参数)", "AutoDLOptimizer")
         
         # 2. 创建任务评估器
-        self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "正在创建任务评估器...", "AutoDLOptimizer")
-        
-        evaluator_start = time.time()
         data_config = {
             'pos_file': self.config.get('pos_file'),
             'neg_file': self.config.get('neg_file')
@@ -282,107 +197,40 @@ class AutoDLOptimizer:
             
             if task_type in default_data:
                 data_config['pos_file'], data_config['neg_file'] = default_data[task_type]
-                self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                             f"使用默认数据配置: {data_config}", 
-                                             "AutoDLOptimizer")
         
         self.task_evaluator = create_task_evaluator(
             task_type=task_type,
             data_config=data_config,
             use_real_training=self.config.get('use_real_training', True)
         )
-        evaluator_time = time.time() - evaluator_start
-        
-        evaluator_info = {
-            "task_type": task_type,
-            "pos_file": data_config.get('pos_file'),
-            "neg_file": data_config.get('neg_file'),
-            "use_real_training": self.config.get('use_real_training', True),
-            "creation_time": evaluator_time,
-            "evaluator_class": type(self.task_evaluator).__name__
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "TASK_EVALUATOR_CREATED", 
-                                       evaluator_info, "AutoDLOptimizer")
+        self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                     "任务评估器已创建", "AutoDLOptimizer")
         
         # 3. 创建状态管理器
-        self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "正在创建状态管理器...", "AutoDLOptimizer")
-        
-        state_manager_start = time.time()
         checkpoint_dir = self.config.get('checkpoint_dir', 'checkpoints')
         self.state_manager = create_default_state_manager(checkpoint_dir=checkpoint_dir)
-        state_manager_time = time.time() - state_manager_start
-        
-        state_manager_info = {
-            "checkpoint_dir": checkpoint_dir,
-            "creation_time": state_manager_time
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "STATE_MANAGER_CREATED", 
-                                       state_manager_info, "AutoDLOptimizer")
         
         # 4. 创建优化器
-        self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     "正在创建贝叶斯优化器...", "AutoDLOptimizer")
-        
-        optimizer_start = time.time()
         self._create_optimizer()
-        optimizer_time = time.time() - optimizer_start
-        
-        optimizer_info = {
-            "optimizer_type": "多目标" if len(self.config.get('objectives', ['AUROC'])) > 1 else "单目标",
-            "objectives": self.config.get('objectives', ['AUROC']),
-            "acquisition_function": self.config.get('acquisition_function', 'EI'),
-            "n_initial_points": self.config.get('n_initial_points', 10),
-            "creation_time": optimizer_time
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "OPTIMIZER_CREATED", 
-                                       optimizer_info, "AutoDLOptimizer")
+        optimizer_type = "多目标" if len(self.config.get('objectives', ['AUROC'])) > 1 else "单目标"
+        self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                     f"{optimizer_type}优化器已创建", "AutoDLOptimizer")
         
         # 5. 初始化历史记录
         self.history = self.optimizer.history
         
         # 6. 尝试恢复状态
         if self.config.get('resume', False):
-            self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                         "尝试恢复之前的优化状态...", "AutoDLOptimizer")
             resume_success = self._try_resume_state()
-            
-            resume_info = {
-                "resume_requested": True,
-                "resume_successful": resume_success,
-                "checkpoint_name": self.config.get('checkpoint_name', 'latest')
-            }
-            
             if resume_success:
-                resume_info.update({
-                    "resumed_iterations": self.current_iteration,
-                    "resumed_evaluations": len(self.history.results)
-                })
-            
-            self.log_manager.log_structured(logging.INFO, "RESUME_STATUS", 
-                                           resume_info, "AutoDLOptimizer")
-        
-        total_init_time = time.time() - component_init_start
-        
-        # 组件初始化完成摘要
-        init_summary = {
-            "total_init_time": total_init_time,
-            "param_space_time": param_space_time,
-            "evaluator_time": evaluator_time,
-            "state_manager_time": state_manager_time,
-            "optimizer_time": optimizer_time,
-            "components_initialized": 5,
-            "resume_attempted": self.config.get('resume', False)
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "INIT_SUMMARY", 
-                                       init_summary, "AutoDLOptimizer")
+                self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                             f"状态恢复成功，已完成 {self.current_iteration} 次迭代", "AutoDLOptimizer")
+            else:
+                self.log_manager.log_with_tag(logging.INFO, "INIT", 
+                                             "从头开始优化", "AutoDLOptimizer")
         
         self.log_manager.log_with_tag(logging.INFO, "INIT", 
-                                     f"所有组件初始化完成 (总耗时: {total_init_time:.2f}秒)", 
+                                     "系统初始化完成", 
                                      "AutoDLOptimizer")
     
     def _create_optimizer(self):
@@ -399,7 +247,8 @@ class AutoDLOptimizer:
         
         if len(objectives) > 1:
             # 多目标优化
-            self.logger.info(f"创建多目标优化器，目标函数: {objectives}")
+            self.log_manager.log_with_tag(logging.INFO, "OPTIMIZER_CREATION", 
+                                         f"创建多目标优化器，目标函数: {objectives}", "AutoDLOptimizer")
             
             maximize_objectives = {}
             for obj in objectives:
@@ -424,7 +273,8 @@ class AutoDLOptimizer:
             
         else:
             # 单目标优化
-            self.logger.info(f"创建单目标优化器，目标函数: {objectives[0]}")
+            self.log_manager.log_with_tag(logging.INFO, "OPTIMIZER_CREATION", 
+                                         f"创建单目标优化器，目标函数: {objectives[0]}", "AutoDLOptimizer")
             
             self.optimizer = create_bayesian_optimizer(
                 task_type=task_type,
@@ -446,146 +296,68 @@ class AutoDLOptimizer:
                 if 'history' in state_data:
                     self.history = OptimizationHistory.from_dict(state_data['history'])
                     self.current_iteration = self.history.total_iterations
-                    self.logger.info(f"恢复优化状态，已完成 {self.current_iteration} 次迭代")
+                    self.log_manager.log_with_tag(logging.INFO, "RESUME", 
+                                                 f"恢复优化状态，已完成 {self.current_iteration} 次迭代", 
+                                                 "AutoDLOptimizer")
                 
                 # 恢复优化器状态
                 if 'optimizer_state' in state_data:
                     self.optimizer.load_state(state_data['optimizer_state'])
-                    self.logger.info("优化器状态恢复完成")
+                    self.log_manager.log_with_tag(logging.INFO, "RESUME", 
+                                                 "优化器状态恢复完成", "AutoDLOptimizer")
                 
                 return True
                 
         except Exception as e:
-            self.logger.warning(f"状态恢复失败: {e}")
-            self.logger.info("将从头开始优化")
+            self.log_manager.log_with_tag(logging.WARNING, "RESUME", 
+                                         f"状态恢复失败: {e}", "AutoDLOptimizer")
+            self.log_manager.log_with_tag(logging.INFO, "RESUME", 
+                                         "将从头开始优化", "AutoDLOptimizer")
         
         return False
     
     def run_optimization(self):
         """运行完整的贝叶斯优化流程"""
         self.log_manager.log_with_tag(logging.INFO, "OPTIMIZATION", 
-                                     "========== 开始贝叶斯超参数优化流程 ==========", 
+                                     "开始贝叶斯超参数优化", 
                                      "AutoDLOptimizer")
         
         self.start_time = datetime.now()
         self.is_running = True
         
-        # 记录优化开始的详细信息
-        optimization_start_info = {
-            "start_time": self.start_time.isoformat(),
-            "max_iterations": self.config.get('max_iterations', 50),
-            "max_time_hours": self.config.get('max_time_hours', 24),
-            "task_type": self.config.get('task_type', 'LDA'),
-            "acquisition_function": self.config.get('acquisition_function', 'EI'),
-            "n_initial_points": self.config.get('n_initial_points', 10),
-            "random_seed": self.config.get('random_seed', 42),
-            "objectives": self.config.get('objectives', ['AUROC']),
-            "is_multi_objective": len(self.config.get('objectives', ['AUROC'])) > 1
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "OPTIMIZATION_START", 
-                                       optimization_start_info, "AutoDLOptimizer")
+        # 简化的优化开始信息
+        max_iterations = self.config.get('max_iterations', 50)
+        self.log_manager.log_with_tag(logging.INFO, "OPTIMIZATION", 
+                                     f"最大迭代: {max_iterations} | 目标: {self.config.get('objectives', ['AUROC'])[0]}", 
+                                     "AutoDLOptimizer")
         
         # 初始化优化器
         if not self.optimizer.is_initialized:
-            self.log_manager.log_with_tag(logging.INFO, "OPTIMIZATION", 
-                                         "初始化贝叶斯优化器...", "AutoDLOptimizer")
             self.optimizer._initialize_optimization()
         
         try:
-            max_iterations = self.config.get('max_iterations', 50)
             max_time = self.config.get('max_time_hours', 24) * 3600  # 转换为秒
             
-            # 详细的优化配置日志
-            optimization_config = {
-                "max_iterations": max_iterations,
-                "max_time_seconds": max_time,
-                "max_time_hours": max_time / 3600,
-                "convergence_threshold": self.config.get('convergence_threshold', 0.001),
-                "save_frequency": self.config.get('save_frequency', 1),
-                "checkpoint_dir": self.config.get('checkpoint_dir', 'checkpoints'),
-                "output_dir": self.config.get('output_dir', 'results')
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "OPTIMIZATION_CONFIG", 
-                                           optimization_config, "AutoDLOptimizer")
-            
-            # 数据和模型配置
-            model_config = {
-                "parameter_space_size": len(self.parameter_space.parameters),
-                "continuous_parameters": len(self.parameter_space.get_continuous_parameter_names()),
-                "discrete_parameters": len(self.parameter_space.get_discrete_parameter_names()),
-                "categorical_parameters": len(self.parameter_space.get_categorical_parameter_names()),
-                "cv_folds": self.config.get('cv_folds', 5),
-                "use_real_training": self.config.get('use_real_training', True)
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "MODEL_CONFIG", 
-                                           model_config, "AutoDLOptimizer")
-            
             # 主优化循环
-            self.log_manager.log_with_tag(logging.INFO, "OPTIMIZATION", 
-                                         "进入主优化循环", "AutoDLOptimizer")
-            
-            loop_start_time = time.time()
-            
             while (self.current_iteration < max_iterations and 
                    self.is_running and 
                    (time.time() - self.start_time.timestamp()) < max_time):
                 
-                iteration_start = time.time()
                 self.current_iteration += 1
                 
                 self.log_manager.log_with_tag(logging.INFO, "ITERATION", 
-                                             f"========== 第 {self.current_iteration} 次迭代开始 ==========", 
+                                             f"第 {self.current_iteration} 次迭代开始", 
                                              "AutoDLOptimizer")
-                
-                # 计算进度信息
-                progress_info = {
-                    "current_iteration": self.current_iteration,
-                    "max_iterations": max_iterations,
-                    "progress_percent": (self.current_iteration / max_iterations) * 100,
-                    "elapsed_time": time.time() - self.start_time.timestamp(),
-                    "remaining_time_estimate": None
-                }
-                
-                if self.current_iteration > 1:
-                    avg_iteration_time = (time.time() - loop_start_time) / (self.current_iteration - 1)
-                    remaining_iterations = max_iterations - self.current_iteration
-                    progress_info["remaining_time_estimate"] = avg_iteration_time * remaining_iterations
-                    progress_info["avg_iteration_time"] = avg_iteration_time
-                
-                self.log_manager.log_structured(logging.INFO, "PROGRESS", 
-                                               progress_info, "AutoDLOptimizer")
                 
                 try:
                     # 获取下一个参数建议
-                    self.log_manager.log_with_tag(logging.INFO, "ITERATION", 
-                                                 "获取参数建议...", "AutoDLOptimizer")
-                    
-                    suggestion_start = time.time()
                     suggested_params = self.optimizer.suggest_next_parameters()
-                    suggestion_time = time.time() - suggestion_start
-                    
-                    # 格式化参数显示
                     formatted_params = self._format_parameters(suggested_params)
-                    
-                    suggestion_info = {
-                        "suggestion_time": suggestion_time,
-                        "parameter_count": len(suggested_params),
-                        "suggestion_type": "初始采样" if len(self.optimizer.history.results) < self.optimizer.n_initial_points else "采集函数"
-                    }
-                    
-                    self.log_manager.log_structured(logging.INFO, "SUGGESTION_INFO", 
-                                                   suggestion_info, "AutoDLOptimizer")
                     
                     self.log_manager.log_with_tag(logging.INFO, "ITERATION", 
                                                  f"建议参数: {formatted_params}", "AutoDLOptimizer")
                     
                     # 评估参数
-                    self.log_manager.log_with_tag(logging.INFO, "EVALUATION", 
-                                                 "开始参数评估...", "AutoDLOptimizer")
-                    
                     evaluation_start = time.time()
                     metrics = self.task_evaluator.evaluate_parameters(suggested_params)
                     evaluation_time = time.time() - evaluation_start
@@ -594,8 +366,8 @@ class AutoDLOptimizer:
                     evaluation_result = {
                         'objective_value': self.task_evaluator.get_objective_value(metrics),
                         'metrics': metrics,
-                        'fold_results': None,  # 如果需要可以从metrics中提取
-                        'objective_values': None  # 多目标时会被设置
+                        'fold_results': None,
+                        'objective_values': None
                     }
                     
                     # 如果是多目标优化，提取多目标值
@@ -605,27 +377,9 @@ class AutoDLOptimizer:
                         )
                     
                     # 记录评估结果
-                    evaluation_info = {
-                        "evaluation_time": evaluation_time,
-                        "objective_value": evaluation_result['objective_value'],
-                        "metrics_count": len(evaluation_result['metrics']),
-                        "is_multi_objective": evaluation_result['objective_values'] is not None
-                    }
-                    
-                    # 添加主要指标
-                    main_metrics = {}
-                    for key in ['AUROC', 'AUPRC', 'F1', 'precision', 'recall', 'loss']:
-                        if key in evaluation_result['metrics']:
-                            main_metrics[key] = evaluation_result['metrics'][key]
-                    
-                    if main_metrics:
-                        evaluation_info["main_metrics"] = main_metrics
-                    
-                    if evaluation_result['objective_values']:
-                        evaluation_info["objective_values"] = evaluation_result['objective_values']
-                    
-                    self.log_manager.log_structured(logging.INFO, "EVALUATION_RESULT", 
-                                                   evaluation_info, "AutoDLOptimizer")
+                    self.log_manager.log_with_tag(logging.INFO, "EVALUATION", 
+                                                 f"目标值: {evaluation_result['objective_value']:.6f} | AUROC: {metrics.get('AUROC', 0):.4f}", 
+                                                 "AutoDLOptimizer")
                     
                     # 创建优化结果
                     result = OptimizationResult(
@@ -640,10 +394,6 @@ class AutoDLOptimizer:
                     )
                     
                     # 更新优化器和历史记录
-                    self.log_manager.log_with_tag(logging.INFO, "MODEL_UPDATE", 
-                                                 "更新贝叶斯优化模型...", "AutoDLOptimizer")
-                    
-                    update_start = time.time()
                     self.optimizer.update_model(
                         parameters=suggested_params,
                         objective_value=evaluation_result['objective_value'],
@@ -652,16 +402,12 @@ class AutoDLOptimizer:
                         objective_values=evaluation_result.get('objective_values')
                     )
                     self.history.add_result(result)
-                    update_time = time.time() - update_start
                     
                     # 记录迭代结果
-                    self._log_iteration_result(result, suggestion_time, evaluation_time, update_time)
+                    self._log_iteration_result(result)
                     
                     # 保存状态
                     if self.current_iteration % self.config.get('save_frequency', 1) == 0:
-                        self.log_manager.log_with_tag(logging.INFO, "CHECKPOINT", 
-                                                     f"保存第 {self.current_iteration} 次迭代的状态...", 
-                                                     "AutoDLOptimizer")
                         self._save_state()
                     
                     # 检查收敛条件
@@ -704,108 +450,29 @@ class AutoDLOptimizer:
                 formatted.append(f"{key}={value}")
         return ", ".join(formatted)
     
-    def _log_iteration_result(self, result: OptimizationResult, suggestion_time: float, 
-                             evaluation_time: float, update_time: float):
-        """记录详细的迭代结果"""
+    def _log_iteration_result(self, result: OptimizationResult):
+        """记录简化的迭代结果"""
         component_name = "AutoDLOptimizer"
-        
-        self.log_manager.log_with_tag(logging.INFO, "ITERATION_RESULT", 
-                                     "========== 迭代结果分析 ==========", 
-                                     component_name)
-        
-        # 时间分析
-        total_iteration_time = suggestion_time + evaluation_time + update_time
-        time_analysis = {
-            "total_iteration_time": total_iteration_time,
-            "suggestion_time": suggestion_time,
-            "evaluation_time": evaluation_time,
-            "model_update_time": update_time,
-            "suggestion_percentage": (suggestion_time / total_iteration_time) * 100,
-            "evaluation_percentage": (evaluation_time / total_iteration_time) * 100,
-            "update_percentage": (update_time / total_iteration_time) * 100
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "TIME_ANALYSIS", 
-                                       time_analysis, component_name)
-        
-        # 目标值分析
-        objective_analysis = {
-            "current_objective_value": result.objective_value,
-            "iteration": result.iteration,
-            "evaluation_time": result.evaluation_time,
-            "timestamp": result.timestamp.isoformat()
-        }
         
         # 改进分析
         if self.history.best_result and len(self.history.results) > 1:
             previous_best = self.history.best_result.objective_value
             improvement = result.objective_value - previous_best
-            improvement_percent = (improvement / abs(previous_best)) * 100 if previous_best != 0 else 0
-            
-            objective_analysis.update({
-                "previous_best": previous_best,
-                "absolute_improvement": improvement,
-                "relative_improvement_percent": improvement_percent,
-                "is_improvement": improvement > 0,
-                "is_new_best": result.objective_value > previous_best
-            })
             
             if improvement > 0:
                 self.log_manager.log_with_tag(logging.INFO, "SUCCESS", 
-                                             f"发现新的最佳结果! 改进: {improvement:+.6f} ({improvement_percent:+.2f}%)", 
+                                             f"发现新的最佳结果! 改进: {improvement:+.6f}", 
                                              component_name)
             else:
                 self.log_manager.log_with_tag(logging.INFO, "ITERATION_RESULT", 
-                                             f"当前最佳值: {previous_best:.6f}, 本次结果: {result.objective_value:.6f}", 
+                                             f"当前最佳: {previous_best:.6f}, 本次: {result.objective_value:.6f}", 
                                              component_name)
-        
-        self.log_manager.log_structured(logging.INFO, "OBJECTIVE_ANALYSIS", 
-                                       objective_analysis, component_name)
-        
-        # 详细指标分析
-        main_metrics = {}
-        secondary_metrics = {}
-        
-        for metric, value in result.metrics.items():
-            if metric in ['AUROC', 'AUPRC', 'F1', 'precision', 'recall']:
-                main_metrics[metric] = value
-            else:
-                secondary_metrics[metric] = value
-        
-        if main_metrics:
-            self.log_manager.log_structured(logging.INFO, "MAIN_METRICS", 
-                                           main_metrics, component_name)
-        
-        if secondary_metrics:
-            self.log_manager.log_structured(logging.DEBUG, "SECONDARY_METRICS", 
-                                           secondary_metrics, component_name)
         
         # 多目标优化分析
         if len(self.history.objectives) > 1:
-            pareto_analysis = {
-                "pareto_front_size": len(self.history.pareto_front),
-                "is_pareto_optimal": getattr(result, 'is_pareto_optimal', False),
-                "objectives": self.history.objectives,
-                "objective_values": getattr(result, 'objective_values', {})
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "PARETO_ANALYSIS", 
-                                           pareto_analysis, component_name)
-            
-            if pareto_analysis["is_pareto_optimal"]:
+            if getattr(result, 'is_pareto_optimal', False):
                 self.log_manager.log_with_tag(logging.INFO, "SUCCESS", 
                                              "发现帕累托最优解!", component_name)
-        
-        # 历史统计
-        history_stats = {
-            "total_evaluations": len(self.history.results),
-            "current_iteration": self.current_iteration,
-            "best_objective_value": self.history.get_best_objective_value(),
-            "average_evaluation_time": np.mean([r.evaluation_time for r in self.history.results[-10:]]) if len(self.history.results) >= 10 else result.evaluation_time
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "HISTORY_STATS", 
-                                       history_stats, component_name)
         
         self.log_manager.log_with_tag(logging.INFO, "ITERATION_RESULT", 
                                      f"第 {result.iteration} 次迭代完成 - 目标值: {result.objective_value:.6f}", 
@@ -824,7 +491,9 @@ class AutoDLOptimizer:
         convergence_threshold = self.config.get('convergence_threshold', 0.001)
         
         if improvement < convergence_threshold:
-            self.logger.info(f"最近10次迭代改进 ({improvement:.6f}) 小于阈值 ({convergence_threshold})")
+            self.log_manager.log_with_tag(logging.INFO, "CONVERGENCE", 
+                                         f"最近10次迭代改进 ({improvement:.6f}) 小于阈值 ({convergence_threshold})", 
+                                         "AutoDLOptimizer")
             return True
         
         return False
@@ -845,20 +514,20 @@ class AutoDLOptimizer:
             # 同时保存为latest
             self.state_manager.save_state(state_data, "latest")
             
-            self.logger.debug(f"状态已保存: {checkpoint_name}")
+            self.log_manager.log_with_tag(logging.DEBUG, "CHECKPOINT", 
+                                         f"状态已保存: {checkpoint_name}", "AutoDLOptimizer")
             
         except Exception as e:
-            self.logger.error(f"状态保存失败: {e}")
+            self.log_manager.log_with_tag(logging.ERROR, "ERROR", 
+                                         f"状态保存失败: {e}", "AutoDLOptimizer")
     
     def _finalize_optimization(self):
         """完成优化，生成最终报告"""
         component_name = "AutoDLOptimizer"
         
         self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
-                                     "========== 开始优化完成处理 ==========", 
+                                     "开始优化完成处理", 
                                      component_name)
-        
-        finalization_start = time.time()
         
         # 设置结束时间
         self.history.end_time = datetime.now()
@@ -867,128 +536,42 @@ class AutoDLOptimizer:
         else:
             self.history.total_time = 0.0
         
-        # 详细的完成统计
-        completion_stats = {
-            "total_iterations": self.current_iteration,
-            "total_evaluations": len(self.history.results),
-            "total_runtime_seconds": self.history.total_time,
-            "total_runtime_hours": self.history.total_time / 3600,
-            "total_runtime_minutes": self.history.total_time / 60,
-            "average_iteration_time": self.history.total_time / max(self.current_iteration, 1),
-            "start_time": self.history.start_time.isoformat() if self.history.start_time else None,
-            "end_time": self.history.end_time.isoformat(),
-            "task_type": self.config.get('task_type', 'Unknown')
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "COMPLETION_STATS", 
-                                       completion_stats, component_name)
+        # 简化的完成统计
+        self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
+                                     f"总迭代: {self.current_iteration} | 运行时间: {self.history.total_time/3600:.2f}小时", 
+                                     component_name)
         
         # 最佳结果分析
         if self.history.best_result:
-            best_result_analysis = {
-                "best_objective_value": self.history.best_result.objective_value,
-                "best_iteration": self.history.best_result.iteration,
-                "best_evaluation_time": self.history.best_result.evaluation_time,
-                "best_timestamp": self.history.best_result.timestamp.isoformat(),
-                "improvement_from_first": None,
-                "improvement_percentage": None
-            }
+            best_value = self.history.best_result.objective_value
+            self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
+                                         f"最佳目标值: {best_value:.6f} (第{self.history.best_result.iteration}次迭代)", 
+                                         component_name)
             
             # 计算相对于第一次结果的改进
             if len(self.history.results) > 1:
                 first_result = self.history.results[0].objective_value
-                improvement = self.history.best_result.objective_value - first_result
+                improvement = best_value - first_result
                 improvement_percent = (improvement / abs(first_result)) * 100 if first_result != 0 else 0
                 
-                best_result_analysis.update({
-                    "first_objective_value": first_result,
-                    "improvement_from_first": improvement,
-                    "improvement_percentage": improvement_percent
-                })
-            
-            self.log_manager.log_structured(logging.INFO, "BEST_RESULT_ANALYSIS", 
-                                           best_result_analysis, component_name)
-            
-            # 格式化最佳参数
-            formatted_best_params = {}
-            for key, value in self.history.best_result.parameters.items():
-                if isinstance(value, float):
-                    if abs(value) < 0.001:
-                        formatted_best_params[key] = f"{value:.2e}"
-                    else:
-                        formatted_best_params[key] = f"{value:.6f}"
-                else:
-                    formatted_best_params[key] = str(value)
-            
-            self.log_manager.log_structured(logging.INFO, "BEST_PARAMETERS", 
-                                           formatted_best_params, component_name)
-            
-            # 最佳结果的详细指标
-            best_metrics = {}
-            for metric, value in self.history.best_result.metrics.items():
-                if isinstance(value, (int, float)):
-                    best_metrics[metric] = value
-            
-            self.log_manager.log_structured(logging.INFO, "BEST_METRICS", 
-                                           best_metrics, component_name)
+                self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
+                                             f"总体改进: {improvement:+.6f} ({improvement_percent:+.2f}%)", 
+                                             component_name)
         
         # 多目标优化总结
         if len(self.history.objectives) > 1:
             try:
-                pareto_metrics = self.history.get_pareto_front_metrics()
-                multi_objective_summary = {
-                    "objectives": self.history.objectives,
-                    "pareto_front_size": len(self.history.pareto_front),
-                    "total_solutions": len(self.history.results),
-                    "pareto_coverage_ratio": len(self.history.pareto_front) / max(len(self.history.results), 1),
-                    "objective_weights": getattr(self.history, 'objective_weights', None)
-                }
-                
-                # 添加帕累托前沿的统计信息
-                if pareto_metrics:
-                    multi_objective_summary.update(pareto_metrics)
-                
-                self.log_manager.log_structured(logging.INFO, "MULTI_OBJECTIVE_SUMMARY", 
-                                               multi_objective_summary, component_name)
-                
-                # 显示帕累托前沿的代表性解
-                if self.history.pareto_front:
-                    representative_solutions = []
-                    for i, solution in enumerate(self.history.pareto_front[:5]):  # 最多显示5个
-                        sol_info = {
-                            "solution_index": i + 1,
-                            "iteration": solution.iteration,
-                            "objective_values": getattr(solution, 'objective_values', {}),
-                            "main_objective": solution.objective_value
-                        }
-                        representative_solutions.append(sol_info)
-                    
-                    self.log_manager.log_structured(logging.INFO, "PARETO_SOLUTIONS", 
-                                                   representative_solutions, component_name)
-            
+                pareto_size = len(self.history.pareto_front)
+                self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
+                                             f"帕累托前沿解数量: {pareto_size}", component_name)
             except Exception as e:
                 self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
                                              f"多目标优化总结生成失败: {e}", component_name)
         
-        # 优化效率分析
-        efficiency_analysis = {
-            "iterations_per_hour": (self.current_iteration / (self.history.total_time / 3600)) if self.history.total_time > 0 else 0,
-            "evaluations_per_hour": (len(self.history.results) / (self.history.total_time / 3600)) if self.history.total_time > 0 else 0,
-            "average_evaluation_time": np.mean([r.evaluation_time for r in self.history.results]) if self.history.results else 0,
-            "total_evaluation_time": sum([r.evaluation_time for r in self.history.results]),
-            "evaluation_time_percentage": (sum([r.evaluation_time for r in self.history.results]) / self.history.total_time * 100) if self.history.total_time > 0 else 0
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "EFFICIENCY_ANALYSIS", 
-                                       efficiency_analysis, component_name)
-        
         # 保存最终状态
-        self.log_manager.log_with_tag(logging.INFO, "STATE_SAVE", 
-                                     "保存最终优化状态...", component_name)
-        
         try:
             self._save_state()
-            self.log_manager.log_with_tag(logging.INFO, "STATE_SAVE", 
+            self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
                                          "最终状态保存成功", component_name)
         except Exception as e:
             self.log_manager.log_with_tag(logging.ERROR, "ERROR", 
@@ -996,40 +579,17 @@ class AutoDLOptimizer:
         
         # 生成分析报告
         if self.config.get('generate_report', True):
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         "开始生成最终分析报告...", component_name)
-            
             try:
                 self._generate_final_report()
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
+                self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
                                              "分析报告生成完成", component_name)
             except Exception as e:
                 self.log_manager.log_with_tag(logging.ERROR, "ERROR", 
                                              f"报告生成失败: {e}", component_name)
         
-        finalization_time = time.time() - finalization_start
-        
-        # 最终完成摘要
-        final_summary = {
-            "finalization_time": finalization_time,
-            "optimization_successful": self.history.best_result is not None,
-            "total_runtime_formatted": f"{self.history.total_time/3600:.2f} 小时 ({self.history.total_time/60:.1f} 分钟)",
-            "final_best_value": self.history.get_best_objective_value(),
-            "reports_generated": self.config.get('generate_report', True)
-        }
-        
-        self.log_manager.log_structured(logging.INFO, "FINAL_SUMMARY", 
-                                       final_summary, component_name)
-        
         # 最终完成信息
         self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
-                                     "========== 贝叶斯超参数优化完成 ==========", 
-                                     component_name)
-        
-        self.log_manager.log_with_tag(logging.INFO, "FINALIZATION", 
-                                     f"总迭代次数: {self.current_iteration}, "
-                                     f"运行时间: {self.history.total_time/3600:.2f}小时, "
-                                     f"最佳目标值: {self.history.get_best_objective_value():.6f}", 
+                                     "贝叶斯超参数优化完成", 
                                      component_name)
     
     def _generate_final_report(self):
@@ -1037,10 +597,8 @@ class AutoDLOptimizer:
         component_name = "AutoDLOptimizer"
         
         self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                     "========== 开始生成分析报告 ==========", 
+                                     "开始生成分析报告", 
                                      component_name)
-        
-        report_start_time = time.time()
         
         try:
             # 创建输出目录
@@ -1048,77 +606,30 @@ class AutoDLOptimizer:
             output_dir.mkdir(exist_ok=True)
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             
-            output_info = {
-                "output_directory": str(output_dir),
-                "timestamp": timestamp,
-                "generate_html": self.config.get('generate_html', True),
-                "generate_charts": self.config.get('generate_charts', True)
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "OUTPUT_CONFIG", 
-                                           output_info, component_name)
-            
             # 创建结果分析器
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         "正在创建结果分析器...", component_name)
-            
-            analyzer_start = time.time()
             try:
                 if checkpoint_path := self.state_manager.get_latest_checkpoint():
                     self.result_analyzer = create_result_analyzer_from_checkpoint(checkpoint_path)
-                    self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                                 f"从检查点创建结果分析器: {checkpoint_path}", component_name)
-                    
-                # 如果从检查点创建失败或没有检查点，直接从历史创建
-                if self.result_analyzer is None:
+                else:
                     from result_analyzer import ResultAnalyzer
                     self.result_analyzer = ResultAnalyzer(self.history, self.parameter_space)
-                    self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                                 "从历史记录创建结果分析器", component_name)
             except Exception as e:
-                self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
-                                             f"从检查点创建结果分析器失败: {e}", component_name)
-                # 直接从历史创建
                 from result_analyzer import ResultAnalyzer
                 self.result_analyzer = ResultAnalyzer(self.history, self.parameter_space)
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             "使用历史记录创建结果分析器", component_name)
-            
-            analyzer_time = time.time() - analyzer_start
             
             # 创建可视化器
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         "正在创建可视化器...", component_name)
-            
-            visualizer_start = time.time()
             try:
                 if checkpoint_path := self.state_manager.get_latest_checkpoint():
                     from visualizer import create_visualizer_from_checkpoint
                     self.visualizer = create_visualizer_from_checkpoint(checkpoint_path)
-                    self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                                 f"从检查点创建可视化器: {checkpoint_path}", component_name)
-                    
-                # 如果从检查点创建失败或没有检查点，直接从历史创建
-                if self.visualizer is None:
+                else:
                     from visualizer import Visualizer
                     self.visualizer = Visualizer(self.history, self.parameter_space)
-                    self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                                 "从历史记录创建可视化器", component_name)
             except Exception as e:
-                self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
-                                             f"从检查点创建可视化器失败: {e}", component_name)
-                # 直接从历史创建
                 from visualizer import Visualizer
                 self.visualizer = Visualizer(self.history, self.parameter_space)
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             "使用历史记录创建可视化器", component_name)
-            
-            visualizer_time = time.time() - visualizer_start
             
             # 创建报告生成器
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         "正在创建报告生成器...", component_name)
-            
             report_config = ReportConfig(
                 title=f"{self.config.get('task_type', 'LDA')}任务贝叶斯超参数优化报告",
                 author="AutoDL优化系统",
@@ -1136,106 +647,54 @@ class AutoDLOptimizer:
                 config=report_config
             )
             
-            component_creation_time = {
-                "analyzer_creation_time": analyzer_time,
-                "visualizer_creation_time": visualizer_time,
-                "total_component_creation_time": analyzer_time + visualizer_time
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "COMPONENT_CREATION_TIME", 
-                                           component_creation_time, component_name)
-            
             # 生成JSON报告
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         "正在生成JSON报告...", component_name)
-            
-            json_start = time.time()
             json_path = output_dir / f"optimization_report_{timestamp}.json"
             self.report_generator.save_json_report(str(json_path))
-            json_time = time.time() - json_start
-            
-            json_info = {
-                "json_report_path": str(json_path),
-                "json_generation_time": json_time,
-                "json_file_size_mb": json_path.stat().st_size / (1024 * 1024) if json_path.exists() else 0
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "JSON_REPORT", 
-                                           json_info, component_name)
-            
             self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
                                          f"JSON报告已保存: {json_path}", component_name)
             
             # 生成HTML报告
             if self.config.get('generate_html', True):
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             "正在生成HTML报告...", component_name)
-                
-                html_start = time.time()
                 html_path = output_dir / f"optimization_report_{timestamp}.html"
                 self.report_generator.save_html_report(str(html_path))
-                html_time = time.time() - html_start
-                
-                html_info = {
-                    "html_report_path": str(html_path),
-                    "html_generation_time": html_time,
-                    "html_file_size_mb": html_path.stat().st_size / (1024 * 1024) if html_path.exists() else 0
-                }
-                
-                self.log_manager.log_structured(logging.INFO, "HTML_REPORT", 
-                                               html_info, component_name)
-                
                 self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
                                              f"HTML报告已保存: {html_path}", component_name)
             
             # 生成可视化图表
             if self.config.get('generate_charts', True) and self.visualizer is not None:
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             "正在生成可视化图表...", component_name)
-                
-                chart_start = time.time()
                 chart_dir = output_dir / f"charts_{timestamp}"
                 chart_dir.mkdir(exist_ok=True)
                 
-                chart_generation_results = {
-                    "chart_directory": str(chart_dir),
-                    "charts_generated": [],
-                    "charts_failed": []
-                }
+                charts_generated = 0
+                charts_failed = 0
                 
+                # 生成收敛曲线
                 try:
-                    # 生成收敛曲线
                     convergence_path = str(chart_dir / "convergence.png")
                     self.visualizer.plot_convergence_curve(convergence_path)
-                    chart_generation_results["charts_generated"].append("convergence.png")
-                    self.log_manager.log_with_tag(logging.DEBUG, "CHART_GENERATION", 
-                                                 "收敛曲线图表已生成", component_name)
+                    charts_generated += 1
                 except Exception as e:
-                    chart_generation_results["charts_failed"].append(f"convergence.png: {str(e)}")
+                    charts_failed += 1
                     self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
                                                  f"收敛曲线生成失败: {e}", component_name)
                 
+                # 生成参数分布图
                 try:
-                    # 生成参数分布图
                     param_dist_path = str(chart_dir / "parameter_dist.png")
                     self.visualizer.plot_parameter_distributions(param_dist_path)
-                    chart_generation_results["charts_generated"].append("parameter_dist.png")
-                    self.log_manager.log_with_tag(logging.DEBUG, "CHART_GENERATION", 
-                                                 "参数分布图表已生成", component_name)
+                    charts_generated += 1
                 except Exception as e:
-                    chart_generation_results["charts_failed"].append(f"parameter_dist.png: {str(e)}")
+                    charts_failed += 1
                     self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
                                                  f"参数分布图生成失败: {e}", component_name)
                 
+                # 生成参数相关性热力图
                 try:
-                    # 生成参数相关性热力图
                     param_corr_path = str(chart_dir / "parameter_corr.png")
                     self.visualizer.plot_parameter_correlation_heatmap(param_corr_path)
-                    chart_generation_results["charts_generated"].append("parameter_corr.png")
-                    self.log_manager.log_with_tag(logging.DEBUG, "CHART_GENERATION", 
-                                                 "参数相关性热力图已生成", component_name)
+                    charts_generated += 1
                 except Exception as e:
-                    chart_generation_results["charts_failed"].append(f"parameter_corr.png: {str(e)}")
+                    charts_failed += 1
                     self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
                                                  f"参数相关性图生成失败: {e}", component_name)
                 
@@ -1244,69 +703,19 @@ class AutoDLOptimizer:
                     try:
                         pareto_path = str(chart_dir / "pareto_front.png")
                         self.visualizer.plot_pareto_frontier(pareto_path)
-                        chart_generation_results["charts_generated"].append("pareto_front.png")
-                        self.log_manager.log_with_tag(logging.DEBUG, "CHART_GENERATION", 
-                                                     "帕累托前沿图已生成", component_name)
+                        charts_generated += 1
                     except Exception as e:
-                        chart_generation_results["charts_failed"].append(f"pareto_front.png: {str(e)}")
+                        charts_failed += 1
                         self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
                                                      f"帕累托前沿图生成失败: {e}", component_name)
                 
-                chart_time = time.time() - chart_start
-                chart_generation_results["chart_generation_time"] = chart_time
-                chart_generation_results["successful_charts"] = len(chart_generation_results["charts_generated"])
-                chart_generation_results["failed_charts"] = len(chart_generation_results["charts_failed"])
-                
-                self.log_manager.log_structured(logging.INFO, "CHART_GENERATION_RESULTS", 
-                                               chart_generation_results, component_name)
-                
                 self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             f"可视化图表已保存: {chart_dir} "
-                                             f"(成功: {chart_generation_results['successful_charts']}, "
-                                             f"失败: {chart_generation_results['failed_charts']})", 
+                                             f"图表已保存: {chart_dir} (成功: {charts_generated}, 失败: {charts_failed})", 
                                              component_name)
-            
-            elif self.visualizer is None:
-                self.log_manager.log_with_tag(logging.WARNING, "WARNING", 
-                                             "可视化器未初始化，跳过图表生成", component_name)
-            else:
-                self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                             "根据配置跳过图表生成", component_name)
-            
-            total_report_time = time.time() - report_start_time
-            
-            # 报告生成总结
-            report_summary = {
-                "total_report_generation_time": total_report_time,
-                "json_report_generated": True,
-                "html_report_generated": self.config.get('generate_html', True),
-                "charts_generated": self.config.get('generate_charts', True) and self.visualizer is not None,
-                "output_directory": str(output_dir),
-                "timestamp": timestamp
-            }
-            
-            self.log_manager.log_structured(logging.INFO, "REPORT_SUMMARY", 
-                                           report_summary, component_name)
-            
-            self.log_manager.log_with_tag(logging.INFO, "REPORT_GENERATION", 
-                                         f"分析报告生成完成 (总耗时: {total_report_time:.2f}秒)", 
-                                         component_name)
             
         except Exception as e:
             self.log_manager.log_with_tag(logging.ERROR, "ERROR", 
                                          f"报告生成过程出现错误: {str(e)}", component_name)
-            
-            # 记录详细的错误信息
-            error_details = {
-                "error_type": type(e).__name__,
-                "error_message": str(e),
-                "report_generation_time": time.time() - report_start_time,
-                "output_directory": str(output_dir) if 'output_dir' in locals() else "未创建"
-            }
-            
-            self.log_manager.log_structured(logging.ERROR, "REPORT_ERROR", 
-                                           error_details, component_name)
-            
             raise
 
 
