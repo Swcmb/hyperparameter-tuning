@@ -1814,7 +1814,7 @@ def create_bayesian_optimizer(task_type: str = "LDA",
     
     # 创建组件
     parameter_space = create_default_parameter_space()
-    task_evaluator = create_task_evaluator(task_type, data_config, use_real_training=False)
+    task_evaluator = create_task_evaluator(task_type, data_config)
     acquisition_function = create_acquisition_function(acquisition_function_type)
     gaussian_process = create_default_gaussian_process(random_state)
     state_manager = create_default_state_manager(checkpoint_dir)

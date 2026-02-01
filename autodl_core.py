@@ -660,22 +660,34 @@ class ParameterSpace:
         
         在采样过程中考虑约束条件，生成更可能满足约束的参数
         """
-        # 确保隐藏层维度递减
+        # 确保隐藏层维度递减（处理离散型参数）
         if all(key in parameters for key in ['dimensions', 'hidden1', 'hidden2']):
             dimensions = int(parameters['dimensions'])
             
-            # 重新采样hidden1，确保小于dimensions
+            # 重新采样hidden1，确保小于dimensions（离散型参数）
             hidden1_config = self.parameters['hidden1']
-            max_hidden1 = min(hidden1_config.bounds[1], dimensions)
-            if max_hidden1 > hidden1_config.bounds[0]:
-                parameters['hidden1'] = self._rng.uniform(hidden1_config.bounds[0], max_hidden1)
+            if hidden1_config.param_type == ParameterType.DISCRETE:
+                valid_hidden1 = [v for v in hidden1_config.values if v < dimensions]
+                if valid_hidden1:
+                    parameters['hidden1'] = self._rng.choice(valid_hidden1)
+            else:
+                # 连续型参数的处理（保持原逻辑）
+                max_hidden1 = min(hidden1_config.bounds[1], dimensions)
+                if max_hidden1 > hidden1_config.bounds[0]:
+                    parameters['hidden1'] = self._rng.uniform(hidden1_config.bounds[0], max_hidden1)
             
-            # 重新采样hidden2，确保小于hidden1
+            # 重新采样hidden2，确保小于hidden1（离散型参数）
             hidden1 = int(parameters['hidden1'])
             hidden2_config = self.parameters['hidden2']
-            max_hidden2 = min(hidden2_config.bounds[1], hidden1)
-            if max_hidden2 > hidden2_config.bounds[0]:
-                parameters['hidden2'] = self._rng.uniform(hidden2_config.bounds[0], max_hidden2)
+            if hidden2_config.param_type == ParameterType.DISCRETE:
+                valid_hidden2 = [v for v in hidden2_config.values if v < hidden1]
+                if valid_hidden2:
+                    parameters['hidden2'] = self._rng.choice(valid_hidden2)
+            else:
+                # 连续型参数的处理（保持原逻辑）
+                max_hidden2 = min(hidden2_config.bounds[1], hidden1)
+                if max_hidden2 > hidden2_config.bounds[0]:
+                    parameters['hidden2'] = self._rng.uniform(hidden2_config.bounds[0], max_hidden2)
         
         # 确保注意力头数能整除隐藏维度
         attention_mappings = [
@@ -694,12 +706,22 @@ class ParameterSpace:
                 if valid_heads:
                     parameters[heads_key] = self._rng.choice(valid_heads)
                 else:
-                    # 如果没有合适的头数，调整隐藏维度
-                    preferred_heads = self._rng.choice(heads_config.values)
-                    adjusted_dim = (hidden_dim // preferred_heads) * preferred_heads
-                    if adjusted_dim >= self.parameters[hidden_key].bounds[0]:
-                        parameters[hidden_key] = adjusted_dim
-                        parameters[heads_key] = preferred_heads
+                    # 如果没有合适的头数，调整隐藏维度（仅对离散型参数）
+                    hidden_config = self.parameters[hidden_key]
+                    if hidden_config.param_type == ParameterType.DISCRETE:
+                        preferred_heads = self._rng.choice(heads_config.values)
+                        # 找到能被preferred_heads整除且在valid范围内的维度
+                        valid_dims = [d for d in hidden_config.values if d % preferred_heads == 0]
+                        if valid_dims:
+                            parameters[hidden_key] = self._rng.choice(valid_dims)
+                            parameters[heads_key] = preferred_heads
+                    else:
+                        # 连续型参数的处理（保持原逻辑）
+                        preferred_heads = self._rng.choice(heads_config.values)
+                        adjusted_dim = (hidden_dim // preferred_heads) * preferred_heads
+                        if adjusted_dim >= hidden_config.bounds[0]:
+                            parameters[hidden_key] = adjusted_dim
+                            parameters[heads_key] = preferred_heads
         
         # 确保学习率和权重衰减的合理关系
         if all(key in parameters for key in ['lr', 'weight_decay']):
@@ -1097,10 +1119,13 @@ def create_default_parameter_space(task_type: str = "LDA") -> ParameterSpace:
     """
     space = ParameterSpace()
     
-    # 连续型参数
-    space.add_continuous_parameter('dimensions', 128, 512)
-    space.add_continuous_parameter('hidden1', 64, 256)
-    space.add_continuous_parameter('hidden2', 32, 128)
+    # 连续型参数 - 修改为能被常见头数整除的范围
+    # dimensions: 确保能被2,4,8,16整除，使用16的倍数
+    space.add_discrete_parameter('dimensions', [128, 144, 160, 176, 192, 208, 224, 240, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512])
+    # hidden1: 确保能被常见头数整除
+    space.add_discrete_parameter('hidden1', [64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256])
+    # hidden2: 确保能被常见头数整除
+    space.add_discrete_parameter('hidden2', [32, 48, 64, 80, 96, 112, 128])
     space.add_continuous_parameter('decoder1', 256, 1024)
     space.add_continuous_parameter('lr', 1e-5, 1e-2, log_scale=True)
     space.add_continuous_parameter('dropout', 0.0, 0.5)

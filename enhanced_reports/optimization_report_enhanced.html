@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LDA任务贝叶斯超参数优化报告（增强版）</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: #2c3e50; border-left: 4px solid #3498db; padding-left: 10px; }
+        .section h3 { color: #34495e; margin-top: 20px; }
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .metric-card { background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 3px solid #3498db; }
+        .metric-value { font-size: 1.5em; font-weight: bold; color: #2c3e50; }
+        .metric-label { color: #7f8c8d; font-size: 0.9em; }
+        .parameter-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .parameter-table th, .parameter-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .parameter-table th { background-color: #f2f2f2; }
+        .chart-container { text-align: center; margin: 20px 0; }
+        .chart-container img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; margin: 20px 0; }
+        .recommendation { background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #27ae60; }
+        .warning { background: #fff3cd; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ffc107; }
+        .error { background: #f8d7da; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #dc3545; }
+        .footer { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LDA任务贝叶斯超参数优化报告（增强版）</h1>
+        <p>生成时间: 2026-02-01T16:21:16 | 作者: AutoDL优化系统</p>
+    </div>
+
+    <!-- 实验配置 -->
+    <div class="section">
+        <h2>实验配置</h2>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value">LDA</div>
+                <div class="metric-label">任务类型</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">EI</div>
+                <div class="metric-label">采集函数</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">23</div>
+                <div class="metric-label">参数总数</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">2841.21s</div>
+                <div class="metric-label">总耗时</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 优化摘要 -->
+    <div class="section">
+        <h2>优化摘要</h2>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value">20</div>
+                <div class="metric-label">总评估次数</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0.9415</div>
+                <div class="metric-label">最佳目标值</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">1</div>
+                <div class="metric-label">最佳迭代</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">90.00%</div>
+                <div class="metric-label">成功率</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 最佳参数 -->
+    <div class="section">
+        <h2>最佳参数组合</h2>
+        <h3>最佳结果详情</h3>
+        <p><strong>迭代次数:</strong> 1</p>
+        <p><strong>目标函数值:</strong> 0.941484</p>
+        <p><strong>评估时间:</strong> 308.82秒</p>
+        
+        <h3>参数值</h3>
+        <table class="parameter-table">
+            <tr><th>参数名</th><th>值</th></tr>
+            <tr><td>dimensions</td><td>320</td></tr>
+            <tr><td>hidden1</td><td>256</td></tr>
+            <tr><td>hidden2</td><td>32</td></tr>
+            <tr><td>decoder1</td><td>465.3335725455138</td></tr>
+            <tr><td>lr</td><td>0.000733755630323859</td></tr>
+            <tr><td>dropout</td><td>0.4670142041446821</td></tr>
+            <tr><td>weight_decay</td><td>2.186689641927814e-06</td></tr>
+            <tr><td>alpha</td><td>1.295536556783128</td></tr>
+            <tr><td>beta</td><td>1.5735863183010976</td></tr>
+            <tr><td>gamma</td><td>1.0717426729960984</td></tr>
+            <tr><td>moco_momentum</td><td>0.974775921094384</td></tr>
+            <tr><td>moco_t</td><td>0.8816865628301471</td></tr>
+            <tr><td>moco_tau1</td><td>0.5041551754126347</td></tr>
+            <tr><td>moco_tau2</td><td>0.7969560650409876</td></tr>
+            <tr><td>gat_heads</td><td>2</td></tr>
+            <tr><td>gt_heads</td><td>4</td></tr>
+            <tr><td>fusion_heads</td><td>4</td></tr>
+            <tr><td>batch</td><td>32</td></tr>
+            <tr><td>moco_K</td><td>4096</td></tr>
+            <tr><td>fusion_strategy</td><td>self_attention</td></tr>
+            <tr><td>feature_type</td><td>one_hot</td></tr>
+            <tr><td>moco_type</td><td>double_tau</td></tr>
+            <tr><td>enable_view_0</td><td>true</td></tr>
+        </table>
+
+        <h3>性能指标</h3>
+        <div class="metric-grid">
+
+            <div class="metric-card">
+                <div class="metric-value">0.9415</div>
+                <div class="metric-label">AUROC</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.9417</div>
+                <div class="metric-label">AUPRC</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.8512</div>
+                <div class="metric-label">F1</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.8790</div>
+                <div class="metric-label">precision</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.8278</div>
+                <div class="metric-label">recall</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">13.0655</div>
+                <div class="metric-label">loss</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.0064</div>
+                <div class="metric-label">AUROC_std</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.0082</div>
+                <div class="metric-label">AUPRC_std</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.0195</div>
+                <div class="metric-label">F1_std</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 收敛性分析 -->
+    <div class="section">
+        <h2>收敛性分析</h2>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value">是</div>
+                <div class="metric-label">是否收敛</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">1</div>
+                <div class="metric-label">收敛迭代</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">0.000000</div>
+                <div class="metric-label">改进速率</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0.0000</div>
+                <div class="metric-label">最终改进</div>
+            </div>
+        </div>
+        <p>优化过程在第1次迭代后收敛，最终改进幅度为0.0000，平台期长度为19次迭代。</p>
+    </div>
+
+    <!-- 参数分析 -->
+    <div class="section">
+        <h2>参数敏感性分析</h2>
+        <p>分析了11个参数的敏感性。高影响参数（9个）：decoder1, moco_tau1, beta, dropout, moco_tau2, alpha, gamma, weight_decay, lr。中等影响参数（1个）：moco_momentum。最重要的参数是decoder1（敏感性得分：156.8044）。</p>
+        
+        <h3>参数重要性排序</h3>
+        <table class="parameter-table">
+            <tr><th>排名</th><th>参数名</th><th>敏感性得分</th><th>相关系数</th><th>显著性</th></tr>
+
+            <tr>
+                <td>1</td>
+                <td>decoder1</td>
+                <td>156.8044</td>
+                <td>0.1948</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>moco_tau1</td>
+                <td>96.3921</td>
+                <td>-0.1780</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>beta</td>
+                <td>49.7957</td>
+                <td>-0.0059</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>dropout</td>
+                <td>21.2609</td>
+                <td>-0.0347</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>5</td>
+                <td>moco_tau2</td>
+                <td>0.2291</td>
+                <td>0.2291</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>6</td>
+                <td>alpha</td>
+                <td>0.2155</td>
+                <td>-0.2155</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>7</td>
+                <td>gamma</td>
+                <td>0.1910</td>
+                <td>-0.1910</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>8</td>
+                <td>weight_decay</td>
+                <td>0.1816</td>
+                <td>0.1816</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>9</td>
+                <td>lr</td>
+                <td>0.1048</td>
+                <td>0.1048</td>
+                <td>high</td>
+            </tr>
+
+            <tr>
+                <td>10</td>
+                <td>moco_momentum</td>
+                <td>0.0576</td>
+                <td>0.0544</td>
+                <td>medium</td>
+            </tr>
+
+        </table>
+    </div>
+
+    <!-- 可视化分析 -->
+    <div class="section">
+        <h2>可视化分析</h2>
+        
+        <div class="chart-grid">
+
+            <div class="chart-container">
+                <h3>收敛曲线</h3>
+                <img src="charts/convergence_curve.png" alt="收敛曲线">
+            </div>
+
+            <div class="chart-container">
+                <h3>参数重要性</h3>
+                <img src="charts/parameter_importance.png" alt="参数重要性">
+            </div>
+
+            <div class="chart-container">
+                <h3>目标函数值分布</h3>
+                <img src="charts/objective_distribution.png" alt="目标函数值分布">
+            </div>
+
+            <div class="chart-container">
+                <h3>参数相关性热力图</h3>
+                <img src="charts/parameter_correlation_heatmap.png" alt="参数相关性热力图">
+            </div>
+
+            <div class="chart-container">
+                <h3>性能热力图</h3>
+                <img src="charts/performance_heatmap.png" alt="性能热力图">
+            </div>
+
+            <div class="chart-container">
+                <h3>参数分布图</h3>
+                <img src="charts/parameter_distributions.png" alt="参数分布图">
+            </div>
+
+            <div class="chart-container">
+                <h3>参数演化图</h3>
+                <img src="charts/parameter_evolution.png" alt="参数演化图">
+            </div>
+
+            <div class="chart-container">
+                <h3>3D优化景观图</h3>
+                <img src="charts/optimization_landscape_3d.png" alt="3D优化景观图">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 优化建议 -->
+    <div class="section">
+        <h2>优化建议</h2>
+
+        <h3>参数调优建议</h3>
+        <div class="recommendation">重点关注高影响参数：decoder1, moco_tau1, beta，这些参数对性能影响最大。</div>
+
+        <h3>优化策略建议</h3>
+        <div class="recommendation">优化已在第1次迭代收敛，可以停止优化。</div>
+
+        <h3>下一步建议</h3>
+        <div class="recommendation">性能良好，可以考虑进一步精调高影响参数或尝试多目标优化。</div>
+    </div>
+
+    <div class="footer">
+        <p>报告由AutoDL贝叶斯优化系统自动生成 | 版本: 1.0.0</p>
+    </div>
+</body>
+</html>

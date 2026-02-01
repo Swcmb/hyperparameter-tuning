@@ -25,8 +25,7 @@ def example_bayesian_optimization():
     
     # 创建任务评估器
     evaluator = create_task_evaluator(
-        task_type="LDA",
-        use_real_training=False  # 使用模拟模式进行演示
+        task_type="LDA"
     )
     
     # 创建优化历史记录
@@ -114,7 +113,7 @@ def example_parameter_validation():
     """
     print("\n=== 参数验证示例 ===")
     
-    evaluator = create_task_evaluator("LDA", use_real_training=False)
+    evaluator = create_task_evaluator("LDA")
     
     # 测试有效参数
     valid_params = {
@@ -181,7 +180,7 @@ def example_multi_task_evaluation():
     for task in tasks:
         print(f"\n评估任务: {task}")
         
-        evaluator = create_task_evaluator(task, use_real_training=False)
+        evaluator = create_task_evaluator(task)
         
         # 评估参数
         metrics = evaluator.evaluate_parameters(test_params, n_folds=2)

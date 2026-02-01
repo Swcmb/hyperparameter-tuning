@@ -188,7 +188,7 @@ class FileManager:
             elif file_type in ['structured', 'metrics']:
                 # JSONL文件
                 with open(file_path, 'a', encoding='utf-8') as f:
-                    f.write(json.dumps(header_info, ensure_ascii=False) + '\n')
+                    f.write(json.dumps(header_info, ensure_ascii=False, default=str) + '\n')
             else:
                 # 普通日志文件
                 header_text = (
@@ -305,7 +305,7 @@ class FileManager:
                     **data
                 }
                 
-                json_line = json.dumps(data_with_timestamp, ensure_ascii=False)
+                json_line = json.dumps(data_with_timestamp, ensure_ascii=False, default=str)
                 file_handle.write(json_line + '\n')
                 
                 if flush:

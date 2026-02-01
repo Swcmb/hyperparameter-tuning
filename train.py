@@ -52,8 +52,8 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
         torch.cuda.set_device(0)  # 强制使用第一个GPU
         print(f"✅ 使用GPU训练，设备: {device}")
     
-    # 强制设置epoch为50
-    args.epochs = 50  # 强制设置epoch为50
+    # 强制设置epoch为5
+    args.epochs = 5  # 强制设置epoch为5
     
     model.to(device)  # 模型移动到指定设备
     data_o = data_o.to(device)  # 原始数据移动到指定设备
@@ -105,7 +105,7 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
             }
         }
         fname = f"adv_config_{fold_tag}_{run_id}.json" if run_id else f"adv_config_{fold_tag}.json"
-        save_result_text(json.dumps(adv_cfg, ensure_ascii=False, indent=2), filename=fname, subdir="metrics")
+        save_result_text(json.dumps(adv_cfg, ensure_ascii=False, indent=2, default=str), filename=fname, subdir="metrics")
         if run_id:
             print(f"[SAVE] adv config saved: metrics/{fname}")
         else:
@@ -137,7 +137,7 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
 
         for i, (label, inp) in enumerate(train_loader):  # 遍历训练数据加载器，获取每个批次的标签和输入
 
-            label = label.to('cuda')  # 固定使用GPU
+            label = label.to(device)  # 使用动态设备而不是固定CUDA
             # 异常防护：空 batch（如早期调试/数据问题）直接跳过，避免产生 nan
             if label.numel() == 0:
                 continue
@@ -505,7 +505,7 @@ def test(model, loader, data_o, data_a, args):
     lbl = data_a.y  # 获取对抗数据的标签
 
     # 同样为对抗损失创建标签（动态节点数 + 设备对齐）
-    device = 'cuda'
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     n_nodes = int(data_o.x.size(0))
     lbl_1 = torch.ones(1, n_nodes, device=device)
     lbl_2 = torch.zeros(1, n_nodes, device=device)
@@ -516,7 +516,7 @@ def test(model, loader, data_o, data_a, args):
         # 遍历测试数据加载器
         for i, (label, inp) in enumerate(loader):
 
-            label = label.to('cuda')  # 固定使用GPU
+            label = label.to(device)  # 使用动态设备而不是固定CUDA
             # 异常防护：空 batch（如早期调试/数据问题）直接跳过，避免产生 nan
             if label.numel() == 0:
                 continue

@@ -974,7 +974,7 @@ class ReportGenerator:
         for section_title, section_key in sections:
             if section_key in report_data and report_data[section_key]:
                 html_parts.append(f"<div class='section'><h2>{section_title}</h2>")
-                html_parts.append(f"<pre>{json.dumps(report_data[section_key], ensure_ascii=False, indent=2)}</pre>")
+                html_parts.append(f"<pre>{json.dumps(report_data[section_key], ensure_ascii=False, indent=2, default=str)}</pre>")
                 html_parts.append("</div>")
         
         html_parts.extend(["</body>", "</html>"])

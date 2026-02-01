@@ -25,7 +25,7 @@ def test_detailed_output():
     try:
         # 创建任务评估器
         print("\n[SETUP] 创建TaskEvaluator...")
-        evaluator = create_task_evaluator('LDA', use_real_training=True)
+        evaluator = create_task_evaluator('LDA')
         
         # 测试参数 - 使用较小的配置进行快速测试
         test_params = {

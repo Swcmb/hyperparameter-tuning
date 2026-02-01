@@ -200,8 +200,7 @@ class AutoDLOptimizer:
         
         self.task_evaluator = create_task_evaluator(
             task_type=task_type,
-            data_config=data_config,
-            use_real_training=self.config.get('use_real_training', True)
+            data_config=data_config
         )
         self.log_manager.log_with_tag(logging.INFO, "INIT", 
                                      "任务评估器已创建", "AutoDLOptimizer")

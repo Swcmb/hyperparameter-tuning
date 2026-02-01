@@ -228,8 +228,8 @@ def register_parms_setting_parameters():
         ParameterDefinition(
             name="epochs",
             type=int,
-            default=50,
-            help="训练轮数，默认 50"
+            default=5,  # 修改为5个epoch
+            help="训练轮数，默认 5"
         ),
         
         # 多任务损失权重

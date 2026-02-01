@@ -71,11 +71,11 @@ def main():
     # 5. 序列化和反序列化
     print("\n5. 序列化示例")
     space_dict = space.to_dict()
-    print(f"   序列化后大小: {len(json.dumps(space_dict))} 字符")
+    print(f"   序列化后大小: {len(json.dumps(space_dict, default=str))} 字符")
     
     # 保存到文件
     with open('parameter_space_config.json', 'w', encoding='utf-8') as f:
-        json.dump(space_dict, f, indent=2, ensure_ascii=False)
+        json.dump(space_dict, f, indent=2, ensure_ascii=False, default=str)
     print("   已保存到 parameter_space_config.json")
     
     # 从文件加载

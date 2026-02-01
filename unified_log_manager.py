@@ -92,7 +92,7 @@ class LogEntry:
         if self.context:
             data['context'] = self.context
             
-        return json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+        return json.dumps(data, ensure_ascii=False, separators=(',', ':'), default=str)
 
 
 @dataclass

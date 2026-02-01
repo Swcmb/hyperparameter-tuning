@@ -26,7 +26,7 @@ class TestBayesianOptimizerMoCoIntegration:
     def setup_method(self):
         """设置测试环境"""
         self.parameter_space = create_default_parameter_space()
-        self.task_evaluator = create_task_evaluator("LDA", use_real_training=False)
+        self.task_evaluator = create_task_evaluator("LDA")
         self.optimizer = BayesianOptimizer(
             parameter_space=self.parameter_space,
             task_evaluator=self.task_evaluator,
