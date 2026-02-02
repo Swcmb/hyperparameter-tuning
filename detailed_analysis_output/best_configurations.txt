@@ -1,0 +1,182 @@
+=== Top 10 最佳配置详细信息 ===
+
+排名 1:
+  迭代次数: 5
+  AUROC: 0.956639
+  AUPRC: 0.950112
+  F1: 0.894600
+  Precision: 0.887206
+  Recall: 0.902254
+  Loss: 11.067706
+  评估时间: 1100.11 秒
+  关键参数:
+    lr: 7.34e-04
+    dropout: 0.467014
+    dimensions: 320
+    batch: 32
+    alpha: 1.295537
+    beta: 1.573586
+    gamma: 1.071743
+
+排名 2:
+  迭代次数: 35
+  AUROC: 0.956389
+  AUPRC: 0.948179
+  F1: 0.892123
+  Precision: 0.874944
+  Recall: 0.910430
+  Loss: 15.648646
+  评估时间: 363.72 秒
+  关键参数:
+    lr: 6.16e-04
+    dropout: 0.500000
+    dimensions: 368
+    batch: 64
+    alpha: 2.000000
+    beta: 2.000000
+    gamma: 0.100000
+
+排名 3:
+  迭代次数: 33
+  AUROC: 0.955900
+  AUPRC: 0.952294
+  F1: 0.892762
+  Precision: 0.882904
+  Recall: 0.903128
+  Loss: 6.843647
+  评估时间: 1097.79 秒
+  关键参数:
+    lr: 1.97e-04
+    dropout: 0.500000
+    dimensions: 320
+    batch: 32
+    alpha: 1.577264
+    beta: 0.872751
+    gamma: 2.000000
+
+排名 4:
+  迭代次数: 37
+  AUROC: 0.955896
+  AUPRC: 0.947572
+  F1: 0.893569
+  Precision: 0.902155
+  Recall: 0.885890
+  Loss: 15.487672
+  评估时间: 998.51 秒
+  关键参数:
+    lr: 3.12e-04
+    dropout: 0.500000
+    dimensions: 144
+    batch: 32
+    alpha: 1.828288
+    beta: 2.000000
+    gamma: 0.599576
+
+排名 5:
+  迭代次数: 39
+  AUROC: 0.955638
+  AUPRC: 0.951659
+  F1: 0.893693
+  Precision: 0.880995
+  Recall: 0.907075
+  Loss: 13.200758
+  评估时间: 1096.75 秒
+  关键参数:
+    lr: 1.67e-04
+    dropout: 0.500000
+    dimensions: 320
+    batch: 32
+    alpha: 2.000000
+    beta: 1.739790
+    gamma: 2.000000
+
+排名 6:
+  迭代次数: 34
+  AUROC: 0.954094
+  AUPRC: 0.948636
+  F1: 0.889911
+  Precision: 0.877459
+  Recall: 0.903524
+  Loss: 15.984754
+  评估时间: 994.82 秒
+  关键参数:
+    lr: 1.70e-04
+    dropout: 0.500000
+    dimensions: 144
+    batch: 32
+    alpha: 2.000000
+    beta: 2.000000
+    gamma: 0.602834
+
+排名 7:
+  迭代次数: 41
+  AUROC: 0.953472
+  AUPRC: 0.950422
+  F1: 0.883077
+  Precision: 0.880761
+  Recall: 0.886046
+  Loss: 12.931334
+  评估时间: 1094.92 秒
+  关键参数:
+    lr: 3.83e-04
+    dropout: 0.500000
+    dimensions: 320
+    batch: 32
+    alpha: 1.998927
+    beta: 1.533910
+    gamma: 2.000000
+
+排名 8:
+  迭代次数: 17
+  AUROC: 0.953466
+  AUPRC: 0.948117
+  F1: 0.888413
+  Precision: 0.888876
+  Recall: 0.888437
+  Loss: 12.364804
+  评估时间: 1098.68 秒
+  关键参数:
+    lr: 5.36e-04
+    dropout: 0.461373
+    dimensions: 320
+    batch: 32
+    alpha: 1.335940
+    beta: 1.713303
+    gamma: 1.025451
+
+排名 9:
+  迭代次数: 47
+  AUROC: 0.953379
+  AUPRC: 0.949342
+  F1: 0.890013
+  Precision: 0.884230
+  Recall: 0.896067
+  Loss: 16.506322
+  评估时间: 1094.39 秒
+  关键参数:
+    lr: 0.001019
+    dropout: 0.500000
+    dimensions: 320
+    batch: 32
+    alpha: 2.000000
+    beta: 2.000000
+    gamma: 2.000000
+
+排名 10:
+  迭代次数: 10
+  AUROC: 0.953364
+  AUPRC: 0.946225
+  F1: 0.892575
+  Precision: 0.892133
+  Recall: 0.894553
+  Loss: 6.847863
+  评估时间: 1099.43 秒
+  关键参数:
+    lr: 9.11e-04
+    dropout: 0.230887
+    dimensions: 320
+    batch: 32
+    alpha: 0.928828
+    beta: 0.926519
+    gamma: 1.206963
+

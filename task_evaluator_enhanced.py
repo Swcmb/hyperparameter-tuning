@@ -29,8 +29,8 @@ def enhanced_simplified_training(self, model, optimizer, data_o, data_a, train_l
     ce_loss = nn.CrossEntropyLoss()
     node_loss = nn.BCEWithLogitsLoss()
     
-    # 强制设置epoch为5
-    epochs = 5
+    # 强制设置epoch为50
+    epochs = 50
     
     # 准备模型信息
     model_info = {

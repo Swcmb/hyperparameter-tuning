@@ -276,8 +276,8 @@ class TaskEvaluator:
         ce_loss = nn.CrossEntropyLoss()
         node_loss = nn.BCEWithLogitsLoss()
         
-        # 强制设置epoch为5
-        epochs = 5
+        # 强制设置epoch为50
+        epochs = 50
         batch_size = getattr(args, 'batch', 25)
         learning_rate = optimizer.param_groups[0]['lr']
         loss_ratio1 = getattr(args, 'loss_ratio1', 1.0)
@@ -701,7 +701,7 @@ class TaskEvaluator:
         args.dropout = 0.1
         args.weight_decay = 5e-4
         args.batch = 25
-        args.epochs = 5
+        args.epochs = 50
         args.loss_ratio1 = 1.0
         args.loss_ratio2 = 0.5
         args.loss_ratio3 = 0.5
@@ -777,7 +777,7 @@ class TaskEvaluator:
         
         # 强制使用CUDA和设置epoch
         args.cuda = True
-        args.epochs = 5  # 强制设置epoch为5
+        args.epochs = 50  # 强制设置epoch为50
         os.environ["CUDA_VISIBLE_DEVICES"] = "0"
         
         # 设置任务类型
@@ -838,7 +838,7 @@ class TaskEvaluator:
                 self.logger.warning(f"未知参数: {param_name}")
         
         # 设置固定的训练配置
-        args.epochs = 5  # 强制设置epoch为5，覆盖任何传入的值
+        args.epochs = 50  # 强制设置epoch为50，覆盖任何传入的值
         args.validation_type = "5_cv1"  # 使用5折交叉验证
         
         # 确保损失权重合理

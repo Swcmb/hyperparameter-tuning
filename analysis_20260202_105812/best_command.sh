@@ -1,0 +1,5 @@
+#!/bin/bash
+# 最佳参数命令行 - 20260202_105812
+# AUROC: 0.970435
+
+python main.py --dimensions 320 --hidden1 256 --hidden2 32 --decoder1 465 --lr 0.000734 --dropout 0.467014 --weight_decay 2.19e-06 --batch 32 --alpha 1.295537 --beta 1.573586 --gamma 1.071743 --moco_momentum 0.974776 --moco_t 0.881687 --moco_tau1 0.504155 --moco_tau2 0.796956 --moco_K 4096 --moco_type double_tau --gat_heads 2 --gt_heads 4 --fusion_heads 4 --fusion_strategy self_attention --feature_type one_hot --enable_view_0 true --task_type LDA --run_name BEST_20260202 --seed 42

@@ -52,8 +52,8 @@ def train_model(model, optimizer, data_o, data_a, train_loader, test_loader, arg
         torch.cuda.set_device(0)  # 强制使用第一个GPU
         print(f"✅ 使用GPU训练，设备: {device}")
     
-    # 强制设置epoch为5
-    args.epochs = 5  # 强制设置epoch为5
+    # 强制设置epoch为50
+    args.epochs = 50  # 强制设置epoch为50
     
     model.to(device)  # 模型移动到指定设备
     data_o = data_o.to(device)  # 原始数据移动到指定设备
