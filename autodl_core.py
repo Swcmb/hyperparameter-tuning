@@ -1149,7 +1149,7 @@ def create_default_parameter_space(task_type: str = "LDA") -> ParameterSpace:
     
     # 分类型参数
     space.add_categorical_parameter('fusion_strategy', 
-                                   ['self_attention', 'co_attention', 'hybrid', 'transformer_multihead'])
+                                   ['co_attention'])
     space.add_categorical_parameter('feature_type', ['normal', 'uniform', 'one_hot'])
     space.add_categorical_parameter('moco_type', ['basic', 'double_tau'])
     space.add_categorical_parameter('enable_view_0', ['true', 'false'])
